@@ -1,0 +1,207 @@
+﻿@using System.Collections
+@using BehzistiMaskan.Core.Models
+@using BehzistiMaskan.Core.Models.Geographic
+@using BehzistiMaskan.Core.Utility
+@model RequiredMessage2
+@{
+    Layout = "../Shared/_LayoutPorto.cshtml";
+    ViewBag.Title = "مدیریت پیام اعلام نیاز";
+}
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("SaveRequiredMessage", "Benefactor", FormMethod.Post, new { @id = "saveRequiredMessageForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+
+            <section class="panel panel-featured panel-featured-success">
+                <header class="panel-heading">
+                    مدیریت پیام اعلام نیاز
+                </header>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+
+                            <div class="form-group">
+                                <label class="control-labal">
+                                    استان
+                                </label>
+                                <select class="form-control" id="Provinces">
+                                    @{
+                                        <option value="0">انتخاب کنید</option>
+                                        foreach (var item in ViewBag.Provinces as IEnumerable<Province>)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-labal" >
+                                    شهرستان
+                                </label>
+                                <select class="form-control" id="County" name="countyId">
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+
+                        <div class="form-group">
+                            @Html.LabelFor(b => b.Message, new {@class = "control-label col-md-1"})
+                            <div class="col-md-11">
+                                @Html.TextAreaFor(b => b.Message, new {@class = "form-control", @rows = 6})
+                                @Html.ValidationMessageFor(b => b.Message)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.Id)
+                    <button class="btn btn-success" type="submit">ذخیره</button>
+                </div>
+            </section>
+        }
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-responsive table-striped table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>استان</th>
+                <th>شهرستان</th>
+                <th>پیام</th>
+                <th>عملیات</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{
+                foreach (var item in ViewBag.RecentMessages as List<RequiredMessage2>)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.County.Province.Name</td>
+                        <td>@item.County.Name</td>
+                        <td>@item.Message</td>
+                        <td>
+                            
+                            <a href="/benefactor/DeleteRequiredMessage?id=@item.Id" class="btn btn-sm btn-danger">حذف</a>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section StyleSheet
+{
+
+
+}
+
+@section Scripts
+{
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+
+
+        @if (ViewBag.Status != null)
+        {
+            switch (((Status)ViewBag.Status).StatusType)
+            {
+                case ModelEnums.StatusTypeE.Success:
+                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                    break;
+                case ModelEnums.StatusTypeE.Error:
+                    @Html.Raw("ShowNotifyStatus('مشخصات وارد شده صحیح نمی باشد!', 'error','ورود ناموفق','fa fa-times');")
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+
+
+
+
+        var countyCurrentHouseDropDown = $('#Provinces');
+        var districtCurrentHouseDropDown = $('#County');
+        var cityCurrentHouseDropDown = $('#ClientWaitingApplicant_HouseCityId');
+
+        // CountyId Select Index Change
+        countyCurrentHouseDropDown.change(function () {
+            var countyId = countyCurrentHouseDropDown.val();
+            if (countyId) {
+                $.getJSON("/api/provinces/" + countyId + "/counties",
+                    function (districts) {
+                        districtCurrentHouseDropDown.children('option').remove();
+
+                        $.each(districts,
+                            function (i, district) {
+                                districtCurrentHouseDropDown.append(new Option(district.name, district.id));
+                            });
+                        districtCurrentHouseDropDown.trigger('change');
+                    });
+            } else {
+                //districtCurrentHouseDropDown.children('option:not(:first)').remove();
+                districtCurrentHouseDropDown.children('option').remove();
+                districtCurrentHouseDropDown.append('<option value="">انتخاب کنید</option>');
+                districtCurrentHouseDropDown.trigger('change');
+            }
+        });
+
+        // DistrictId Select Index Change
+        districtCurrentHouseDropDown.change(function () {
+            var districtId = districtCurrentHouseDropDown.val();
+            if (districtId) {
+                $.getJSON("/api/districts/" + districtId + "/cities",
+                    function (cities) {
+                        cityCurrentHouseDropDown.children('option').remove();
+
+                        $.each(cities,
+                            function (key, city) {
+                                cityCurrentHouseDropDown.append(new Option(city.name, city.id));
+                            });
+                        cityCurrentHouseDropDown.change();
+                    });
+            } else {
+                cityCurrentHouseDropDown.children('option').remove();
+                cityCurrentHouseDropDown.append('<option value="">انتخاب کنید</option>');
+                cityCurrentHouseDropDown.change();
+            }
+        });
+
+
+        countyCurrentHouseDropDown.change();
+
+
+    </script>
+}

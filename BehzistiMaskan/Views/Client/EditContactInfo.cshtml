@@ -1,0 +1,141 @@
+﻿@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.ContactInfoViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - مسکن فعلی مددجو";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditContactInfo";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    @using (Html.BeginForm("SaveContactInfo", "Client", FormMethod.Post, new { @class = "form form-bordered", @id = "clientContactInfoEditFrom" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row mb-sm">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(c => c.ContactInfo.HomeTel, new { @class = "control-label" })
+                                    @Html.TextBoxFor(c => c.ContactInfo.HomeTel, new { @class = "form-control text-dir-ltr" })
+                                    @Html.ValidationMessageFor(c => c.ContactInfo.HomeTel)
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(c => c.ContactInfo.Mobile, new { @class = "control-label" })
+                                    @Html.TextBoxFor(c => c.ContactInfo.Mobile, new { @class = "form-control text-dir-ltr" })
+                                    @Html.ValidationMessageFor(c => c.ContactInfo.Mobile)
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(c => c.ContactInfo.EmergencyTel, new { @class = "control-label" })
+                                    @Html.TextBoxFor(c => c.ContactInfo.EmergencyTel, new { @class = "form-control text-dir-ltr" })
+                                    @Html.ValidationMessageFor(c => c.ContactInfo.EmergencyTel)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            @Html.LabelFor(c => c.ContactInfo.WorkAddress, new { @class = "control-label" })
+                                            @Html.TextBoxFor(c => c.ContactInfo.WorkAddress, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(c => c.ContactInfo.WorkAddress)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(c => c.ContactInfo.WorkTel, new { @class = "control-label" })
+                                            @Html.TextBoxFor(c => c.ContactInfo.WorkTel, new { @class = "form-control text-dir-ltr" })
+                                            @Html.ValidationMessageFor(c => c.ContactInfo.WorkTel)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-sm">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    همکار محترم لطفا آدرس کامل را به این صورت وارد نمایید:
+                                    <br />
+                                    نام محله یا بلوار اصلی، نام بلوار فرعی، نام خیابان اصلی، نام خیابان فرعی، (در صورت نیاز نشان شهری) ، نام کوچه، پلاک منزل یا مشخصات منزل
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <input id="ContactInfo_Id" name="ContactInfo.Id" type="hidden" value="@Model.ClientId" />
+                            <button class="btn btn-primary" id="saveContactInfo" type="submit"><i class="fa fa-save"></i> ذخیره اطلاعات</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function() {
+            //#region اطلاعات تماس
+
+            @if (Model.Status != null)
+                        {
+                            switch (Model.Status.StatusType)
+                            {
+                                case ModelEnums.StatusTypeE.Success:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                                    break;
+                                case ModelEnums.StatusTypeE.Error:
+                        @Html.Raw("ShowNotifyStatus('ذخیره اطلاعات با خطا مواجه شده است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.ValidationError:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+            // وقتی فرم نمایش داده شد اولین ورودی را انتخاب کنید
+            $('div#page form').eq(0).find('input:visible').eq(0).focus();
+            $('div#page form').eq(0).find('input:visible').eq(0).select();
+
+            // وقتی که کاربر دکمه اینتر رو میزنه نباید صفحه ذخیره بشه
+            // برای زیبا تر شدن کار با وب سایت کلید اینتر عمل تب را انجام می دهد
+            $('div#page form .form-control').keydown(function (event) { //event==Keyevent
+                if (event.which == 13) {
+                    var inputs = $(this).closest('form').find(':visible.form-control');
+
+                    if (inputs.index(this) == (inputs.length - 1))
+                        $('div#page form button').eq(0).focus();
+                    else
+                        inputs.eq(inputs.index(this) + 1).focus();
+                    event.preventDefault(); //Disable standard Enterkey action
+                }
+            });
+
+        });
+    </script>
+}

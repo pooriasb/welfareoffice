@@ -1,0 +1,399 @@
+﻿@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.CurrentHousingViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - مسکن فعلی مددجو";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditCurrentHousing";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+                <div id="EditCurrentHousingTab" class="tab-pane active">
+                    @using (Html.BeginForm("SaveCurrentHousing", "Client", FormMethod.Post, new { @class = "form form-bordered", @name = "clientContactEditFrom" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        if (!Model.Client.OnlyRequestExemption)
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.ValidationSummary(true, "خطاهای زیر را برطرف نمایید.", new { @class = "alert alert-danger" })
+                                    @Html.LabelFor(m => m.CurrentHousing.CurrentHouseTypeId, new { @class = "control-label text-primary text-lg", @style = "float:right !important; line-height: 2;" })
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.DropDownListFor(c => c.CurrentHousing.CurrentHouseTypeId, new SelectList(Model.CurrentHouseTypes, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.CurrentHousing.CurrentHouseTypeId)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="divPleaseSelectState" class="alert alert-default">
+                                        لطفا یکی از گزینه های بالا را انتخاب کنید
+                                    </div>
+                                    <div class="row" id="divEjare">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.CurrentHousing.DepositAmount, new { @class = "control-label" })
+                                                @Html.TextBoxFor(m => m.CurrentHousing.DepositAmount, new { @class = "form-control text-dir-ltr" })
+                                                @Html.ValidationMessageFor(m => m.CurrentHousing.DepositAmount)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.CurrentHousing.MonthlyRentalRate, new { @class = "control-label" })
+                                                @Html.TextBoxFor(m => m.CurrentHousing.MonthlyRentalRate, new { @class = "form-control text-dir-ltr" })
+                                                @Html.ValidationMessageFor(m => m.CurrentHousing.MonthlyRentalRate)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="alert alert-warning">
+                                                اسکن <b>قولنامه منزل</b> باید در بخش مدارک بارگذاری گردد.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="divBastegan">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.CurrentHousing.RelativeFamilyNameWhoClientLiveInHerHouse, new { @class = "control-label" })
+                                                @Html.TextBoxFor(c => c.CurrentHousing.RelativeFamilyNameWhoClientLiveInHerHouse, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.CurrentHousing.RelativeFamilyNameWhoClientLiveInHerHouse)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="divKhayer">
+                                        <div class="col-md-6">
+                                            <div class="alert alert-warning">
+                                                اسکن <b>مدرک اثبات اسکان مددجو در منزل خیر</b> باید در بخش مدارک بارگذاری گردد.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="divSayer">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.CurrentHousing.OtherDescription, new { @class = "control-label" })
+                                                @Html.TextBoxFor(c => c.CurrentHousing.OtherDescription, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.CurrentHousing.OtherDescription)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @Html.LabelFor(c => c.CurrentHousing.AddressCurrentHouse, new { @class = "control-label" })
+                                    @Html.TextBoxFor(c => c.CurrentHousing.AddressCurrentHouse, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(c => c.CurrentHousing.AddressCurrentHouse)
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="mt-md text-primary mt-xlg">مسکن </h4>
+                        <hr />
+                        <div class="row mb-sm">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label" for="CurrentHosing_CountyId">شهرستان</label>
+                                    <select id="CurrentHosing_CountyId" class="form-control">
+                                        <option>انتخاب کنید</option>
+                                        @foreach (var county in Model.CountyOfCurrentHousing)
+                                        {
+                                            <option value="@county.Id" @(Model.CurrentHousing != null && Model.CurrentHousing.City != null && Model.CurrentHousing.City.District.CountyId == county.Id ? "selected" : "")>@county.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label" for="CurrentHosing_DistrictId">بخش</label>
+                                    <select id="CurrentHosing_DistrictId" class="form-control">
+                                        <option>انتخاب کنید</option>
+                                        @foreach (var district in Model.DistrictOfCurrentHousing)
+                                        {
+                                            <option value="@district.Id" @(Model.CurrentHousing != null && Model.CurrentHousing.City.DistrictId == district.Id ? "selected" : "")>@district.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(c => c.CurrentHousing.CityId, new { @class = "" })
+                                    @Html.DropDownListFor(c => c.CurrentHousing.CityId, new SelectList(Model.CityOfCurrentHousing, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(c => c.CurrentHousing.CityId)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    @Html.LabelFor(c => c.CurrentHousing.Address, new { @class = "control-label" })
+                                    @Html.TextBoxFor(c => c.CurrentHousing.Address, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(c => c.CurrentHousing.Address)
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(c => c.CurrentHousing.PostalCode, new { @class = "control-label" })
+                                    @Html.TextBoxFor(c => c.CurrentHousing.PostalCode, new { @class = "form-control text-dir-ltr" })
+                                    @Html.ValidationMessageFor(c => c.CurrentHousing.PostalCode)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-sm">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    همکار محترم لطفا آدرس کامل را به این صورت وارد نمایید:
+                                    <br />
+                                    نام محله یا بلوار اصلی، نام بلوار فرعی، نام خیابان اصلی، نام خیابان فرعی، (در صورت نیاز نشان شهری) ، نام کوچه، پلاک منزل یا مشخصات منزل
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="col-md-12 mb-sm">
+                                    @Html.LabelFor(m => m.CurrentHousing.Latitude)
+                                    @Html.TextBoxFor(m => m.CurrentHousing.Latitude, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.CurrentHousing.Latitude)
+                                </div>
+                                <div class="col-md-12 mb-sm">
+                                    @Html.LabelFor(m => m.CurrentHousing.Longitude)
+                                    @Html.TextBoxFor(m => m.CurrentHousing.Longitude, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.CurrentHousing.Longitude)
+                                </div>
+                                <div class="col-md-12 mb-sm">
+                                    <label class="control-labal">محدوده مجاز GPS</label>
+                                    <input type="text" id="radiusOSM" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <label class="control-label">انتخاب از روی نقشه</label>
+                                <div id="locationPicker" style="width: auto; height: 300px;"></div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <input id="CurrentHousing_Id" name="CurrentHousing.Id" type="hidden" value="@Model.ClientId" />
+                            <button class="btn btn-primary" id="saveMaskan" type="submit"><i class="fa fa-save"></i> ذخیره اطلاعات</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet
+{
+    <link rel="stylesheet" href="~/Assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css" />
+    <link href="~/Assets/vendor/leaflet/leaflet.css" rel="stylesheet" />
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Assets/vendor/leaflet/leaflet.js"></script>
+    <script src="~/Assets/javascripts/OSMLocationPicker.js"></script>
+    <script src="~/Assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('body').removeClass('loading-overlay-showing');
+            $('body').removeAttr('data-loading-overlay');
+
+
+            @if (Model.Status != null)
+                        {
+                            switch (Model.Status.StatusType)
+                            {
+                                case ModelEnums.StatusTypeE.Success:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                                    break;
+                                case ModelEnums.StatusTypeE.Error:
+                        @Html.Raw("ShowNotifyStatus('ذخیره اطلاعات با خطا مواجه شده است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.ValidationError:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+            //#region مسکن فعلی
+
+            // وقتی فرم نمایش داده شد اولین ورودی را انتخاب کنید
+            $('div#page form').eq(0).find('.form-control').eq(0).focus();
+            $('div#page form').eq(0).find('.form-control').eq(0).select();
+
+            // وقتی که کاربر دکمه اینتر رو میزنه نباید صفحه ذخیره بشه
+            // برای زیبا تر شدن کار با وب سایت کلید اینتر عمل تب را انجام می دهد
+            $('div#page form .form-control').keydown(function (event) { //event==Keyevent
+                if (event.which == 13) {
+                    var inputs = $(this).closest('form').find(':visible.form-control');
+                    console.log('inputs.index(this): ' + inputs.index(this));
+                    console.log('(inputs.length - 1): ' + (inputs.length - 1));
+
+                    if (inputs.index(this) == (inputs.length - 1))
+                        $('div#page form button').eq(0).focus();
+                    else
+                        inputs.eq(inputs.index(this) + 1).focus();
+                    event.preventDefault(); //Disable standard Enterkey action
+                }
+            });
+
+            //کد جاوااسکریپت مربوط به وضعیت سکونت در بخش مسکن فعلی
+            // با تغییر هر کدام از موارد باید ردیف مربوط به آن نمایش داده شود
+            // برای سادگی از پیش فرض استفاده کردم و از متن جادویی
+            // اجاره ای = divEjare => 1
+            // بستگان = divBastegan => 2
+            // خیرین = divKhayer => 3
+            // سایر = divSayer => 4
+
+            var currentHouseDropDown = $('#CurrentHousing_CurrentHouseTypeId');
+            var divSelectStatus = $('#divPleaseSelectState');
+            var divEjare = $('#divEjare');
+            var divBastegan = $('#divBastegan');
+            var divKhayer = $('#divKhayer');
+            var divSayer = $('#divSayer');
+
+            function hideAllCurrentHouseDiv() {
+                divEjare.hide();
+                divBastegan.hide();
+                divKhayer.hide();
+                divSayer.hide();
+                divSelectStatus.hide();
+            }
+            currentHouseDropDown.change(function () {
+                var selectedState = currentHouseDropDown.val();
+                if (selectedState) {
+                    switch (selectedState) {
+                        case '1': //اجاره ای
+                            hideAllCurrentHouseDiv();
+                            divEjare.show();
+                            break;
+                        case '2': //بستگان
+                            hideAllCurrentHouseDiv();
+                            divBastegan.show();
+                            break;
+                        case '3': //خیرین
+                            hideAllCurrentHouseDiv();
+                            divKhayer.show();
+                            break;
+                        case '4': //سایر
+                            hideAllCurrentHouseDiv();
+                            divSayer.show();
+                        default:
+                    }
+                } else {
+                    hideAllCurrentHouseDiv();
+                    divSelectStatus.show();
+                }
+            });
+
+            function initView() {
+                hideAllCurrentHouseDiv();
+
+                var clientId = @Model.ClientId;
+                if (clientId) {
+                    currentHouseDropDown.change();
+                }
+                else{
+                    divSelectStatus.show();
+                }
+            }
+
+            initView();
+
+
+
+            var countyCurrentHouseDropDown = $('#CurrentHosing_CountyId');
+            var districtCurrentHouseDropDown = $('#CurrentHosing_DistrictId');
+            var cityCurrentHouseDropDown = $('#CurrentHousing_CityId');
+
+            // CountyId Select Index Change
+            countyCurrentHouseDropDown.change(function () {
+                var countyId = countyCurrentHouseDropDown.val();
+                if (countyId) {
+                    $.getJSON("/api/counties/" + countyId + "/districts",
+                        function (districts) {
+                            districtCurrentHouseDropDown.children('option').remove();
+
+                            $.each(districts,
+                                function (i, district) {
+                                    districtCurrentHouseDropDown.append(new Option(district.name, district.id));
+                                });
+                            districtCurrentHouseDropDown.trigger('change');
+                        });
+                } else {
+                    //districtCurrentHouseDropDown.children('option:not(:first)').remove();
+                    districtCurrentHouseDropDown.children('option').remove();
+                    districtCurrentHouseDropDown.append('<option value="">انتخاب کنید</option>');
+                    districtCurrentHouseDropDown.trigger('change');
+                }
+            });
+
+            // DistrictId Select Index Change
+            districtCurrentHouseDropDown.change(function () {
+                var districtId = districtCurrentHouseDropDown.val();
+                if (districtId) {
+                    $.getJSON("/api/districts/" + districtId + "/cities",
+                        function (cities) {
+                            cityCurrentHouseDropDown.children('option').remove();
+
+                            $.each(cities,
+                                function (key, city) {
+                                    cityCurrentHouseDropDown.append(new Option(city.name, city.id));
+                                });
+                            cityCurrentHouseDropDown.change();
+                        });
+                } else {
+                    cityCurrentHouseDropDown.children('option').remove();
+                    cityCurrentHouseDropDown.append('<option value="">انتخاب کنید</option>');
+                    cityCurrentHouseDropDown.change();
+                }
+            });
+
+
+            // تنظیم اولیه مربوط به نقشه
+
+            var latitude = @(Model.CurrentHousing.Latitude);
+            var longitude = @(Model.CurrentHousing.Longitude);
+            var radius = 30;
+            var zoom = 16;
+            var divName = 'locationPicker';
+
+
+            OSMPICKER.initmappicker(divName,
+                latitude,
+                longitude,
+                radius,
+                zoom,
+                {
+                    addressId: "addressOSM",
+                    latitudeId: "CurrentHousing_Latitude",
+                    longitudeId: "CurrentHousing_Longitude",
+                    radiusId: "radiusOSM"
+                });
+
+            // در صورتی که کاربر روی نقشه کلید کرد دکمه ثبت انتخاب شود
+            $('#' + divName).focusin(function() {
+                $('button[type="submit"]').focus();
+            });
+            //#endregion
+        });
+    </script>
+}

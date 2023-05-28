@@ -1,0 +1,121 @@
+﻿@using BehzistiMaskan.Core.Models
+@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.EditClientStateViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - وضعیت پرونده";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditClientState";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row mb-lg">
+                                <div class="col-md-3">
+                                    وضعیت فعلی مددجو
+                                </div>
+                                <div class="col-md-3">
+                                    @Model.Client.ClientStateStr
+                                </div>
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>تاریخچه وضعیت های این مددجو</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>نام وضعیت</th>
+                                        <th>تاریخ اعمال وضعیت</th>
+                                        <th>توضیحات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var ind = 0;
+                                    }
+                                    @foreach (var clientStateLogDto in Model.ClientStateLogs)
+                                    {
+                                        <tr>
+                                            <td>@(++ind)</td>
+                                            <td>@clientStateLogDto.ClientStateTypeStr</td>
+                                            <td>@clientStateLogDto.LogDate.ToString("yyyy/M/d hh:mm:ss")</td>
+                                            <td>@clientStateLogDto.Description</td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function () {
+            var clientEditStateForm = $('#clientEditStateForm');
+            var btnBackToClientForCompleteData = $('#btnBackToClientForCompleteData');
+            var btnDenyByKarshenasOstan = $('#btnDenyByKarshenasOstan');
+            var btnApproveAndSendToCoOrganization = $('#btnApproveAndSendToCoOrganization');
+            var btnApproveOfflineAndSendToGetFormEmtiazBandi = $('#btnApproveOfflineAndSendToGetFormEmtiazBandi');
+            var btnNoNeedForFormEmtiazBandi = $('#btnNoNeedForFormEmtiazBandi');
+
+            var newClientStateTypeE = $('#NewClientStateTypeE');
+
+
+            btnBackToClientForCompleteData.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListClientToCompleteData));
+                clientEditStateForm.submit();
+            });
+
+            btnDenyByKarshenasOstan.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.DenyByKarshenasOstan));
+                clientEditStateForm.submit();
+            });
+
+            btnApproveAndSendToCoOrganization.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListSazmanHamkarOstan));
+                clientEditStateForm.submit();
+            });
+
+            btnApproveOfflineAndSendToGetFormEmtiazBandi.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListFormEmtiazBandi));
+                clientEditStateForm.submit();
+            });
+
+
+            btnNoNeedForFormEmtiazBandi.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListKarshenasKeshvar));
+                clientEditStateForm.submit();
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,263 @@
+﻿@using BehzistiMaskan.Controllers
+@model BehzistiMaskan.ViewModels.MadadjooLoginRegisterViewModel
+@{
+    ViewBag.Title = "ثبت نام یا ورود مددجویان محترم بهزیستی";
+    Layout = "~/Views/Shared/_LayoutSimpleWithHeaderBehzisti.cshtml";
+    MadadjooController.MessageE? message = ViewBag.Message;
+}
+<div class="main-content">
+    <div class="row">
+        <div class="row TopAlert">
+            <div class="alert alert-info">
+                مددجوی محترم! اگر اطلاعات شما قبلا در سامانه بهزیستی ثبت شده باشد، برای دریافت کد رهگیری به اداره بهزیستی شهرستان خود مراجعه نمایید.
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <section class="body-sign">
+                <div class="center-sign">
+                    <div class="panel panel-sign panel-success">
+                        <div class="panel-title-sign mt-xl text-right">
+                            <h1 class="title text-uppercase text-weight-bold m-none"><i class="fa fa-user mr-xs"></i> ثبت نام متقاضی جدید</h1>
+                        </div>
+                        <div class="panel-body">
+                            @using (Html.BeginForm("Register", "Madadjoo", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                <div class="form-group mb-lg">
+                                    @Html.LabelFor(m => m.NationalCode, new { @class = "control-label pull-right" })
+                                    <div class="input-group input-group-icon">
+                                        @Html.TextBoxFor(m => m.NationalCode, new { @class = "form-control input-lg" })
+                                        <span class="input-group-addon">
+                                            <span class="icon icon-lg">
+                                                <i class="fa fa-user"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.NationalCode, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group mb-lg">
+                                    @Html.LabelFor(m => m.SecurityAnswer, new { @class = "control-label pull-right" })
+                                    <div class="input-group input-group-icon">
+                                        @Html.TextBoxFor(m => m.SecurityAnswer, new { @class = "form-control input-lg" })
+                                        <span class="input-group-addon">
+                                            <span class="icon icon-lg">
+                                                <i class="fa fa-question"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="text-lg mt-sm">حاصل عبارت <span class="text-primary">@Model.SecurityQuestionDto.Question</span> را وارد کنید</div>
+                                    @Html.ValidationMessageFor(m => m.SecurityAnswer, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 text-left">
+                                        <input type="hidden" id="RegisterSecurityQuestionId" name="SecurityQuestionDto.QuestionId" value="@Model.SecurityQuestionDto.QuestionId" />
+                                        <button type="submit" class="btn btn-success hidden-xs">ثبت نام</button>
+                                        <button type="submit" class="btn btn-success btn-block btn-lg visible-xs mt-lg">ثبت نام</button>
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted mt-md mb-md">&copy; تمامی حقوق برای سازنده و اداره کل بهزیستی فارس محفوظ است. </p>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-md-6">
+            <section class="body-sign">
+                <div class="center-sign">
+
+                    <div class="panel panel-sign">
+                        <div class="panel-title-sign mt-xl text-right">
+                            <h2 class="title text-uppercase text-weight-bold m-none"><i class="fa fa-user mr-xs"></i> ورود متقاضی ثبت شده</h2>
+                        </div>
+                        <div class="panel-body">
+                            @using (Html.BeginForm("Login", "Madadjoo", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                <div class="form-group mb-lg">
+                                    @Html.LabelFor(m => m.NationalCode, new { @class = "control-label pull-right" })
+                                    <div class="input-group input-group-icon">
+                                        @Html.TextBoxFor(m => m.NationalCode, new { @class = "form-control input-lg" })
+                                        <span class="input-group-addon">
+                                            <span class="icon icon-lg">
+                                                <i class="fa fa-user"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.NationalCode, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group mb-lg">
+                                    @Html.LabelFor(m => m.LoginActivationCode, new { @class = "control-label pull-right" })
+                                    <div class="input-group input-group-icon">
+                                        @Html.PasswordFor(m => m.LoginActivationCode, new { @class = "form-control input-lg" })
+                                        <span class="input-group-addon">
+                                            <span class="icon icon-lg">
+                                                <i class="fa fa-lock"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.LoginActivationCode, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group mb-lg">
+                                    @Html.LabelFor(m => m.SecurityAnswer, new { @class = "control-label pull-right" })
+                                    <div class="input-group input-group-icon">
+                                        @Html.TextBoxFor(m => m.SecurityAnswer, new { @class = "form-control input-lg" })
+                                        <span class="input-group-addon">
+                                            <span class="icon icon-lg">
+                                                <i class="fa fa-question"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="text-lg mt-sm">حاصل عبارت <span class="text-primary">@Model.SecurityQuestionDto.Question</span> را وارد کنید</div>
+                                    @Html.ValidationMessageFor(m => m.SecurityAnswer, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 text-left">
+                                        <input type="hidden" id="LoginSecurityQuestionId" name="SecurityQuestionDto.QuestionId" value="@Model.SecurityQuestionDto.QuestionId" />
+                                        <button type="submit" class="btn btn-primary hidden-xs">ورود به سیستم</button>
+                                        <button type="submit" class="btn btn-primary btn-block btn-lg visible-xs mt-lg">ورود به سیستم</button>
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+@if (message == MadadjooController.MessageE.ClientAlreadyApproved)
+{
+    <div class="modal fade" id="modalClientAlreadyApproved" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <section class="panel panel-success panel-no-margin-bottom">
+                    <header class="panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h2 class="panel-title">این کد ملی قبلا در سامانه ثبت شده است</h2>
+                    </header>
+                    <div class="panel-body">
+                        <h1 class="panel-big-text text-justify">
+                            مددجوی محترم! <br />
+                            اطلاعات شما در این سامانه به عنوان مددجوی تایید شده ثبت شده است. شما می بایست با مراجعه به اداره بهزیستی شهرستان کد رهگیری خود را از مددکار دریافت کنید.
+                            در صورتی که کد رهگیری را قبلا دریافت کرده اید می توانید با بستن این کادر از قست ورود متقاضی ثبت شده، به سامانه وارد شوید.
+                        </h1>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">بستن کادر</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+}
+else if (message == MadadjooController.MessageE.ClientAlreadyRegistered)
+{
+    <div class="modal fade" id="modalClientAlreadyRegistered" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <section class="panel panel-warning panel-no-margin-bottom">
+                    <header class="panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h2 class="panel-title">حساب کاربری شما هنوز تایید نشده است</h2>
+                    </header>
+                    <div class="panel-body">
+                        <h1 class="panel-big-text text-justify">
+                            مددجوی محترم! <br />
+                            شما قبلا در سامانه ثبت نام کرده اید اما حساب کاربری شما هنوز توسط کارشناس بهزیستی تایید نشده است. و در حال حاضر در لیست انتظار بررسی قرار دارید.
+                            برای پیگیری بیشتر به اداره بهزیستی شهرستان خود مراجعه نمایید.
+                        </h1>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">بستن کادر</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+}
+else if (message == MadadjooController.MessageE.UsedAsClientFamily)
+{
+    <div class="modal fade" id="modalUsedAsClientFamily" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <section class="panel panel-warning panel-no-margin-bottom">
+                    <header class="panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h2 class="panel-title">این کد ملی قبلا در سامانه ثبت شده است</h2>
+                    </header>
+                    <div class="panel-body">
+                        <h1 class="panel-big-text text-justify">
+                            متقاضی محترم! <br />
+                            کد ملی شما قبلا به عنوان اعضای خانواده یکی از مددجویان تایید شده بهزیستی ثبت شده است، با توجه به اینکه قبلا با استفاده از مشخصات شما برای دریافت تسهیلات مسکن تقاضایی ثبت شده است امکان ثبت تقاضای جدید وجود ندارد.
+                            برای کسب اطلاعات بیشتر به اداره بهزیستی شهرستان خود مراجعه نمایید.
+                        </h1>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">بستن کادر</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+}
+else if (message == MadadjooController.MessageE.ClientUserNotFound)
+{
+    <div class="modal fade" id="modalClientUserNotFound" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <section class="panel panel-danger panel-no-margin-bottom">
+                    <header class="panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h2 class="panel-title">خطا در ورود مددجو</h2>
+                    </header>
+                    <div class="panel-body">
+                        <h1 class="panel-big-text text-justify">
+                            مددجویی با این کد ملی و کد رهگیری در سامانه یافت نشد. لطفا اطلاعات خود را بررسی کرده و دوباره امتحان کنید.
+                        </h1>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">بستن کادر</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+}
+
+@section Stylesheets
+{
+
+}
+
+@section Scripts
+{
+
+    <script>
+        $(document).ready(function () {
+            $('#modalClientAlreadyApproved').modal({ backdrop: "static" });
+            $('#modalClientAlreadyRegistered').modal({ backdrop: "static" });
+            $('#modalUsedAsClientFamily').modal({ backdrop: "static" });
+            $('#modalClientUserNotFound').modal({ backdrop: "static" });
+        });
+    </script>
+
+}

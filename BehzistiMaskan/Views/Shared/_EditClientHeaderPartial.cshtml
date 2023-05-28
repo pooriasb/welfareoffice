@@ -1,0 +1,20 @@
+﻿
+<header class="page-header">
+    <h2>ویرایش اطلاعات مددجو - @Model.Client.Person.Name @Model.Client.Person.Family - @Model.Client.Person.NationalCode - <a href="@Url.Action("GetClientDataAsZip", "Client", new {id=Model.Client.Id})" class="btn btn-sm btn-default">دریافت اطلاعات مددجو فایل فشرده</a></h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Client")">
+                    مددجویان
+                </a>
+            </li>
+            <li><span>ویرایش مددجو</span></li>
+        </ol>
+    </div>
+</header>

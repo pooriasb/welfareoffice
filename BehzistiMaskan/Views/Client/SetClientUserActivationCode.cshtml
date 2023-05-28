@@ -1,0 +1,78 @@
+﻿@model BehzistiMaskan.ViewModels.ClientActivationCodeViewModel
+@{
+    ViewBag.Title = "تغییر کد رهگیری";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    string message = ViewBag.StatusMessage;
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Client")">
+                    <i class="fa fa-user"></i> لیست مددجویان تایید شده
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">@ViewBag.Title </h2>
+            </header>
+            <div class="panel-body">
+                <div class="alert alert-info">
+                    کارشناس محترم! <br />
+
+                    کد رهگیری برای مددجو با مشخصات زیر با موفقیت ثبت گردید.
+                </div>
+                <div class="row text-xl mb-lg">
+                    <div class="col-md-3">نام:</div>
+                    <div class="col-md-9">@Model.Name</div>
+                </div>
+                <div class="row text-xl mb-lg">
+                    <div class="col-md-3">نام خانوادگی:</div>
+                    <div class="col-md-9">@Model.Family</div>
+                </div>
+                <div class="row text-xl mb-lg">
+                    <div class="col-md-3">کد ملی:</div>
+                    <div class="col-md-9 text-primary">@Model.NationalCode</div>
+                </div>
+                <div class="row text-xl mb-lg">
+                    <div class="col-md-3">کد رهگیری:</div>
+                    <div class="col-md-9 text-success">@Model.ActivationCode</div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <a href="@Url.Action("Index")" class="btn btn-default text-primary">بازگشت به لیست مددجویان تایید شده</a>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet{
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+        });
+    </script>
+}

@@ -1,0 +1,312 @@
+﻿@model BehzistiMaskan.ViewModels.ExemptionReportViewModel
+@{
+    ViewBag.Title = "گزارش معافیت انشعابات";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Report")">
+                    <i class="fa fa-th-list"></i> گزارش گیری
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">فیلتر کردن گزارش </h2>
+            </header>
+            @using (Html.BeginForm("Exemption", "Report", FormMethod.Post, new { @class = "form", id = "frmExemptionReport" }))
+            {
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.SelectedExemptionTypeId, new { @class = "col-md-4" })
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(m => m.SelectedExemptionTypeId, new SelectList(Model.AllExemptionRequests, "Id", "PersianShortTitle"), "همه موارد", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.SelectedExemptionTypeId)
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.HasBenefited) نمایش مددجویانی که بهره مند شده اند
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-lg">
+                        <div class="col-md-6">
+                            <label class="col-md-4">معرفی نامه دریافت شده</label>
+                            <div class="form-group col-md-8">
+                                @Html.LabelFor(m => m.GetLetterStartDateRange, new { @class = "col-md-4" })
+                                <div class="col-md-8 input-group">
+                                    <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#GetLetterStartDateRange" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                    @Html.TextBoxFor(c => c.GetLetterStartDateRange, "{0:yyyy/M/d}",
+                                        new Dictionary<string, Object>
+                                        {
+                                            {"class", "form-control text-dir-ltr"},
+                                            {"data-mddatetimepicker", "true"},
+                                            {"data-targetselector", "#GetLetterStartDateRange"},
+                                            {"data-trigger", "focus"},
+                                            {"data-enabletimepicker", "false"},
+                                            {"data-englishnumber", "true"},
+                                        })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group col-md-8">
+                                @Html.LabelFor(m => m.GetLetterEndDateRange, new { @class = "col-md-4" })
+                                <div class="col-md-8 input-group">
+                                    <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#GetLetterEndDateRange" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                    @Html.TextBoxFor(c => c.GetLetterEndDateRange, "{0:yyyy/M/d}",
+                                        new Dictionary<string, Object>
+                                        {
+                                            {"class", "form-control text-dir-ltr"},
+                                            {"data-mddatetimepicker", "true"},
+                                            {"data-targetselector", "#GetLetterEndDateRange"},
+                                            {"data-trigger", "focus"},
+                                            {"data-enabletimepicker", "false"},
+                                            {"data-englishnumber", "true"},
+                                        })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row  mt-lg">
+                        <div class="col-md-6">
+                            <label class="col-md-4">بهره مند شده</label>
+                            <div class="form-group col-md-8">
+                                @Html.LabelFor(m => m.BenefitStartDateRange, new { @class = "col-md-4" })
+                                <div class="col-md-8 input-group">
+                                    <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#BenefitStartDateRange" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                    @Html.TextBoxFor(c => c.BenefitStartDateRange, "{0:yyyy/M/d}",
+                                        new Dictionary<string, Object>
+                                        {
+                                            {"class", "form-control text-dir-ltr"},
+                                            {"data-mddatetimepicker", "true"},
+                                            {"data-targetselector", "#BenefitStartDateRange"},
+                                            {"data-trigger", "focus"},
+                                            {"data-enabletimepicker", "false"},
+                                            {"data-englishnumber", "true"},
+                                        })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group col-md-8">
+                                @Html.LabelFor(m => m.BenefitEndDateRange, new { @class = "col-md-4" })
+                                <div class="col-md-8 input-group">
+                                    <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#BenefitEndDateRange" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                    @Html.TextBoxFor(c => c.BenefitEndDateRange, "{0:yyyy/M/d}",
+                                        new Dictionary<string, Object>
+                                        {
+                                            {"class", "form-control text-dir-ltr"},
+                                            {"data-mddatetimepicker", "true"},
+                                            {"data-targetselector", "#BenefitEndDateRange"},
+                                            {"data-trigger", "focus"},
+                                            {"data-enabletimepicker", "false"},
+                                            {"data-englishnumber", "true"},
+                                        })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-footer">
+                    <button type="submit" id="filterReportBtn" class="btn btn-primary">اعمال فیلتر و نمایش گزارش</button>
+                </div>
+            }
+        </section>
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">خروجی گزارش </h2>
+            </header>
+            <div class="panel-body" style="overflow: scroll">
+                <div class="alert alert-info">
+                    با کلیک بر روی کد مددجو می توانید صفحه ویرایش اطلاعات او را مشاهده نمایید!
+                </div>
+                <table class="table table-hover table-striped table-bordered" id="tblExemptionReport">
+                    <thead>
+                    <tr>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">نام</th>
+                        <th rowspan="2">نام خانوادگی</th>
+                        <th rowspan="2">کد ملی</th>
+                        <th rowspan="2">نام شهرستان</th>
+                        <th rowspan="2">آدرس</th>
+                        <th colspan="6">معافیت انشعاب آب</th>
+                        <th colspan="6">معافیت انشعاب برق</th>
+                        <th colspan="6">معافیت انشعاب گاز</th>
+                        <th colspan="6">معافیت پروانه ساخت</th>
+                    </tr>
+                    <tr>
+                        <th>معرفی دریافت کرده است؟</th>
+                        <th>شماره معرفی نامه</th>
+                        <th>تاریخ معرفی نامه</th>
+                        <th>بهره مند شده است؟</th>
+                        <th>تاریخ بهره مندی</th>
+                        <th>میزان بهره مندی (ریال)</th>
+
+                        <th>معرفی دریافت کرده است؟</th>
+                        <th>شماره معرفی نامه</th>
+                        <th>تاریخ معرفی نامه</th>
+                        <th>بهره مند شده است؟</th>
+                        <th>تاریخ بهره مندی</th>
+                        <th>میزان بهره مندی (ریال)</th>
+
+                        <th>معرفی دریافت کرده است؟</th>
+                        <th>شماره معرفی نامه</th>
+                        <th>تاریخ معرفی نامه</th>
+                        <th>بهره مند شده است؟</th>
+                        <th>تاریخ بهره مندی</th>
+                        <th>میزان بهره مندی (ریال)</th>
+
+                        <th>معرفی دریافت کرده است؟</th>
+                        <th>شماره معرفی نامه</th>
+                        <th>تاریخ معرفی نامه</th>
+                        <th>بهره مند شده است؟</th>
+                        <th>تاریخ بهره مندی</th>
+                        <th>میزان بهره مندی (ریال)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var exemptionReportSimpleDto in Model.ExemptionReportResult)
+                    {
+                        <tr>
+                            <td><a href="@Url.Action("EditExemptionRequest", "Client", new {id = @exemptionReportSimpleDto.ClientId})"> @exemptionReportSimpleDto.ClientId</a></td>
+                            <td>@exemptionReportSimpleDto.Name</td>
+                            <td>@exemptionReportSimpleDto.Family</td>
+                            <td>@exemptionReportSimpleDto.NationalCode</td>
+                            <td>@exemptionReportSimpleDto.CountyName</td>
+                            <td>@exemptionReportSimpleDto.Address</td>
+
+                            <td>@(exemptionReportSimpleDto.HasGetLetterWater ? "بلی" : "")</td>
+                            <td>@exemptionReportSimpleDto.GetLetterDateWater</td>
+                            <td>@exemptionReportSimpleDto.GetLetterNumberWater</td>
+                            <td>@(exemptionReportSimpleDto.HasBenefitedWater ? "بلی" : "")</td>
+                            <td>@(exemptionReportSimpleDto.BenefitDateWater)</td>
+                            <td>@(exemptionReportSimpleDto.BenefitAmountWater.ToString("N0"))</td>
+
+                            <td>@(exemptionReportSimpleDto.HasGetLetterElectrical ? "بلی" : "")</td>
+                            <td>@exemptionReportSimpleDto.GetLetterDateElectrical</td>
+                            <td>@exemptionReportSimpleDto.GetLetterNumberElectrical</td>
+                            <td>@(exemptionReportSimpleDto.HasBenefitedElectrical ? "بلی" : "")</td>
+                            <td>@(exemptionReportSimpleDto.BenefitDateElectrical)</td>
+                            <td>@(exemptionReportSimpleDto.BenefitAmountElectrical.ToString("N0"))</td>
+
+                            <td>@(exemptionReportSimpleDto.HasGetLetterGas ? "بلی" : "")</td>
+                            <td>@exemptionReportSimpleDto.GetLetterDateGas</td>
+                            <td>@exemptionReportSimpleDto.GetLetterNumberGas</td>
+                            <td>@(exemptionReportSimpleDto.HasBenefitedGas ? "بلی" : "")</td>
+                            <td>@(exemptionReportSimpleDto.BenefitDateGas)</td>
+                            <td>@(exemptionReportSimpleDto.BenefitAmountGas.ToString("N0"))</td>
+
+
+                            <td>@(exemptionReportSimpleDto.HasGetLetterProductionLicense ? "بلی" : "")</td>
+                            <td>@exemptionReportSimpleDto.GetLetterDateProductionLicense</td>
+                            <td>@exemptionReportSimpleDto.GetLetterNumberProductionLicense</td>
+                            <td>@(exemptionReportSimpleDto.HasBenefitedProductionLicense ? "بلی" : "")</td>
+                            <td>@(exemptionReportSimpleDto.BenefitDateProductionLicense)</td>
+                            <td>@(exemptionReportSimpleDto.BenefitAmountProductionLicense.ToString("N0"))</td>
+
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer"></div>
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+
+@section StyleSheet{
+    <link rel="stylesheet" href="/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+    <link href="~/Assets/vendor/jquery-datatables-bs3/assets/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
+}
+
+
+
+@section Scripts
+{
+
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+
+    <script src="~/Content/datables-export-plugins/dataTables.buttons.min.js"></script>
+    <script src="~/Content/datables-export-plugins/buttons.print.min.js"></script>
+    <script src="~/Content/datables-export-plugins/buttons.html5.min.js"></script>
+    <script src="~/Content/datables-export-plugins/buttons.flash.min.js"></script>
+    <script src="~/Content/datables-export-plugins/jszip.min.js"></script>
+    <script src="~/Content/datables-export-plugins/vfs_fonts.js"></script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var oTable = $('#tblExemptionReport').dataTable({
+                "ordering": false,
+                language: {
+                    url: '/Assets/vendor/jquery-datatables/localization/Persian.json'
+                },
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fa fa-copy"></i> کپی',
+                        className: 'btn btn-default text-primary',
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> اکسل',
+                        className: 'btn btn-default text-success',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i> چاپ',
+                        className: 'btn btn-default',
+                    }
+                ],
+                pageLength: 50,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                dom: "<'row'<'col-sm-4'l><'col-sm-4'B><'col-sm-4'f>rtip>",
+            });
+        });
+
+    </script>
+}

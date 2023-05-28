@@ -1,0 +1,31 @@
+﻿@model BehzistiMaskan.ViewModels.ClientWaitingListSuccessfulRegisterViewMode
+@{
+    ViewBag.Title = "ویرایش اطلاعات مددجو";
+    Layout = "~/Views/Shared/_LayoutSimpleWithHeaderBehzisti.cshtml";
+}
+
+<div class="inner-wrapper">
+    <section role="main" class="container">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <section class="panel panel-featured panel-featured-success">
+                    <div class="panel-heading"><h3>ثبت موفق اطلاعات</h3></div>
+                    <div class="panel-body">
+                        <div class="alert alert-success text-xl" style="line-height: 2.5;">
+                            مددجوی محترم اطلاعات شما با موفقیت در سامانه ثبت گردید. <br />
+
+                            شما در صف متقاضیان جهت تایید و بررسی اطلاعات قرار خواهید گرفت. برای پیگیری روند تقاضای خود طی 5 روز آینده  به اداره بهزیستی شهرستان خود مراجعه نمایید.
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a class="btn btn-default" href="@Url.Action("Index")">بازگشت به صفحه ورود مددجویان</a>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+    </section>
+</div>

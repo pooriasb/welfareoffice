@@ -1,0 +1,7 @@
+```
+Office Automation for Welfare Housing Management License
+
+Copyright (c) 2020 MahooSoft
+
+This software is the property of MahooSoft and is licensed to the Welfare Organization of Iran for the sole purpose of managing the welfare housing units of the organization. Any other use, modification, distribution, or reproduction of this software without the prior written consent of Your Name is strictly prohibited. All rights reserved.
+```

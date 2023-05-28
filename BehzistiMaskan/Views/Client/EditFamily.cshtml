@@ -1,0 +1,509 @@
+﻿@using BehzistiMaskan.Core.Models
+@model BehzistiMaskan.ViewModels.FamilyViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - اعضای خانواده مددجو";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditFamily";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+
+                <div id="EditFamilyTab" class="tab-pane active">
+                    <div class="row mb-xl">
+                        <div class="col-md-12">
+                            <a id="btnAddFamily" class="btn btn-default text-success" data-toggle="modal" data-target="#modalAddFamily">
+                                <i class="fa fa-plus-circle"></i> افزودن عضو خانواده
+                            </a>
+
+                        </div>
+                    </div>
+                    <table class="table table-bordered" id="tblFamilyRelation">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>کد ملی</th>
+                                <th>نام</th>
+                                <th>نام خانوادگی</th>
+                                <th>نسبت با مددجو</th>
+                                <th>وضعیت جسمی</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var familyRelation in Model.FamilyRelationDtos)
+                            {
+                                <tr data-person-id="@familyRelation.PersonId" data-family-relation-id="@familyRelation.Id">
+                                    <td>@familyRelation.Id</td>
+                                    <td>@familyRelation.NationalCode</td>
+                                    <td>@familyRelation.Name</td>
+                                    <td>@familyRelation.Family</td>
+                                    <td>@familyRelation.RelationTypeName</td>
+                                    <td>@(familyRelation.IsDisabled ? "معلول" : "سالم")</td>
+                                    <td>
+                                        <a class="btn btn-default btn-xs text-primary" onclick="javascript:fnEditFamilyRelation(@familyRelation.Id,@familyRelation.PersonId, @familyRelation.NationalCode,'@familyRelation.Name', '@familyRelation.Family',@familyRelation.IsDisabled.ToString().ToLower(), @familyRelation.RelationTypeId, '@familyRelation.Description');"><i class="fa fa-pencil"></i> ویرایش</a>
+                                        <a class="btn btn-default btn-xs text-danger" data-toggle="popover" data-placement="top" data-html="true" title="آیا از حذف مطمئن هستید؟" data-content="<a class='btn btn-success' onclick='javascript:fnClosePopover()'>خیر فعلا نه!</a> <a class='btn btn-danger' onclick='javascript:fnDeleteFamilyRelation(@familyRelation.Id)'>بله حذف کن!</a>"><i class="fa fa-close"></i> حذف</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <input id="ContactInfo_Id" name="ContactInfo.Id" type="hidden" value="@Model.ClientId" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+<!-- Modal AddFamily Begin -->
+<div class="modal fade" id="modalAddFamily" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <section class="panel">
+                <header class="panel-heading modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="panel-title">افزودن عضو خانواده</h2>
+                </header>
+                <form id="frmFamilyRelation" class="form form-horizontal form-bordered">
+                    <div class="panel-body modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">فرد انتخاب شده:</label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            <input id="txtSelectedPerson" type="text" class="form-control" readonly="" placeholder="هنوز هیچ فردی انتخاب نشده است ... ">
+                                            <span class="input-group-btn">
+                                                <a id="btnRemovePerson" class="btn btn-default text-danger" disabled>حذف</a>
+                                                <a id="btnSelectPerson" class="btn btn-default text-success">انتخاب</a>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.FamilyRelation.PersonMinorId)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.FamilyRelation.FamilyRelationTypeId, new { @class = "control-label col-md-3" })
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(m => m.FamilyRelation.FamilyRelationTypeId, new SelectList(Model.FamilyRelationTypes, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.FamilyRelation.FamilyRelationTypeId)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.FamilyRelation.Description, new { @class = "control-label col-md-3" })
+                                    <div class="col-md-9">
+                                        @Html.TextAreaFor(m => m.FamilyRelation.Description, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="selectedPersonNationalCode" />
+                        <input type="hidden" id="selectedPersonName" />
+                        <input type="hidden" id="selectedPersonFamily" />
+                        <input type="hidden" id="selectedPersonIsDisabled" />
+
+                        @Html.HiddenFor(m => m.FamilyRelation.Id)
+                        @Html.HiddenFor(m => m.FamilyRelation.PersonMinorId)
+                        @Html.HiddenFor(m => m.FamilyRelation.PersonMajorId)
+                        <button id="btnCloseAddFamilyModal" class="btn btn-danger" data-dismiss="modal">لغو</button>
+                        <button id="btnSaveFamilyRelation" class="btn btn-primary" type="submit">ذخیره</button>
+                    </div>
+                </form>
+
+            </section>
+
+        </div>
+
+    </div>
+</div>
+<!-- Modal AddFamily End -->
+<!-- Modal Person List Begin -->
+<div class="modal fade" id="modalPersonList" role="dialog">
+    <div class="modal-dialog modal-lg modal-full">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <section class="panel">
+                <header class="panel-heading modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="panel-title">افزودن عضو خانواده</h2>
+                </header>
+                <div class="panel-body modal-body">
+                    <div class="alert alert-info">
+                        در صورتی که فرد مورد نظر شما در لیست زیر وجود ندارد می توانید فرد را به سامانه اضافه نمایید و مجددا این صفحه را باز کنید
+                        <a href="@Url.Action("NewPerson", "Client")" class="btn btn-default text-primary" target="_blank"><i class="fa fa-plus-circle"></i> افزودن فرد جدید</a>
+                        <a id="btnRefreshPersonList" class="btn btn-default text-primary"><i class="fa fa-refresh"></i> بارگذاری مجدد لیست</a>
+                    </div>
+                    <table class="table table-bordered" id="tblPersonList">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>کد ملی</td>
+                                <td>نام</td>
+                                <td>نام خانوادگی</td>
+                                <td>نام پدر</td>
+                                <td>وضعیت جسمی</td>
+                                <td>عملیات</td>
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnClosePersonModal" class="btn btn-default" data-dismiss="modal">بستن کادر</button>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</div>
+<!-- Modal Person List End -->
+
+
+
+@section StyleSheet
+{
+    <link rel="stylesheet" href="/Assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+    <link rel="stylesheet" href="/Assets/vendor/pnotify/pnotify.custom.css" />
+}
+
+@section Scripts
+{
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+    <script src="/Assets/vendor/pnotify/pnotify.custom.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+
+        $(document).ready(function () {
+
+            //initialize popover
+            $('[data-toggle="popover"]').popover();
+
+            //افزودن کلاس بوت استرپ به بخش جستجوی دیتا تیبل
+            $.extend($.fn.dataTableExt.oStdClasses,
+                {
+                    "sFilterInput": "form-control mr-sm"
+                    //,
+                    //"sLengthSelect": "form-control"
+                });
+
+            fnDataTableFamilyRelationTable();
+
+            // دریافت لیست افراد از سرور و قرار دادن آن در جدول
+            // جستجو هم به صورت ای جکس می باشد
+            $('#tblPersonList').dataTable(
+                {
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        url: '/api/persons/datatable',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: function (d) {
+                            return JSON.stringify(d);
+                        }
+                    },
+                    columns: [
+                        { "data": "Id" },
+                        { "data": "NationalCode" },
+                        { "data": "Name" },
+                        { "data": "Family" },
+                        { "data": "FatherName" },
+                        {
+                            "data": "IsDisabled",
+                            render: function (data, type, row) {
+                                if (row.IsDisabled)
+                                    return "معلول";
+                                return "سالم";
+                            }
+                        },
+                        {
+                            "data": null,
+                            render: function (data, type, row) {
+                                var funcStr = "fnSelectPerson(" +
+                                    row.Id +
+                                    ",\"" +
+                                    row.Name +
+                                    "\",\"" +
+                                    row.Family +
+                                    "\"," +
+                                    row.NationalCode +
+                                    "," +
+                                    row.IsDisabled +
+                                    ");";
+                                var selectLnk = "<a class='btn btn-xs btn-primary' href='javascript:" +
+                                    funcStr +
+                                    "'><i class='fa fa-check'></i> انتخاب</a>";
+                                return selectLnk;
+                            }
+                        }
+                    ],
+                    language: {
+                        url: '/Assets/vendor/jquery-datatables/localization/Persian.json'
+                    }
+
+                });
+
+            // دکمه انتخاب فرد در مدال افزودن عضو خانواده
+            $('#modalAddFamily #btnSelectPerson').click(function () {
+                $('#modalPersonList').modal('show');
+                $('#modalPersonList #tblPersonList').DataTable().ajax.reload();
+            });
+            $('#modalPersonList #btnRefreshPersonList').click(function () {
+                $('#modalPersonList #tblPersonList').DataTable().ajax.reload();
+            });
+
+
+            $('#btnAddFamily').click(function (event) {
+                // در صورت اضافه کردن عضو جدید به خانواده باید کد صفر قرار داده شود تا متوجه شویم در حالت ویرایش نیستیم
+                // و مشکل ولید کردن فرم هم برطرف شود
+                $('#modalAddFamily #FamilyRelation_Id').val(0);
+            });
+            // تنظیم کد مددجو برای فرم موجود در مدال افزودن عضو خانواده
+            $('#modalAddFamily #FamilyRelation_PersonMajorId').val(@Model.ClientId);
+
+        });
+
+
+        var isPersonSelected = false;
+
+        // وقتی کاربر از لیست افراد دکمه انتخاب را زد این تابع فراخوانی می گردد.
+        function fnSelectPerson(id, name, family, nationalCode, isDisabled) {
+            $('#modalPersonList').modal("hide");
+            $('#modalAddFamily #txtSelectedPerson')
+                .val(" نام و نام خانوادگی: " + name + " " + family + "  کدملی: " + nationalCode);
+            $('#modalAddFamily #FamilyRelation_PersonMinorId').val(id);
+            $('#modalAddFamily #selectedPersonName').val(name);
+            $('#modalAddFamily #selectedPersonFamily').val(family);
+            $('#modalAddFamily #selectedPersonNationalCode').val(nationalCode);
+            $('#modalAddFamily #selectedPersonIsDisabled').val(isDisabled);
+
+
+            $('#modalAddFamily #btnRemovePerson').prop('disabled', false);
+            $('#modalAddFamily #btnRemovePerson').attr('disabled', false);
+        }
+
+        // کد دکمه حذف فرد در مدال انتخاب عضو خانواده
+        $('#modalAddFamily #btnRemovePerson').click(function () {
+            clearModalAddFamilyFormItem();
+        });
+
+        $('#frmFamilyRelation').submit(function (event) {
+            // if form Is valid and have no error
+            if ($('#frmFamilyRelation').valid()) {
+
+
+                var familyRelationId = $('#modalAddFamily #FamilyRelation_Id').val();
+
+                var isEditMode = familyRelationId != 0;
+
+                // new family relation
+
+                var personMajorId = $('#modalAddFamily #FamilyRelation_PersonMajorId').val();
+                var personMinorId = $('#modalAddFamily #FamilyRelation_PersonMinorId').val();
+                var familyRelationTypeId = $('#modalAddFamily #FamilyRelation_FamilyRelationTypeId').val();
+                var description = $('#modalAddFamily #FamilyRelation_Description').val();
+
+                $.ajax({
+                    method: "Post",
+                    url: '/api/clients/savefamilyrelation',
+                    data: {
+                        "Id": familyRelationId,
+                        "PersonMajorId": personMajorId,
+                        "PersonMinorId": personMinorId,
+                        "FamilyRelationTypeId": familyRelationTypeId,
+                        "Description": description,
+                    },
+                    success: function (data, textStatus, xhr) {
+
+                        if (xhr.status == 200) {
+                            new PNotify({
+                                title: 'عملیات موفق',
+                                text: 'عضو خانواده با موفقیت ذخیره شد',
+                                type: 'success'
+                            });
+
+                            var newRow = '<tr data-person-id="' +
+                                data.personMinorId +
+                                '" data-family-relation-id="' +
+                                data.id +
+                                '">' +
+                                '<td>' +
+                                data.id +
+                                '</td>' +
+                                '<td>' +
+                                $('#selectedPersonNationalCode').val() +
+                                '</td>' +
+                                '<td>' +
+                                $('#selectedPersonName').val() +
+                                '</td>' +
+                                '<td>' +
+                                $('#selectedPersonFamily').val() +
+                                '</td>' +
+                                '<td>' +
+                                $('#modalAddFamily #FamilyRelation_FamilyRelationTypeId option:selected').text() +
+                                '</td>' +
+                                '<td>' +
+                                ($('#selectedPersonIsDisabled').val() === true ? "معلول" : "سالم") +
+                                '</td>' +
+                                '<td>' +
+                                '<a class="btn btn-default btn-xs text-primary"' +
+                                'onclick="javascript:fnEditFamilyRelation(' + data.id + ',' + personMinorId + ',' +
+                                $('#selectedPersonNationalCode').val() + ',\'' + $('#selectedPersonName').val() + '\',\'' +
+                                $('#selectedPersonFamily').val() + '\',' + $('#selectedPersonIsDisabled').val() + ',' +
+                                familyRelationTypeId + ',\'' + description + '\');">' +
+                            '<i class="fa fa-pencil"></i> ویرایش</a>  ' +
+                            '<a class="btn btn-default btn-xs text-danger" data-toggle="popover" data-placement="top" data-html="true" title="آیا از حذف مطمثن هستید؟" data-content="<a class=\'btn btn-success\' onclick=\'javascript:fnClosePopover()\'>خیر فعلا نه!</a> <a class=\'btn btn-danger\' onclick=\'javascript:fnDeleteFamilyRelation(' +
+                            data.id +
+                            ')\'>بله حذف کن!</a>"><i class="fa fa-close"></i> حذف</a>' +
+                            '</td>';
+
+
+                            if (isEditMode) {
+                                $('#tblFamilyRelation tr[data-family-relation-id="' + familyRelationId + '"]')
+                                    .replaceWith(newRow);
+                            } else {
+                                $('#tblFamilyRelation').append(newRow);
+                            }
+
+                            $('#modalAddFamily').modal("hide");
+
+                            $('[data-toggle="popover"]').popover();
+                            // refresh the modalAddFamily form item
+                            clearModalAddFamilyFormItem();
+
+                        } else {
+                            new PNotify({
+                                title: 'عملیات ناموفق',
+                                text: 'در اضافه کردن عضو خانواده خطایی رخ داده است',
+                                type: 'error'
+                            });
+                        }
+
+                    },
+                    error: function () {
+                        new PNotify({
+                            title: 'عملیات ناموفق',
+                            text: 'ارسال اطلاعات به سرور با خطا مواجه شده است',
+                            type: 'error'
+                        });
+                    },
+                    complete: function () {
+
+                    }
+                });
+
+            } else {
+                new PNotify({
+                    title: 'عملیات ناموفق',
+                    text: 'لطفا خطاهای موجود در فرم را رفع کنید',
+                    type: 'error'
+                });
+            }
+
+            return false;
+        });
+
+        function fnDataTableFamilyRelationTable() {
+            // جدولی که روابط فامیلی را نشان می دهد با پلاگین دیتا تیبل بازسازی میکنیم تا امکان جستجو و مرتب سازی داشته باشد
+            $('#tblFamilyRelation').dataTable({
+                language: {
+                    url: '/Assets/vendor/jquery-datatables/localization/Persian.json'
+                }
+            });
+        }
+
+        function fnDeleteFamilyRelation(id) {
+            $.ajax({
+                type: "delete",
+                url: "/api/clients/deletefamilyrelation/" + id,
+                success: function (data, textStatus, xhr) {
+
+                    if (xhr.status == 200) {
+                        new PNotify({
+                            title: 'عملیات موفق',
+                            text: 'حذف عضو خانواده با موفقیت انجام شد.',
+                            type: 'success'
+                        });
+
+                        // remove row in table tblFamilyRelation
+                        $('#tblFamilyRelation tr[data-family-relation-id="' + id + '"]').remove();
+
+                        //$('#tblFamilyRelation').dataTable().fnDestroy();
+
+                    } else {
+                        new PNotify({
+                            title: 'عملیات نا موفق',
+                            text: 'در انجام عملیات خطای زیر رخ داده است: ' + data,
+                            type: 'error'
+                        });
+                    }
+                }
+            });
+
+            fnClosePopover();
+        }
+
+        function fnEditFamilyRelation(id,
+            personId,
+            nationalCode,
+            name,
+            family,
+            isDisabled,
+            relationTypeId,
+            description) {
+
+            clearModalAddFamilyFormItem();
+
+            $('#modalAddFamily #FamilyRelation_Id').val(id);
+            $('#modalAddFamily #FamilyRelation_PersonMinorId').val(personId);
+            $('#modalAddFamily #selectedPersonNationalCode').val(nationalCode);
+            $('#modalAddFamily #selectedPersonName').val(name);
+            $('#modalAddFamily #selectedPersonFamily').val(family);
+            $('#modalAddFamily #selectedPersonIsDisabled').val(isDisabled);
+            $('#modalAddFamily #FamilyRelation_FamilyRelationTypeId').val(relationTypeId);
+            $('#modalAddFamily #FamilyRelation_Description').val(description);
+
+            $('#modalAddFamily #txtSelectedPerson')
+                .val(" نام و نام خانوادگی: " + name + " " + family + "  کدملی: " + nationalCode);
+
+            $('#modalAddFamily').modal('show');
+        }
+
+        function fnClosePopover() {
+            $("[data-toggle='popover']").popover('hide');
+        }
+
+        function clearModalAddFamilyFormItem() {
+            $('#modalAddFamily #FamilyRelation_PersonMinorId').val('');
+            $('#modalAddFamily #FamilyRelation_FamilyRelationTypeId').val('');
+            $('#modalAddFamily #FamilyRelation_Description').val('');
+
+            $('#modalAddFamily #txtSelectedPerson').val('');
+            $('#modalAddFamily #FamilyRelation_FamilyRelationTypeId').val('');
+            $('#modalAddFamily #btnRemovePerson').prop('disabled', true);
+            $('#modalAddFamily #btnRemovePerson').attr('disabled', true);
+        }
+
+        // تنظیم پلاگین برای در نظر گرفتن فیلد های مخفی به صورت پیش فرض
+        $.validator.setDefaults({ ignore: null });
+    </script>
+}

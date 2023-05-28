@@ -1,0 +1,117 @@
+﻿@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.EditClientRateFormViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - وضعیت پرونده";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditClientRateForm";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if (Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListFormEmtiazBandi && (Model.FormEmtiazBandi == null || Model.FormEmtiazBandi.Id == 0))
+                            {
+                                // اگر در وضعیت در انتظار تایید فرم امتیاز بندی بود
+                                // و تا به حال فرم امتیاز بندی برای مددجو ثبت نشده بود
+
+
+                                <div class="alert alert-info">
+                                    در حال حاضر فرم امتیاز بندی برای این مددجو ثبت نشده است.
+                                    <br />
+                                    مددجو در حال حاضر در وضعیت @Model.Client.ClientStateStr می باشد.
+                                </div>
+
+                            } // پایان شرط بودن در وضعیت فرم امتیاز بندی و نداشتن فرم تا به حال
+                            else if (Model.FormEmtiazBandi != null && Model.FormEmtiazBandi.Id != 0)
+                            {
+                                // اگر در وضعیت در انتظار تایید فرم امتیاز بندی بود
+                                // و فرم امتیاز بندی برای او ثبت شده بود
+
+                                <div class="alert alert-info">
+                                    کاربر محترم!
+                                    <br />
+                                    فرم امتیاز بندی قبلا برای این کاربر ثبت شده است. در زیر می توانید وضعیت فعلی فرم امتیاز بندی را مشاهده نمایید
+                                </div>
+                                @Html.Partial("_FormEmtiazBandiStatePartial")
+
+                                if (Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListFormEmtiazBandi && !Model.IsApprovedByThisUser)
+                                {
+                                    using (Html.BeginForm("ApproveOrDenyFormEmtiazBandi", "Client", FormMethod.Post, new { @class = "form form-bordered", @id = "frmApproveOrDenyFormEmtiazBandi" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <div class="panel-footer">
+                                            @Html.HiddenFor(m => m.IsApprovedByThisUser)
+                                            @Html.HiddenFor(m => m.Client.Id)
+                                            <button class="btn btn-danger" type="button" id="btnDenyFormEmtiazBandi">عدم تایید فرم امتیاز بندی</button>
+                                            <button class="btn btn-primary" type="button" id="btnApproveFormEmtiazBandi">تایید فرم امتیاز بندی</button>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else if (Model.FormEmtiazBandi == null)
+                            {
+                                // اگر در وضعیت انتظار تایید برای فرم امتیاز بندی نبود
+                                // و هیچ فرم امتیاز بندی هم برای مددجو ثبت نشده بود
+                                <div class="alert alert-info">
+                                    این مددجو هنوز به مرحله ثبت فرم امتیاز بندی نرسیده است.<br />
+                                    مددجو در حال حاضر در وضعیت @Model.Client.ClientStateStr می باشد. پس از تایید اطلاعات توسط کارشناس استان، اطلاعات مددجو جهت تایید فرم امتیاز بندی توسط شما ارسال خواهد شد.
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        //با این خط کد به پلاگین میگوییم که فیلدهای مخفی رو هم در ارزیابی قرار بده
+        //say jquery validation to User Hidden fields
+        $.validator.setDefaults({ ignore: null });
+
+
+        $(document).ready(function () {
+            var frmApproveOrDenyFormEmtiazBandi = $('#frmApproveOrDenyFormEmtiazBandi');
+            var btnDenyFormEmtiazBandi = $('#btnDenyFormEmtiazBandi');
+            var btnApproveFormEmtiazBandi = $('#btnApproveFormEmtiazBandi');
+            var fieldIsApprovedByThisUser = $('#IsApprovedByThisUser');
+
+
+            btnApproveFormEmtiazBandi.click(function () {
+                if (confirm("آیا از تایید فرم امتیاز بندی اطمینان دارید؟")) {
+                    fieldIsApprovedByThisUser.val('true');
+                    frmApproveOrDenyFormEmtiazBandi.submit();
+                }
+            });
+
+            btnDenyFormEmtiazBandi.click(function () {
+                if (confirm("آیا از عدم تایید فرم امتیاز بندی اطمینان دارید؟")) {
+                    fieldIsApprovedByThisUser.val('false');
+                    frmApproveOrDenyFormEmtiazBandi.submit();
+                }
+            });
+        });
+    </script>
+}

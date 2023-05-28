@@ -1,0 +1,90 @@
+﻿@using System.Data.Entity
+@using BehzistiMaskan.Core.Utility
+@using BehzistiMaskan.Models
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+
+    var dbContext = new ApplicationDbContext();
+    var userId = User.Identity.GetUserId();
+    var userInfo = dbContext.UserInfos
+        .Include(ui=>ui.Province)
+        .Include(ui=>ui.County)
+        .Single(u => u.User.Id == userId);
+
+    <div id="userbox" class="userbox">
+        <a href="#" data-toggle="dropdown">
+            <figure class="profile-picture">
+                <img src="~/Assets/images/!logged-user.jpg" alt="@User.Identity.Name" class="img-circle" data-lock-picture="" />
+            </figure>
+            <div class="profile-info">
+                <span class="name">@userInfo.Name @userInfo.Family</span>
+                @if (User.IsInRole(RoleName.KarshenasKeshvar))
+                {
+                    <span class="role">کارشناس کشور</span>
+                }
+                else if (User.IsInRole(RoleName.KarshenasOstan))
+                {
+                    <span class="role">کارشناس استان @userInfo.Province.Name</span>
+                }
+                else if (User.IsInRole(RoleName.KarshenasMasoolOstan))
+                {
+                    <span class="role">کارشناس مسئول استان @userInfo.Province.Name</span>
+                }
+                else if (User.IsInRole(RoleName.KarshenasShahrestan))
+                {
+                    <span class="role">کارشناس شهرستان @userInfo.County.Name</span>
+                }
+                else if (User.IsInRole(RoleName.ModirKolOstan))
+                {
+                    <span class="role">مدیر کل استان @userInfo.Province.Name</span>
+                }
+                else if (User.IsInRole(RoleName.MoavenOstan))
+                {
+                    <span class="role">معاون بهزیستی استان @userInfo.Province.Name</span>
+                }
+                else if (User.IsInRole(RoleName.MoavenMosharekat))
+                {
+                    <span class="role">معاون مشارکت های استان @userInfo.Province.Name</span>
+                }
+                else if (User.IsInRole(RoleName.ModirShahrestan))
+                {
+                    <span class="role">رئیس شهرستان @userInfo.County.Name</span>
+                }
+            </div>
+
+            <i class="fa custom-caret"></i>
+        </a>
+
+        <div class="dropdown-menu">
+            <ul class="list-unstyled">
+                <li class="divider"></li>
+                <li>
+                    <a role="menuitem" tabindex="-1" href="@Url.Action("Index","ManageUser")"><i class="fa fa-user"></i>پروفایل من</a>
+                </li>
+                <li>
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <a role="menuitem" tabindex="-1" onclick="$(this).parent('form').eq(0).submit()"><i class="fa fa-power-off"></i>خروج از سیستم</a>
+                    }
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+else
+{
+    <div id="userbox" class="userbox">
+        <a href="#" data-toggle="dropdown">
+            <figure class="profile-picture">
+                <img src="~/Assets/images/!logged-user.jpg" alt="" class="img-circle" />
+            </figure>
+            <div class="profile-info">
+                <span class="name">امنیت سیستم به خطر افتاده! شما نباید اینجا باشید</span>
+            </div>
+
+            <i class="fa custom-caret"></i>
+        </a>
+    </div>
+}

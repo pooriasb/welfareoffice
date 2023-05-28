@@ -1,0 +1,203 @@
+﻿@using BehzistiMaskan.Core.Models
+@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.EditClientStateViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - وضعیت پرونده";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditClientState";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    @using (Html.BeginForm("SaveClientState", "Client", FormMethod.Post, new { @class = "form form-bordered", @id = "clientEditStateForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.NewClientStateTypeE)
+                        @Html.HiddenFor(m => m.Client.Id)
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-lg">
+                                    <div class="col-md-3">
+                                        وضعیت فعلی مددجو
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Model.Client.ClientStateStr
+                                    </div>
+                                </div>
+                                <hr />
+
+                                @if (!Model.ClientHasCompleteData)
+                                {
+                                    <div class="alert alert-info">
+                                        کارشناس محترم!<br />
+                                        ثبت اطلاعات این مددجو تکمیل نشده است و به همین امکان تایید اطلاعات مددجو وجود ندارد  <br />
+                                        لطفا ابتدا اطلاعات مددجو را تکمیل نمایید.
+                                    </div>
+                                }
+                                else
+                                {
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @if (Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InitialClientRegister ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.SubmitNewDataByClient ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListClientToCompleteData ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListKarshenasOstan)
+                                            {
+
+                                                if (Model.NeedCoOrganizationApprove)
+                                                {
+                                                    <button type="button" class="btn btn-default text-primary" id="btnApproveAndSendToCoOrganization">تایید اطلاعات و ارسال جهت تایید سازمان های همکار استان</button>
+                                                }
+                                                <button type="button" class="btn btn-default text-primary" id="btnApproveOfflineAndSendToGetFormEmtiazBandi">تایید آفلاین اطلاعات سازمان های همکار و ارسال جهت دریافت فرم امتیاز بندی</button>
+                                            }
+                                            else if (Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListSazmanHamkarOstan ||
+                                                     Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.ApproveBySazmanHamkarOstan)
+                                            {
+                                                if (Model.IsNeedSazmanHamkarApprove)
+                                                {
+                                                    <button type="button" class="btn btn-default text-primary" id="btnApproveOfflineAndSendToGetFormEmtiazBandi">تایید آفلاین اطلاعات سازمان های همکار و ارسال جهت دریافت فرم امتیاز بندی</button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-default text-primary" id="btnApproveOfflineAndSendToGetFormEmtiazBandi">تایید و ارسال جهت دریافت فرم امتیاز بندی</button>
+                                                }
+                                            }
+                                            else if (Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListFormEmtiazBandi)
+                                            {
+                                                <button type="button" class="btn btn-default text-primary" id="btnNoNeedForFormEmtiazBandi">ارسال اطلاعات برای کارشناس کشور (این مددجو نیازی به فرم امتیاز بندی ندارد) </button>
+                                            }
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListKarshenasOstan ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListSazmanHamkarOstan ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.DenyBySazmanHamkarOstan ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.ApproveByAllOfSazmanHamkarOstan ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListFormEmtiazBandi ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.ApproveAllFormEmtiazBandi ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListKarshenasKeshvar ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.DenyByKarshenasKeshvar ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListPhysicalProgress ||
+Model.Client.ClientState.ClientStateTypeE == ModelEnums.ClientStateTypeE.InWaitingListForPay
+)
+                                {
+                                    <div class="row mt-lg mb-lg">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">دلیل برگشت اطلاعات:</label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-default" id="btnBackToClientForCompleteData">برگشت به مددجو جهت تکمیل اطلاعات</button>
+                                                <button type="button" class="btn btn-default text-warning" id="btnDenyByKarshenasOstan">برگشت به کارشناس شهرستان به دلیل نقص در اطلاعات</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                    <h3>تاریخچه وضعیت های این مددجو</h3>
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>نام وضعیت</th>
+                                    <th>تاریخ اعمال وضعیت</th>
+                                    <th>توضیحات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var ind = 0;
+                                }
+                                @foreach (var clientStateLogDto in Model.ClientStateLogs)
+                                {
+                                    <tr>
+                                        <td>@(++ind)</td>
+                                        <td>@clientStateLogDto.ClientStateTypeStr</td>
+                                        <td>@clientStateLogDto.LogDate.ToString("yyyy/M/d hh:mm:ss")</td>
+                                        <td>@clientStateLogDto.Description</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function () {
+            var clientEditStateForm = $('#clientEditStateForm');
+            var btnBackToClientForCompleteData = $('#btnBackToClientForCompleteData');
+            var btnDenyByKarshenasOstan = $('#btnDenyByKarshenasOstan');
+            var btnApproveAndSendToCoOrganization = $('#btnApproveAndSendToCoOrganization');
+            var btnApproveOfflineAndSendToGetFormEmtiazBandi = $('#btnApproveOfflineAndSendToGetFormEmtiazBandi');
+            var btnNoNeedForFormEmtiazBandi = $('#btnNoNeedForFormEmtiazBandi');
+
+            var newClientStateTypeE = $('#NewClientStateTypeE');
+
+
+            btnBackToClientForCompleteData.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListClientToCompleteData));
+                clientEditStateForm.submit();
+            });
+
+            btnDenyByKarshenasOstan.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.DenyByKarshenasOstan));
+                clientEditStateForm.submit();
+            });
+
+            btnApproveAndSendToCoOrganization.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListSazmanHamkarOstan));
+                clientEditStateForm.submit();
+            });
+
+            btnApproveOfflineAndSendToGetFormEmtiazBandi.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListFormEmtiazBandi));
+                clientEditStateForm.submit();
+            });
+
+
+            btnNoNeedForFormEmtiazBandi.click(function () {
+                newClientStateTypeE.val(@((int)ModelEnums.ClientStateTypeE.InWaitingListKarshenasKeshvar));
+                clientEditStateForm.submit();
+            });
+
+        });
+    </script>
+}

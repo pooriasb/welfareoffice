@@ -1,0 +1,174 @@
+﻿@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.ClientRequiredMaterialViewModel
+@{
+    ViewBag.Title = "مصالح مورد نیاز";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditRequiredMaterial";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content" style="background: none !important;">
+
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle=""></a></div>
+                            <h3 class="panel-title text-primary">نیازمندی های ثبت شده</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <td>#</td>
+                                                <td>تاریخ ثبت نیاز</td>
+                                                <td>نوع مصالح مورد نیاز</td>
+                                                <td>میزان</td>
+                                                <td>توضیحات</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+
+                                            @if (Model.ClientRequiredMaterials.Any())
+                                            {
+                                                var i = 1;
+                                                foreach (var requiredMaterial in Model.ClientRequiredMaterials)
+                                                {
+                                                    <tr>
+                                                        <td>@(i++)</td>
+                                                        <td>@requiredMaterial.Date.ToJalali().ToString("yyyy/MM/dd")</td>
+                                                        <td>@requiredMaterial.MaterialType.PersianName</td>
+                                                        <td>@requiredMaterial.Count.ToString("N0")</td>
+                                                        <td>@requiredMaterial.Description</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr><td colspan="5">هیج موردی ثبت نشده است!</td></tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @using (Html.BeginForm("SaveRequiredMaterial", "Client", FormMethod.Post, new { @class = "form", id = "frmSaveRequiredMaterial" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle=""></a></div>
+                                <h3 class="panel-title text-primary">ثبت مصالح مورد نیاز</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="alert alert-warning">
+                                    کاربر محترم، در صورت مشخص نمودن میزان مصالح مورد نیاز، نوع آن را در بخش توضیحات مشخص نمایید (به طور مثال 50 گونی سیمان)
+                                </div>
+                                <div class="row mb-lg">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ClientRequiredMaterial.MaterialTypeId, new { @class = "control-label col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ClientRequiredMaterial.MaterialTypeId, new SelectList(Model.AllMaterialTypes, "Id", "PersianName"), new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.ValidationMessageFor(m => m.ClientRequiredMaterial.MaterialTypeId)
+                                    </div>
+                                </div>
+                                <div class="row mb-lg">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ClientRequiredMaterial.Count, new { @class = "control-label col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.ClientRequiredMaterial.Count, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.ValidationMessageFor(m => m.ClientRequiredMaterial.Count)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ClientRequiredMaterial.Description, new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(m => m.ClientRequiredMaterial.Description, new { @class = "form-control", @rows = 3 })
+                                                @Html.ValidationMessageFor(m => m.ClientRequiredMaterial.Description)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    @Html.HiddenFor(m => m.ClientRequiredMaterial.ClientId)
+                                    @Html.HiddenFor(m => m.ClientRequiredMaterial.Date)
+                                    <button class="btn btn-primary" type="submit">ذخیره اطلاعات <i class="fa fa-save"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end: page -->
+
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        //با این خط کد به پلاگین میگوییم که فیلدهای مخفی رو هم در ارزیابی قرار بده
+        //say jquery validation to User Hidden fields
+        $.validator.setDefaults({ ignore: null });
+
+        $(document).ready(function() {
+            //#region مدارک مددجو
+
+            @if (Model.Status != null)
+                        {
+                            switch (Model.Status.StatusType)
+                            {
+                                case ModelEnums.StatusTypeE.Success:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                                    break;
+                                case ModelEnums.StatusTypeE.Error:
+                        @Html.Raw("ShowNotifyStatus('ذخیره اطلاعات با خطا مواجه شده است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.ValidationError:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+        });
+    </script>
+}

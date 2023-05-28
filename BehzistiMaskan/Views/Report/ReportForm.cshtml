@@ -1,0 +1,619 @@
+﻿@using BehzistiMaskan.Core.Models.FormBuilder
+@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.ReportDesignerViewModel
+@{
+    ViewBag.Title = "گزارش ساز";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><a href="@Url.Action("Index", "Report")">لیست گزارش ها</a></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">@ViewBag.Title </h2>
+            </header>
+            @using (Html.BeginForm("Save", "Report", FormMethod.Post, new { @class = "form form-bordered", id = "frmSaveReport" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Report.ReportName, new { @class = "control-label col-md-4" })
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.Report.ReportName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Report.ReportName)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-primary">اطلاعات فردی</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientName) نام
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientFamily) نام خانوادگی
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientFatherName) نام پدر
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientMotherName) نام مادر
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientBirthDate) تاریخ تولد
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientGender) جنسیت
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientIsDisabledShow) وضعیت جسمی
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientMarriageStatus) وضعیت تاهل
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientChildrenCount) تعداد فرزندان
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientCertificateNo) شماره شناسنامه
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientCertificateMosalsal) شماره مسلسل شناسنامه
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientCertificateDescription) توضیحات شناسنامه
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientProvinceOfBirth) استان محل تولد
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientCountyOfBirth) شهرستان محل تولد
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientDistrictOfBirth) بخش محل تولد
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientCityOfBirth) شهر محل تولد
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-primary mt-lg">مشخصات پرونده بهزیستی</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.Report.ClientBehzistiDocumentCounty) شهرستان پرونده بهزیستی
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-9" id="divBehzistiSelectedCounty" disabled="disabled">
+                                <div class="col-md-5">
+                                    @Html.LabelFor(m => m.AllCounties, new { @class = "control-label" })
+                                    @Html.ListBoxFor(m => m.AllCounties,
+                                    new MultiSelectList(Model.AllCounties.Where(c => !Model.SelectedBehzistiDocumentCounties.Contains(c.Id)), "Id", "Name"),
+                                        new { @class = "form-control", multiple = "multiple", size = 8, id = "selectAllCounties" }).Disable(!Model.Report.ClientBehzistiDocumentCounty)
+
+                                </div>
+                                <div class="col-md-2 mt-xlg">
+                                    <button type="button" @(!Model.Report.ClientBehzistiDocumentCounty ? "disabled=\"disabled" : "") id="addBehzistiDocumentCounty" class="btn btn-default btn-sm btn-block text-primary">افزودن <i class="fa fa-angle-double-left"></i></button>
+                                    <button type="button" @(!Model.Report.ClientBehzistiDocumentCounty ? "disabled=\"disabled" : "") id="removeBehzistiDocumentCounty" class="btn btn-default btn-sm btn-block text-danger mt-lg"><i class="fa fa-angle-double-right"></i> حذف</button>
+                                </div>
+                                <div class="col-md-5">
+                                    @Html.LabelFor(m => m.SelectedBehzistiDocumentCounties, new { @class = "control-label" })
+                                    @Html.ListBoxFor(m => m.SelectedBehzistiDocumentCounties,
+                                    new MultiSelectList(Model.AllCounties.Where(c => Model.SelectedBehzistiDocumentCounties.Contains(c.Id)), "Id", "Name"),
+                                        new { @class = "form-control", multiple = "multiple", size = 8, id = "selectSelectedCounty" }).Disable(!Model.Report.ClientBehzistiDocumentCounty)
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientBehzistiDocumentDistrict) بخش پرونده بهزیستی
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientBehzistiDocumentCity) شهر پرونده بهزیستی
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientAssistance) نوع حمایت (نوع معاونت)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientType) نوع مددجو
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ClientDescription) توضیحات مددجو
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.BehzistiCode) شماره پرونده مددجو
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.GlobalBehzistiUiCode) کد مددجو در سامانه کشوری
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.NumberOfDisabledInFamily) تعداد معلولین در خانواده
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.IsHouseHold) آیا سرپرست خانوار می باشد؟
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <h4 class="text-primary"> مسکن فعلی</h4>
+                    <hr />
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.CurrentHousing_CurrentHouseTypeId) وضعیت مسکن فعلی
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.CurrentHousing_DepositAmount) میزان ودیعه
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.CurrentHousing_MonthlyRentalRate) میزان اجاره ماهانه
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.CurrentHousing_Address) آدرس کامل مسکن فعلی
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.CurrentHousing_PostalCode) کد پستی مسکن فعلی
+                                </label>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <h4 class="text-primary"> اطلاعات تماس</h4>
+                    <hr />
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ContactInfo_HomeTel) تلفن منزل
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ContactInfo_Mobile) موبایل (تلفن همراه)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.ContactInfo_EmergencyTel) موبایل جهت تماس های ضروری
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <h4 class="text-primary"> اطلاعات بانکی</h4>
+                    <hr />
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.BankInfo_BankTypeId) نام بانک
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.BankInfo_AccountNumber) شماره حساب
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.BankInfo_CardNumber) شماره کارت
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <h4 class="text-primary"> پیشرفت فیزیکی</h4>
+                    <hr />
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Report.PhysicalProgress) نمایش مراحل پیشرفت فیزیکی ثبت شده مددجو
+                                </label>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <h4 class="text-primary"> طرح های ثبت شده - <span class="text-sm"> در صورت انتخاب یکی از طرح ها فقط مددجویانی که در آن طرح ثبت نام کرده اند نمایش داده می شوند.</span></h4>
+                    <hr />
+                    <div id="divReportForm">
+                        @Html.HiddenFor(m => m.JsonSelectedFormFields)
+                        @foreach (var form in Model.AllForms)
+                        {
+                            <div class="row" data-name="formDiv" data-form-id="@form.Id">
+                                <div class="col-md-2">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" @(Model.Report.ReportForms != null && Model.Report.ReportForms.Any(rf => rf.FormId == form.Id) ? "checked" : "") data-form-id="@form.Id" data-name="formCheckbox" /> @form.Name
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-10" data-name="fieldDiv" style="border: 1px solid #777;">
+                                    @foreach (var field in form.Fields)
+                                    {
+                                        //if Field is data template
+                                        if (field.FieldTemplate.Type != ModelEnums.FieldTemplateE.SplitterTemplate &&
+                                            field.FieldTemplate.Type != ModelEnums.FieldTemplateE.HeaderBigTemplate &&
+                                            field.FieldTemplate.Type != ModelEnums.FieldTemplateE.HeaderMediumTemplate &&
+                                            field.FieldTemplate.Type != ModelEnums.FieldTemplateE.HeaderSmallTemplate)
+                                        {
+                                            <div class="col-md-2">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" @(Model.Report.ReportForms != null && Model.Report.ReportForms.Any(rf => rf.FormId == form.Id && rf.ReportFormFields.Any(rff => rff.FieldId == field.Id)) ? "checked" : "") ) data-form-id="@form.Id" data-field-id="@field.Id" data-name="fieldCheckbox" /> @field.Title
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+
+
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.Report.Id)
+
+                    <button type="submit" class="btn btn-primary" id="btnSaveReport"><i class="fa fa-save"></i> ذخیره اطلاعات</button>
+                </div>
+            }
+        </section>
+
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet
+{
+    <style>
+        div.checkbox {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none; /* Standard */
+        }
+    </style>
+}
+
+@section Scripts
+{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var selectSelectedCounty = $('#selectSelectedCounty');
+            var selectAllCounty = $('#selectAllCounties');
+
+            var addBehzistiDocumentCounty = $('#addBehzistiDocumentCounty');
+            var removeBehzistiDocumentCounty = $('#removeBehzistiDocumentCounty');
+
+            var btnSaveReport = $('#btnSaveReport');
+
+            var frmSaveReport = $('#frmSaveReport');
+
+            function selectAllItemInSelectedCountyList() {
+                selectSelectedCounty.find('option').prop('selected', true);
+            }
+
+            btnSaveReport.click(function () {
+                selectAllItemInSelectedCountyList();
+            });
+
+            frmSaveReport.submit(function() {
+                selectAllItemInSelectedCountyList();
+            });
+
+            addBehzistiDocumentCounty.click(function () {
+
+                selectAllCounty.find('option:selected').each(function (index, element) {
+
+                    selectSelectedCounty.append(this);
+                });
+                selectAllCounty.find('option:selected').remove();
+
+                sortSelectSelectedCounty();
+
+            });
+
+            removeBehzistiDocumentCounty.click(function () {
+
+                selectSelectedCounty.find('option:selected').each(function (index, element) {
+
+                    selectAllCounty.append(this);
+                });
+                selectSelectedCounty.find('option:selected').remove();
+
+                sortSelectAllCounty();
+
+            });
+
+            function sortSelectAllCounty() {
+                var options = $("option", selectAllCounty); // Collect options
+                options.detach().sort(function (a, b) { // Detach from select, then Sort
+                    var at = $(a).text();
+                    var bt = $(b).text();
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
+                });
+                options.appendTo(selectAllCounty); // Re-attach to select
+            }
+
+            function sortSelectSelectedCounty() {
+                var options = $("option", selectSelectedCounty); // Collect options
+                options.detach().sort(function (a, b) { // Detach from select, then Sort
+                    var at = $(a).text();
+                    var bt = $(b).text();
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
+                });
+                options.appendTo(selectSelectedCounty); // Re-attach to select
+            }
+
+            $('#Report_ClientBehzistiDocumentCounty').change(function () {
+                if ($(this).is(':checked')) {
+                    selectAllCounty.removeAttr('disabled');
+                    selectSelectedCounty.removeAttr('disabled');
+                    addBehzistiDocumentCounty.removeAttr('disabled');
+                    removeBehzistiDocumentCounty.removeAttr('disabled');
+                } else {
+                    selectAllCounty.attr('disabled', true);
+                    selectSelectedCounty.attr('disabled', true);
+                    addBehzistiDocumentCounty.attr('disabled', true);
+                    removeBehzistiDocumentCounty.attr('disabled', true);
+                }
+            });
+
+
+            $('input[type="checkbox"]').change(function () {
+                updateJsonReportForm();
+            });
+
+
+            function updateJsonReportForm() {
+
+                var divReportForm = $('#divReportForm');
+                var jsonReportFormResArray = [];
+
+
+                var selectedFormCount = 0;
+
+                // foreach form
+                divReportForm.find('div[data-name="formDiv"]').each(function (index, element) {
+                    var isFormChecked = $(this).find('input[data-name="formCheckbox"]').first().is(":checked");
+                    var formId = $(this).attr('data-form-id');
+                    //if form is checked
+                    if (isFormChecked) {
+
+                        //declare to store form field items
+                        var jsonReportFormFieldItems = [];
+                        var selectedFieldCount = 0;
+
+                        //foreach form field
+                        $(this).find('div[data-name="fieldDiv"] input[type="checkbox"]').each(function (fieldIndex,
+                            fieldElement) {
+                            var isFieldChecked = $(this).is(':checked');
+                            var fieldId = $(this).attr('data-field-id');
+
+                            //if field is checked
+                            if (isFieldChecked) {
+                                var jsonReportFormField = {
+                                    fieldId: fieldId
+                                };
+                                jsonReportFormFieldItems[selectedFieldCount] = jsonReportFormField;
+                                selectedFieldCount++;
+                            }
+                        });
+
+                        var formReportItem = {
+                            formId: formId,
+                            JsonReportFormFields: jsonReportFormFieldItems
+                        };
+                        jsonReportFormResArray[selectedFormCount] = formReportItem;
+                        selectedFormCount++;
+                    }
+                });
+                var tmpStr = JSON.stringify(jsonReportFormResArray);
+
+                $('#JsonSelectedFormFields').val(tmpStr);
+
+
+            };
+
+            updateJsonReportForm();
+
+        });
+    </script>
+}
+

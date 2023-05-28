@@ -1,0 +1,76 @@
+﻿@model BehzistiMaskan.ViewModels.UserFormViewModel
+@{
+    ViewBag.Title = "حذف فرد از سیستم";
+    Layout = "../Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("IncompleteRegisterList", "Client")">
+                    لیست افراد
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        @using (Html.BeginForm("DeleteUserPost", "User", FormMethod.Post, new { @class = "form form-bordered", @name = "deleteUserForm" }))
+            {
+            @Html.AntiForgeryToken()
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="text-danger">
+                        آیا از حذف کاربر مطمئن هستید؟
+                    </h2>
+                </header>
+                <div class="panel-body">
+                    <div class="well danger">
+                        کاربر محترم!<br />
+
+                        شما در حال حذف یک کاربر از سامانه می باشد. با حذف کاربر اطلاعات او از سامانه حذف شده و در سیستم ثبت گزارشات این عملیات در گزارش فعالیت شما ثبت خواهد شد
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>نام کاربر</td>
+                                <td>نام</td>
+                                <td>نام خانوادگی</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.UserId</td>
+                                <td>@Model.UserName</td>
+                                <td>@Model.UserInfo.Name</td>
+                                <td>@Model.UserInfo.Family</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(p => p.UserId)
+                    <a class="btn btn-primary" href="@Url.Action("Index", "User")">نه مطمئن نیستم</a>
+                    <button class="btn btn-default text-danger" id="deleteUser" type="submit"><i class="fa fa-remove"></i> بله حذف کن</button>
+                </div>
+            </section>
+        }
+    </div>
+</div>
+<!-- end: page -->

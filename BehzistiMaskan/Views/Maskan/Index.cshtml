@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "../Shared/_LayoutBehzisti.cshtml";
+}
+
+<div class="TableContent">
+    <div class="panel panel-default">
+        <header class="panel-heading">
+            <h3>به سامانه سبا خوش آمدید</h3>
+        </header>
+        <div class="panel-body">
+            <div class="row text-xl">
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="@Url.Action("Index", "Madadjoo")" class="btn btn-primary  btn-block">ورود یا ثبت نام مددجویان</a>
+                    <hr />
+                    <p class="text-xl">
+                        مددجویان محترم می توانند از این بخش وارد سامانه شده و درخواست های خود را ثبت و یا پیگیری نمایند
+                    </p>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="@Url.Action("Index", "Benefactor")" class="btn btn-success btn-block">ورود یا ثبت نام خیرین</a>
+                    <hr/>
+                    <p class="text-xl">
+                        نیکوکاران خیراندیش می توانند از این بخش وارد سامانه شده و به انتخاب خود حالت های مختلف همکاری را انتخاب نمایند
+                    </p>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-info btn-block">ورود کاربر سازمان های همکار</a>
+                    <hr />
+                    <p class="text-xl">
+                        کاربران محترم سازمان های همکار جهت پیگیری و ثبت مدارک طرح های مشترک می توانند از این بخش وارد سامانه شوند
+                    </p>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-default btn-block">ورود کارشناسان بهزیستی</a>
+                    <hr />
+                    <p class="text-xl">
+                        همکاران محترم در اداره بهزیستی می توانند از این قسمت وارد سامانه شوند.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Stylesheets
+{
+
+}
+@section Scripts
+{
+    <script src="~/Assets/javascripts/PageScripts/MadadjooHome.js"></script>
+}

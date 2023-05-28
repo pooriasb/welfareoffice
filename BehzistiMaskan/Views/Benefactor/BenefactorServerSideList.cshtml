@@ -1,0 +1,215 @@
+﻿@using BehzistiMaskan.Core.Utility
+
+@{
+    ViewBag.Title = "لیست خیرین ثبت متقاضی";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">لیست خیرین</h2>
+            </header>
+            <div class="panel-body">
+                <table class="table table-bordered table-striped table-hover mb-none" id="tblBenefactorList">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نام</th>
+                            <th>نام خانوادگی</th>
+                            <th>نام پدر</th>
+                            <th>موبایل </th>
+                            <th>کد ملی</th>
+                            <th>استان</th>
+                            <th>شهرستان</th>
+                            <th> نقدی</th>
+                            <th>هدیه</th>
+                            <th> خدمت</th>
+                            <th> ساخت خانه</th>
+                            <th> خرید خانه</th>
+                            <th>تعمیر خانه</th>
+                            <th>اجاره خانه</th>
+                            <th>ودیعه خانه</th>
+                            <th> قسط و وام</th>
+                            <th> همکاری مستمر</th>
+                            <th> پرداخت آنلاین </th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+            <div class="panel-footer">
+            </div>
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet{
+    <link href="~/Assets/vendor/select2/select2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/jquery-datatables-bs3/assets/css/dataTables.bootstrap.min.css"  />
+
+}
+
+@section Scripts
+{
+    <script src="~/Assets/vendor/select2/select2.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+
+    <script src="~/Content/datables-export-plugins/dataTables.buttons.min.js"></script>
+    <script src="~/Content/datables-export-plugins/buttons.print.min.js"></script>
+    <script src="~/Content/datables-export-plugins/buttons.html5.min.js"></script>
+    <script src="~/Content/datables-export-plugins/buttons.flash.min.js"></script>
+    <script src="~/Content/datables-export-plugins/jszip.min.js"></script>
+    <script src="~/Content/datables-export-plugins/vfs_fonts.js"></script>
+
+
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+
+            @if (ViewBag.Status != null)
+                        {
+                            switch (((Status)ViewBag.Status).StatusType)
+                            {
+                                case ModelEnums.StatusTypeE.Success:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                                    break;
+                                case ModelEnums.StatusTypeE.Error:
+                        @Html.Raw("ShowNotifyStatus('ذخیره اطلاعات با خطا مواجه شده است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.ValidationError:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.DuplicateNationalCode:
+                        @Html.Raw("ShowNotifyStatus('کد ملی وارد شده تکراری می باشد!', 'error','کد ملی تکراری','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.DeletedSuccessful:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات خیر با موفقیت از سامانه حذف شد', 'success','عملیات موفق','fa fa-check');");
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+
+            $.extend($.fn.dataTableExt.oStdClasses, {
+                "sFilterInput": "form-control"
+            });
+
+            var oTable = $('#tblBenefactorList').DataTable(
+            {
+                serverSide: true,
+                processing: true,
+                "sPaginationType": "bs_normal",
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fa fa-copy"></i> کپی',
+                        className: 'btn btn-default text-primary',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> اکسل',
+                        className: 'btn btn-default text-success',
+                        exportOptions: {
+                            //modifier: {
+                            //    page: 'current'
+                            //},
+                            columns: [0, 1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i> چاپ',
+                        className: 'btn btn-default',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    }
+                ],
+                pageLength: 50,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                dom: "<'row'<'col-sm-4'l><'col-sm-4'B><'col-sm-4'f>rtip>",
+                ajax: {
+                    url: '/api/benefactors/benefactordatatable',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: function (d) {
+                        return JSON.stringify(d);
+                    }
+                },
+                columns: [
+                    { "data": "Id" },
+                    { "data": "Name" },
+                    { "data": "Family" },
+                    { "data": "FatherName" },
+                    { "data": "Mobile" },
+                    { "data": "NationalCode" },
+                    { "data": "ProvinceName" },
+                    { "data": "CountyName" },
+                    { "data": "WillHelpWithCash" },
+                    { "data": "WillHelpWithGift" },
+                    { "data": "WillHelpWithService" },
+                    { "data": "HelpToCreateAHouse" },
+                    { "data": "HelpToBuyAHouse" },
+                    { "data": "HelpToFixAHouse" },
+                    { "data": "HelpToPayMonthlyRental" },
+                    { "data": "HelpToPayMortgageMoney" },
+                    { "data": "HelpToPayLoanQuarter" },
+                    { "data": "IsContinuum" },
+                    { "data": "WantOnlinePayment" },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            var editLnk = "<a class='btn btn-xs btn-default text-primary' href='@Url.Action("Edit")" + "/" + row.Id + "'><i class='fa fa-pencil'></i> ویرایش</a>";
+                            var deleteLnk = "<a class='btn btn-xs btn-default text-danger' href='@Url.Action("Delete")" + "/" + row.Id + "'><i class='fa fa-remove'></i> حذف</a>";
+                            return editLnk + ' '  + deleteLnk;
+                        }
+                    }
+                ],
+                createdRow: function(row, data, index) {
+                    $('td', row).eq(6).addClass('actions-hover actions-fade'); // 6 is index of column
+                },
+                language: {
+                    url: '/Assets/vendor/jquery-datatables/localization/Persian.json'
+                }
+            });
+
+
+            oTable.buttons().container()
+                .appendTo('#tblBenefactorList_wrapper .col-sm-6:eq(0)');
+
+
+        }); // end document.ready
+
+
+    </script>
+}

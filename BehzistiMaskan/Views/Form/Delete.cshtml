@@ -1,0 +1,65 @@
+﻿@model BehzistiMaskan.Core.Models.FormBuilder.Form
+@{
+    ViewBag.Title = "حذف طرح از سیستم";
+    Layout = "../Shared/_LayoutPorto.cshtml";
+    bool hasClientForm = ViewBag.HasClientForm ?? true;
+}
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Form")">
+                    لیست طرح ها
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        @using (Html.BeginForm("DeleteFormPost", "Form", FormMethod.Post, new { @class = "form form-bordered", @name = "deleteForm" }))
+            {
+            @Html.AntiForgeryToken()
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="text-danger">
+                        آیا از حذف طرح مطمئن هستید؟
+                    </h2>
+                </header>
+                <div class="panel-body">
+                    <div class="alert alert-danger">
+                        آیا از حذف طرح <h3>@Model.Name</h3> مطمئن هستید؟
+                        
+                        با حذف این طرح کلیه اطلاعات آن طرح از سیستم پاک خواهد شد. در صورت عدم اطمینان می توانید طرح را غیر فعال کنید.
+                    </div>
+
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(f => f.Id)
+                    <a class="btn btn-primary" href="@Url.Action("Index", "Form")">نه مطمئن نیستم</a>
+                    @if (!hasClientForm)
+                    {
+                        <button class="btn btn-default text-danger" id="deleteFormBtn" type="submit"><i class="fa fa-remove"></i> بله حذف کن</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-default text-success">به دلیل ثبت مددجو در این طرح امکان حذف آن وجود ندارد</button>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</div>
+<!-- end: page -->

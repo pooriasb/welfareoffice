@@ -1,0 +1,259 @@
+﻿@model BehzistiMaskan.ViewModels.DashboardSazmanHamkarViewModel
+@{
+    ViewBag.Title = "داشبورد سازمان همکار";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "SazmanHamkar")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left">Whats this?</i></a>
+    </div>
+</header>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <section class="panel panel-featured-left panel-featured-tertiary">
+                    <div class="panel-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-tertiary">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">کل پرونده ها</h4>
+                                    <div class="info">
+                                        <strong class="amount">@Model.ClientCount نفر</strong>
+                                    </div>
+                                </div>
+                                <div class="summary-footer">
+                                    <a class="text-muted text-uppercase" href="@Url.Action("Index", "Client")">مشاهده لیست</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                </div>
+
+                <h2 class="panel-title">کارتابل</h2>
+            </header>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped mb-none" id="cartable-table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نام</th>
+                            <th>نام خانوادگی</th>
+                            <th>کد ملی</th>
+                            <th>شهرستان</th>
+                            <th>بخش</th>
+                            <th>شهر یا روستا</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+                </div>
+
+                <h2 class="panel-title">خلاصه آمار طرح ها</h2>
+            </header>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-none">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>طرح یا تفاهم نامه</th>
+                            <th>وضعیت</th>
+                            <th>پیشرفت</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var frm in Model.DashboardFormSimpleDatas)
+                        {
+                            <tr>
+                                <td>@frm.Id</td>
+                                <td>@frm.Name</td>
+                                <td><span class="label @(frm.Status=="فعال"?"label-primary":"label-default")">@frm.Status</span> </td>
+                                <td>
+                                    <div class="progress progress-sm progress-half-rounded m-none mt-xs light">
+                                        <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: @frm.Progress%;">
+                                            @frm.Progress%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="col-md-6">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+                </div>
+
+                <h2 class="panel-title">آخرین وضعیت اعتبارات طرح ها</h2>
+            </header>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-none">
+                        <thead>
+                        <tr>
+                            <th>طرح یا تفاهم نامه</th>
+                            <th>اعتبار مورد نیاز</th>
+                            <th>اعتبار پرداخت شده</th>
+                            <th>مانده اعتبار</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var frm in Model.DashboardFormByMoney)
+                        {
+                            <tr>
+                                <td>@frm.Name</td>
+                                <td>@frm.NeededMoney ریال</td>
+                                <td>@frm.PayedMoney ریال</td>
+                                <td> ریال</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+@section StyleSheet{
+    <link rel="stylesheet" href="/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+}
+
+@section Scripts
+{
+    <script src="~/Assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+
+    <script src="~/Assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+    <script src="~/Assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+    <script src="~/Assets/vendor/jquery-appear/jquery.appear.js"></script>
+    <script src="~/Assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <script src="~/Assets/vendor/raphael/raphael.js"></script>
+    <script src="~/Assets/vendor/morris/morris.js"></script>
+
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+
+
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $.extend($.fn.dataTableExt.oStdClasses, {
+                "sFilterInput": "form-control",
+                "sLengthSelect": "form-control"
+        });
+
+        var oTable = $('#cartable-table').dataTable(
+        {
+            serverSide: true,
+            processing: true,
+            ajax: {
+                url: '/api/clients/cartabledatatable',
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            columns: [
+                { "data": "Id" },
+                { "data": "Person.Name" },
+                { "data": "Person.Family" },
+                { "data": "Person.NationalCode" },
+                { "data": "CountyName" },
+                { "data": "DistrictName" },
+                { "data": "CityName" },
+                { "data": "ClientStateStr" },
+                {
+                    "data": null,
+                    render: function (data, type, row) {
+                        var viewLink = "<a class='btn btn-xs btn-default text-primary' href='@Url.Action("EditBasic", "client")" + "/" + row.Id + "'><i class='fa fa-pencil'></i> مشاهده اطلاعات</a>";
+
+                        return viewLink;
+                    }
+                }
+            ],
+            language: {
+                url: '/Assets/vendor/jquery-datatables/localization/Persian.json'
+            }
+        });
+
+
+        $(document).on('focus', '.dataTables_filter input', function () {
+            $(this).unbind().bind('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    oTable.fnFilter(this.value);
+                }
+            });
+
+        });
+
+
+        });
+
+</script>
+}

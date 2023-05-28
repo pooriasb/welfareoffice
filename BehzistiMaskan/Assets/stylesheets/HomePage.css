@@ -1,0 +1,142 @@
+﻿
+@font-face {
+    font-family: 'IRANSANS';
+    src: url('../fonts/IRANSans-Light-web.woff') format('woff'), url('../fonts/IRANSans-Light-web.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Parastoo;
+    src: url('../fonts/Parastoo.eot?');
+    src: url('../fonts/Parastoo.eot?#iefix') format('embedded-opentype'), url('../fonts/Parastoo.woff') format('woff'), url('../fonts/Parastoo.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Shabnam;
+    src: url('../fonts/shabnam.eot?');
+    src: url('../fonts/shabnam.eot?#iefix') format('embedded-opentype'), url('../fonts/shabnam.woff') format('woff'), url('../fonts/shabnam.ttf') format('truetype');
+    font-weight: normal;
+}
+
+body {
+    font-family: Shabnam;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+#main {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+    background-color: black;
+}
+
+
+.top-left {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+}
+
+.top-right {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+
+
+ul.style-select {
+    display: inline;
+}
+
+    ul.style-select li {
+        display: inline-block;
+        width: 50px;
+        height: 15px;
+        padding: 10px;
+        margin-right: 10px;
+        border: 1px solid white;
+        line-height: 15px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-family: 'Century Gothic';
+        font-size: 10px;
+    }
+
+        ul.style-select li:hover {
+            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: black;
+        }
+
+.center {
+    position: fixed;
+    top: calc(100vh-50vh);
+    min-height: 200px;
+    height: 40vh;
+}
+
+.app-container {
+    position: inherit;
+}
+
+.vanta-canvas {
+    position: inherit;
+}
+
+.app-show {
+    height: 100%;
+    width: 21vw;
+    min-width: 250px;
+    border: 1px solid #fff;
+    margin-right: 1vw;
+    margin-bottom: 10px;
+    display: inline-block;
+    float: right;
+    background-color: #ffffff;
+    background-color: rgba(255,255,255, .3);
+    position: relative;
+    -ms-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.app-show:hover {
+        background-color: #000000;
+        background-color: rgba(0,0,0, 0.3);
+        cursor: pointer;
+    }
+
+    .app-show .title {
+        line-height: 70px;
+        font-size: 40px;
+        padding: 10px;
+        direction: rtl;
+        width: 95%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
+    .app-show .subtitle {
+        font-size: 15px;
+        line-height: 25px;
+        display: block;
+    }
+
+    .app-show .content {
+        height: 50px;
+        font-size: 15px;
+    }

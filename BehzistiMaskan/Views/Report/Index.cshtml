@@ -1,0 +1,123 @@
+﻿@using BehzistiMaskan.Core.Utility
+@using MD.PersianDateTime
+@model IEnumerable<BehzistiMaskan.Core.Dtos.ReportSimpleDto>
+@{
+    ViewBag.Title = "لیست گزارش ها";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    var status = (Status)ViewBag.Status;
+
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">@ViewBag.Title <a href="@Url.Action("New")" class="btn btn-primary"><i class="fa fa-plus"></i> افزودن گزارش جدید</a></h2>
+            </header>
+            <div class="panel-body">
+                <h4 class="text-primary">گزارش های ساخته شده با گزارش ساز</h4>
+                <table class="table table-bordered table-striped mb-none" id="report-list-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>عنوان گزارش</th>
+                            <th>تاریخ ساخت</th>
+                            <th>تاریخ بروز رسانی</th>
+                            <th>اقدام کننده</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            var i = 1;
+                            foreach (var reportSimpleDto in Model)
+                            {
+                                <tr>
+                                    <td>@(i++)</td>
+                                    <td>@reportSimpleDto.ReportName</td>
+                                    <td>@(reportSimpleDto.CreatedAt != null ? ((PersianDateTime)reportSimpleDto.CreatedAt).ToString("yyyy/MM/dd") : "")</td>
+                                    <td>@(reportSimpleDto.UpdateAt != null ? ((PersianDateTime)(reportSimpleDto.UpdateAt)).ToString("yyyy/MM/dd") : "")</td>
+                                    <td>@reportSimpleDto.CreatorName</td>
+                                    <td>
+                                        <a href="@Url.Action("Edit", new {id=reportSimpleDto.Id})" class="btn btn-xs btn-default text-primary"> <i class="fa fa-pencil"></i> ویرایش</a>
+                                        <a href="@Url.Action("Delete", new {id=reportSimpleDto.Id})" class="btn btn-xs btn-default text-danger"> <i class="fa fa-close"></i> حذف</a>
+                                        <a href="@Url.Action("Generate", new {id=reportSimpleDto.Id})" class="btn btn-xs btn-default text-success"> <i class="fa fa-gear"></i> تولید گزارش</a>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6">هیچ گزارش یافت نشد!</td></tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <h4 class="text-primary">گزارش های داخلی سیستم</h4>
+                <div class="row">
+                    <div class="col-md-12"><a href="@Url.Action("Exemption")" class="btn btn-default text-primary">گزارش معافیت انشعابات</a></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+
+@section StyleSheet{
+    <link rel="stylesheet" href="/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+}
+
+
+
+@section Scripts
+{
+
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            @if (status != null)
+                        {
+                            switch (status.StatusType)
+                            {
+                                case ModelEnums.StatusTypeE.Success:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                                    break;
+                                case ModelEnums.StatusTypeE.Error:
+                                    @Html.Raw("ShowNotifyStatus('ذخیره اطلاعات با خطا مواجه شده است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.ValidationError:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+        });
+
+    </script>
+}

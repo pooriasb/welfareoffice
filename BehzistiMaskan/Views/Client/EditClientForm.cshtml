@@ -1,0 +1,85 @@
+﻿@model BehzistiMaskan.ViewModels.EditClientFormViewModel
+@{
+    ViewBag.Title = "ویرایش طرح های ثبت شده مددجو";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+
+    ViewBag.SelectedTabMenu = "EditClientForm";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    <div class="row">
+                        <div class="col-md-4">
+                            @using (Html.BeginForm("AddClientToForm", "Client", FormMethod.Post, new { @class = "form form-bordered", @id = "frmAddClientToForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.AvailableForms, new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.SelectedFormId, new SelectList(Model.AvailableForms, "Id", "Name"), new { @class = "form-control", size = "8", @id = "selectAvailableForms" })
+                                    @Html.ValidationMessageFor(m => m.SelectedFormId)
+                                </div>
+                                @Html.HiddenFor(m => m.Client.Id)
+                                @*@Html.HiddenFor(m => m.Client.AssistanceTypeId)
+                                @Html.HiddenFor(m => m.Client.ClientTypeId)*@
+                                <button type="submit" class="btn btn-block btn-primary" id="btnAddClientToForm">ثبت مددجو در طرح انتخاب شده</button>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            @using (Html.BeginForm("RemoveClientFromForm", "Client", FormMethod.Post, new { @class = "form form-bordered", @id = "frmRemoveClientFromForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ClientRegisteredForms, new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.SelectedFormId, new SelectList(Model.ClientRegisteredForms, "Id", "Form.Name"), new { @class = "form-control", size = "8", @id = "selectClientRegisteredForms" })
+                                    @Html.ValidationMessageFor(m => m.SelectedFormId)
+                                </div>
+                                @Html.HiddenFor(m => m.Client.Id)
+                                @Html.HiddenFor(m => m.Client.AssistanceTypeId)
+                                @Html.HiddenFor(m => m.Client.ClientTypeId)
+                                <button type="submit" class="btn btn-block btn-danger" id="btnRemoveClientFromForm">حذف مددجو از طرح انتخاب شده</button>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.NotAvailableForms, new { @class = "control-label" })
+                                @Html.ListBoxFor(m => m.NotAvailableForms, new SelectList(Model.NotAvailableForms, "Id", "Name"), new { @class = "form-control", size = "4" })
+                            </div>
+                            <div class="alert alert-info">امکان ثبت مددجو در این طرح ها وجود ندارد. (مددجو شرایط مورد نیاز این طرح ها را دارا نمی باشد) </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end: page -->
+
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function () {
+
+            var btnAddToForm = $('#btnAddClientToForm');
+            var btnRemoveFromForm = $('#btnRemoveClientFromForm');
+            var selectAvailableForms = $('#selectAvailableForms');
+            var selectClientRegisteredForms = $('#selectClientRegisteredForms');
+        });
+    </script>
+}

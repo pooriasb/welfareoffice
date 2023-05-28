@@ -1,0 +1,344 @@
+﻿@model BehzistiMaskan.ViewModels.BenefactorViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.Title = "ویرایش اطلاعات خیر";
+}
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("List", "Benefactor")">
+                    <i class="fa fa-user-md"></i> خیرین
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<div class="row"  id="page">
+    <div class="col-md-12">
+        <section class="panel panel-featured panel-featured-primary">
+            @using (Html.BeginForm("Save", "Benefactor", FormMethod.Post, new { @id = "BenefactorSaveForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <header class="panel-heading">@ViewBag.Title</header>
+                <div class="panel-body">
+                    <div class="row mb-xlg">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Benefactor.ProvinceId, new { @class = "control-label" })<span class="required">*</span>
+                                @Html.DropDownListFor(m => m.Benefactor.ProvinceId, new SelectList(Model.Provinces, "Id", "Name", Model.Benefactor?.ProvinceId ?? 0), "انتخاب کنید", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Benefactor.ProvinceId)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Benefactor.CountyId, new { @class = "control-label" })
+                                @Html.DropDownListFor(m => m.Benefactor.CountyId, new SelectList(Model.Counties, "Id", "Name", Model.Benefactor?.CountyId ?? 0), "همه شهرستان ها", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Benefactor.CountyId)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-sm">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.NationalCode)<span class="required">*</span>
+                                @Html.TextBoxFor(b => b.Benefactor.NationalCode, new { @class = "form-control text-dir-ltr", placeholder = "2280000000" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.NationalCode)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.Name)<span class="required">*</span>
+                                @Html.TextBoxFor(b => b.Benefactor.Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.Family)<span class="required">*</span>
+                                @Html.TextBoxFor(b => b.Benefactor.Family, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.Family)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.Mobile)<span class="required">*</span>
+                                @Html.TextBoxFor(b => b.Benefactor.Mobile, new { @class = "form-control text-dir-ltr", placeholder = "09170000000" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.Mobile)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-lg">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.FatherName)
+                                @Html.TextBoxFor(b => b.Benefactor.FatherName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.FatherName)
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.Birthdate)
+                                <div class="input-group">
+                                    <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#Benefactor_Birthdate" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                    @Html.TextBoxFor(c => c.Benefactor.Birthdate, "{0:yyyy/M/d}",
+                                        new Dictionary<string, Object>
+                                        {
+                                            {"class", "form-control text-dir-ltr"},
+                                            {"data-mddatetimepicker", "true"},
+                                            {"data-targetselector", "#Benefactor_Birthdate"},
+                                            {"data-trigger", "focus"},
+                                            {"data-enabletimepicker", "false"},
+                                            {"data-englishnumber", "true"},
+                                        })
+                                </div>
+                                @Html.ValidationMessageFor(b => b.Benefactor.Birthdate)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.GenderTypeId)
+                                @Html.DropDownListFor(b => b.Benefactor.GenderTypeId, new SelectList(Model.GenderTypes, "Id", "Name"), "نامشخص", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.GenderTypeId)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.MarriageTypeId)
+                                @Html.DropDownListFor(b => b.Benefactor.MarriageTypeId, new SelectList(Model.MarriageTypes, "Id", "Name"), "نامشخص", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.MarriageTypeId)
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-primary">نیکوکار محترم تمایل دارید به چه شیوه ای به جامعه هدف بهزیستی کمک کنید؟</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 control-label">توانایی کمک در کدام زمینه را دارید؟</label>
+                                <div class="col-md-6">
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.HelpToBuyAHouse)
+                                            کمک به خرید منزل جهت مددجو
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.HelpToFixAHouse)
+                                            کمک به تعمیر منزل مددجو
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.HelpToCreateAHouse)
+                                            کمک به ساخت منزل مددجو
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.HelpToPayLoanQuarter)
+                                            کمک به پرداخت رهن مسکن مددجو
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.HelpToPayMonthlyRental)
+                                            کمک به پرداخت اجاره منزل مددجو
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.HelpToPayMortgageMoney)
+                                            کمک به پرداخت قسط مسکن مددجو
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.HelpWithOtherMethod)
+                                            سایر
+                                        </label>
+                                    </div>
+                                    <div class="form-group" id="descriptionDiv">
+                                        @Html.LabelFor(b => b.Benefactor.Description)
+                                        @Html.TextBoxFor(b => b.Benefactor.Description, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(b => b.Benefactor.Description)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">نوع کمک مد نظر شما</label>
+                                <div class="col-md-8">
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.WillHelpWithCash)
+                                            کمک به صورت نقدی
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.WillHelpWithGift)
+                                            کمک به صورت غیر نقدی (اجناس یا مصالح)
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(b => b.Benefactor.WillHelpWithService)
+                                            کمک به صورت خدمات (استاد کار، مهندس، و ...)
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.HelpAmount)
+                                @Html.TextBoxFor(b => b.Benefactor.HelpAmount, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.HelpAmount)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.IsContinuum)
+                                @Html.DropDownListFor(b => b.Benefactor.IsContinuum,
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem {Text = "بلی", Value = "true"},
+                                        new SelectListItem {Text = "خیر", Value = "false"}
+                                    },
+                                    new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.IsContinuum)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Benefactor.WantOnlinePayment)
+                                @Html.DropDownListFor(b => b.Benefactor.WantOnlinePayment,
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem {Text = "پرداخت آنلاین مبلغ کمک", Value = "true"},
+                                        new SelectListItem {Text = "مراجعه به صورت حضوری", Value = "false"}
+                                    },
+                                    new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.Benefactor.WantOnlinePayment)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.Benefactor.Id)
+                    <button type="submit" class="btn btn-primary">ذخیره اطلاعات</button>
+                </div>
+            }
+        </section>
+
+
+
+    </div>
+</div>
+@section StyleSheet
+{
+    <link href="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
+}
+
+@section Scripts
+{
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+
+    <script>
+        $(document).ready(function () {
+
+            // وقتی فرم نمایش داده شد اولین ورودی را انتخاب کنید
+            $('div#page form').eq(0).find('input:visible').eq(0).select();
+
+            // وقتی که کاربر دکمه اینتر رو میزنه نباید صفحه ذخیره بشه
+            // برای زیبا تر شدن کار با وب سایت کلید اینتر عمل تب را انجام می دهد
+            $('div#page form .form-control').keydown(function (event) { //event==Keyevent
+                if (event.which == 13) {
+                    var inputs = $(this).closest('form').find(':visible.form-control');
+
+                    if (inputs.index(this) == (inputs.length - 1))
+                        $('div#page form button').eq(0).focus();
+                    else
+                        inputs.eq(inputs.index(this) + 1).focus();
+                    event.preventDefault(); //Disable standard Enterkey action
+                }
+                // event.preventDefault(); <- Disable all keys  action
+            });
+
+            var sayerCheckbox = $('#Benefactor_HelpWithOtherMethod');
+            var descriptionSayerDiv = $('#descriptionDiv');
+
+            if (sayerCheckbox.is(":not(:checked)"))
+                descriptionSayerDiv.hide();
+
+            sayerCheckbox.click(function () {
+                var isSayerSelected = sayerCheckbox.is(":checked");
+                if (isSayerSelected) {
+                    descriptionSayerDiv.show();
+                } else {
+                    descriptionSayerDiv.hide();
+                }
+            });
+
+
+
+
+            // این کد ها مربوط به انتخاب مکان جغرافیایی است
+            // مربوط به استان و شهرستانی که خیر تمایل به ارائه خدمت دارد
+            var provinceDropDown = $('#Benefactor_ProvinceId');
+            var countiesDropDown = $('#Benefactor_CountyId');
+
+            // CountyId Select Index Change
+            provinceDropDown.change(function () {
+                var provinceId = provinceDropDown.val();
+                if (provinceId) {
+                    $.getJSON("/api/provinces/" + provinceId + "/counties",
+                        function (counties) {
+                            countiesDropDown.children('option').remove();
+                            countiesDropDown.append('<option value="">همه شهرستان ها</option>');
+
+                            $.each(counties,
+                                function (i, county) {
+                                    countiesDropDown.append(new Option(county.name, county.id));
+                                });
+                            
+                            countiesDropDown.trigger('change');
+                        });
+                } else {
+                    countiesDropDown.children('option').remove();
+                    countiesDropDown.append('<option value="">همه شهرستان ها</option>');
+                    countiesDropDown.trigger('change');
+                }
+            });
+
+        }); //End document.ready
+
+    </script>
+}

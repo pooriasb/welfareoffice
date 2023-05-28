@@ -1,0 +1,82 @@
+﻿@model BehzistiMaskan.Core.Dtos.ReportSimpleDto
+    @{
+        ViewBag.Title = "حذف گزارش";
+        Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    }
+
+    <header class="page-header">
+        <h2> @ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="@Url.Action("Index", "Dashboard")">
+                        <i class="fa fa-home"></i> میز کار
+                    </a>
+                </li>
+                <li><a href="@Url.Action("Index", "Report")">لیست گزارش ها</a></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+        </div>
+    </header>
+
+    <!-- start: page -->
+    <div class="row" id="page">
+        <div class="col-md-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                    <h2 class="panel-title">@ViewBag.Title </h2>
+                </header>
+                @using (Html.BeginForm("DeletePost", "Report", FormMethod.Post, new { @class = "form form-bordered" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="panel-body">
+                        <div class="alert alert-danger">
+                            کارشناس محترم!
+                            <br />
+                            شما در حال حذف گزارش با عنوان <i>"@Model.ReportName"</i> می باشید!
+                            <br />
+                            <br />
+                            این عملیات غیر قابل بازگشت می باشد. آیا از انجام عملیات اطمینان دارید؟
+
+                        </div>
+
+                    </div>
+
+                    <div class="panel-footer">
+                        @Html.HiddenFor(m => m.Id)
+                        <a href="@Url.Action("Index", "Report")" class="btn btn-success"> خیر حذف نکن</a>
+                        <button type="submit" class="btn btn-danger"><i class="fa fa-save"></i> بله حذف کن</button>
+                    </div>
+                }
+            </section>
+
+        </div>
+    </div>
+    <!-- end: page -->
+
+    @section StyleSheet
+{
+        <style>
+            div.checkbox {
+                -webkit-user-select: none; /* Safari */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* IE10+/Edge */
+                user-select: none; /* Standard */
+            }
+        </style>
+    }
+
+    @section Scripts
+{
+
+        @Scripts.Render("~/bundles/jqueryval")
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+
+            });
+        </script>
+    }
+

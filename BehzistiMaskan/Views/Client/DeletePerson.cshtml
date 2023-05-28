@@ -1,0 +1,85 @@
+﻿@model BehzistiMaskan.Core.Dtos.PersonDto
+@{
+    ViewBag.Title = "حذف فرد از سیستم";
+    Layout = "../Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("IncompleteRegisterList", "Client")">
+                    لیست افراد
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        @using (Html.BeginForm("DeletePersonPost", "Client", FormMethod.Post, new { @class = "form form-bordered", @name = "deletePersonForm" }))
+            {
+            @Html.AntiForgeryToken()
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="text-danger">
+                        آیا از حذف فرد مطمئن هستید؟
+                    </h2>
+                </header>
+                <div class="panel-body">
+                    <div class="well danger">
+                        کاربر محترم!<br />
+
+                        شما در حال حذف یک فرد با مشخصات زیر از سامانه می باشید. لازم به ذکر است این عملیات غیر قابل بازگشت بوده و حذف مددجو در پروفایل کاربری شما ثبت خواهد شد.
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>کد ملی</td>
+                                <td>نام</td>
+                                <td>نام خانوادگی</td>
+                                <td>نام پدر</td>
+                                <td>نام مادر</td>
+                                <td>شهرستان محل تولد</td>
+                                <td>بخش محل تولد</td>
+                                <td>شهر محل تولد</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.Id</td>
+                                <td>@Model.NationalCode</td>
+                                <td>@Model.Name</td>
+                                <td>@Model.Family</td>
+                                <td>@Model.FatherName</td>
+                                <td>@Model.MotherName</td>
+                                <td>@Model.CountyOfBirthName</td>
+                                <td>@Model.DistrictOfBirthName</td>
+                                <td>@Model.CityOfBirthName</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(p=>p.Id)
+                    <a class="btn btn-primary" href="@Url.Action("IncompleteRegisterList", "Client")">نه مطمئن نیستم</a>
+                    <button class="btn btn-default" id="deleteClient" type="submit"><i class="fa fa-remove"></i> بله حذف کن</button>
+                </div>
+            </section>
+        }
+    </div>
+</div>
+<!-- end: page -->

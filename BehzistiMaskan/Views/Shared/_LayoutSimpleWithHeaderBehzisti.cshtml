@@ -1,0 +1,68 @@
+﻿@using System.Collections.Specialized
+@{
+    Layout = null;
+}
+
+
+<!doctype html>
+<html class="fixed">
+<head>
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <meta name="keywords" content="Behzisti Fars - Maskan MIS" />
+    <meta name="description" content="سامانه مسکن مددجویان بهزیستی استان فارس">
+    <meta name="author" content="Ali Amanzadegan علی امان زادگان">
+    <!-- طراح و سازنده این سامانه علی امان زادگان می باشد. استفاده از تمام یا بخشی از این سامانه بدون اجازه سازنده غیر قانونی می باشد -->
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Vendor CSS -->
+    @Styles.Render("~/stylesheets/bootstrap")
+
+    <link rel="stylesheet" href="~/Assets/vendor/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/magnific-popup/magnific-popup.css" />
+
+    <!-- Specific Page Vendor CSS -->
+    <link rel="stylesheet" href="~/Assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/morris/morris.css" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/theme.css" />
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/skins/default.css" />
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/theme-custom.css">
+
+    <!-- Head Libs -->
+    <link href="~/Assets/stylesheets/simplelayoutwithheader.css" rel="stylesheet" />
+
+
+    @Scripts.Render("~/bundles/modernizr")
+
+    @RenderSection("Stylesheets", false)
+</head>
+<body>
+    <div class="top-bar">
+        <img src="/Assets/images/madadjooHome/behzisti-logo-white-50px.png">
+        <b class="title">سامانه مسکن مددجویان بهزیستی استان فارس</b>
+    </div>
+
+    @RenderBody()
+
+    <!-- Vendor -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+    <script src="~/Assets/vendor/magnific-popup/magnific-popup.js"></script>
+    <script src="~/Assets/vendor/jquery.backstretch/jquery.backstretch.min.js"></script>
+    @*<script src="~/Assets/javascripts/PageScripts/MadadjooHome.js"></script>*@
+
+    @RenderSection("Scripts", false)
+</body>
+</html>

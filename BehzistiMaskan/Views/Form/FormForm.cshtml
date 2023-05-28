@@ -1,0 +1,840 @@
+﻿@using BehzistiMaskan.Core.Models.FormBuilder
+@model BehzistiMaskan.ViewModels.FormViewModel
+@{
+    ViewBag.Title = "طرح ساز";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+
+    var isEditMode = Model.Form.Id != 0;
+}
+
+<header class="page-header">
+    <h2> طرح ساز</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><a href="@Url.Action("Index")">طرح ها</a></li>
+            <li><span>طرح جدید</span></li>
+        </ol>
+    </div>
+</header>
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Save", "Form", FormMethod.Post, new { @class = "form", @id = "EditForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">طرح ساز</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="row mb-md">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Form.Name, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.Form.Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Form.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(m => m.Form.TotalQuota, new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.Form.TotalQuota, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Form.TotalQuota)
+                        </div>
+                        <div class="col-md-4 mt-xl">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.Form.IsEnabled)
+                                    آیا طرح فعال است؟
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row mb-md">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Counties, new { @class = "control-label" })
+                                @Html.ListBoxFor(m => m.Counties,
+                            new MultiSelectList(Model.Counties, "Id", "Name"), new { @class = "form-control", multiple = "multiple", size = 8, id = "selectAllCounties" })
+                                @Html.ValidationMessageFor(m => m.Counties)
+                            </div>
+                        </div>
+                        <div class="col-md-2 mt-xlg">
+                            <button type="button" id="addCountyAccessLevel" class="btn btn-default btn-sm btn-block text-primary">افزودن <i class="fa fa-angle-double-left"></i></button>
+                            <button type="button" id="removeCountyAccessLevel" class="btn btn-default btn-sm btn-block text-danger mt-lg"><i class="fa fa-angle-double-right"></i> حذف</button>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.FormCountyAccessLevelIds, new { @class = "control-label" })
+                                @Html.ListBoxFor(m => m.FormCountyAccessLevelIds,
+                            new MultiSelectList(Model.FormCountyAccessLevels, "CountyId", "County.Name"), new { @class = "form-control", multiple = "multiple", size = @Model.FormCountyAccessLevelIds.Count, id = "selectSelectedCounty" })
+                                @Html.ValidationMessageFor(m => m.FormCountyAccessLevelIds)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-danger" id="lblCountyAccessLevelStatus"></label>
+                            <div class="row mt-md" id="divCountyAccessLevelQuotas">
+                                @foreach (var accessLevel in Model.FormCountyAccessLevels)
+                                {
+                                    <div class="form-group" data-countyId="@accessLevel.CountyId" data-countyName="@accessLevel.County.Name">
+                                        <label class="col-md-5 control-label">سهمیه @accessLevel.County.Name:</label>
+                                        <div class="col-md-7">
+                                            <input type="text" name="FormCountyQuotas" class="form-control" value="@accessLevel.Quota" data-val="true" data-val-regex-pattern="[0-9]+" data-val-required="وارد کردن سهمیه شهرستان ضروری است" required />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <span class="col-md-5"></span>
+                            <label class="text-primary col-md-7">مجموع اعداد: <span id="lblCountyQuotaSum"></span> </label>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row mb-md">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.AllCoOrganizationTypes, new { @class = "control-label" })
+                                @Html.ListBoxFor(m => m.AllCoOrganizationTypes,
+                                    new MultiSelectList(Model.AllCoOrganizationTypes, "Id", "Name"),
+                                    new { @class = "form-control", multiple = "multiple", size = 8, id = "selectAllCoOrganization" })
+                                @Html.ValidationMessageFor(m => m.AllCoOrganizationTypes)
+                            </div>
+                        </div>
+                        <div class="col-md-2 mt-xlg">
+                            <button type="button" id="addCoOrganization" class="btn btn-default btn-sm btn-block text-primary">افزودن <i class="fa fa-angle-double-left"></i></button>
+                            <button type="button" id="removeCoOrganization" class="btn btn-default btn-sm btn-block text-danger mt-lg"><i class="fa fa-angle-double-right"></i> حذف</button>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.CoOrganizationTypeIds, new { @class = "control-label" })
+                                @Html.ListBoxFor(m => m.CoOrganizationTypeIds,
+                                    new MultiSelectList(Model.CoOrganizationTypes, "Id", "Name"),
+                                    new { @class = "form-control", multiple = "multiple", size = 8, id = "selectSelectedCoOrganization" })
+                                @Html.ValidationMessageFor(m => m.CoOrganizationTypeIds)
+                            </div>
+                        </div>
+
+                    </div>
+                    <h3 class="text-primary">مراحل پیشرفت فیزیکی</h3>
+                    <hr />
+                    <div class="alert alert-info">
+                        کارشناس محترم!
+                        در صورت اینکه هر کدام از مراحل پیشرفت فیزیکی در این طرح شامل پرداخت کمک هزینه می باشد می بایست آن را فعال نموده و میزان کمک بلا عوض را تعیین نمایید.
+                    </div>
+                    <div class="row" id="divPhysicalProgress">
+                        @foreach (var physicalProgress in Model.AllPhysicalProgress)
+                        {
+
+                            var formPhysicalProgress = isEditMode ? Model.FormPhysicalProgresses.SingleOrDefault(fp => fp.PhysicalProgressId == physicalProgress.Id) : null;
+                            var isPhysicalProgressActivate = formPhysicalProgress != null;
+
+                            <div class="col-md-4 physical-progress-col" data-physicalProgressId="@physicalProgress.Id" data-physicalProgressName="@physicalProgress.Name">
+                                <div class="checkbox">
+                                    <label>
+
+                                        <input type="checkbox" name="physicalProgressState" id="physicalProgressState" @(isPhysicalProgressActivate ? "checked" : "") />
+                                        @physicalProgress.Name
+                                    </label>
+                                </div>
+                                <div class="@(isPhysicalProgressActivate ? "":"hidden") physical-progress-quota">
+                                    <div class="form-group" data-coorganizationtypeid="0">
+                                        <label class="control-label col-md-6">کمک بلاعوض بهزیستی:</label>
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-icon">
+                                                <input type="text" name="physicalProgressBehzistiQuota" value="@(isPhysicalProgressActivate?formPhysicalProgress.BehzistiHelpAmount:0)" class="form-control text-lg" />
+                                                <span class="input-group-addon"><span class="icon">ریال</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @foreach (var coOrg in Model.CoOrganizationTypes)
+                                    {
+                                        long coOrgHelpAmount = 0;
+                                        if (isPhysicalProgressActivate)
+                                        {
+                                            var coOrgPhysicalProgressHelp = formPhysicalProgress.FormPhysicalProgressHelps.SingleOrDefault(fph => fph.CoOrganizationTypeId == coOrg.Id);
+                                            coOrgHelpAmount = coOrgPhysicalProgressHelp?.HelpAmount ?? 0;
+                                        }
+                                        <div class="form-group" data-coOrganizationTypeId="@coOrg.Id">
+                                            <label class="control-label col-md-6">کمک بلاعوض @coOrg.Name:</label>
+                                            <div class="col-md-6">
+                                                <div class="input-group input-group-icon">
+                                                    <input type="text" value="@coOrgHelpAmount" class="form-control" />
+                                                    <span class="input-group-addon"><span class="icon">ریال</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <h3 class="text-primary">فیلد ها</h3>
+                    <hr />
+                    <div class="container-fluid" id="formDesigner">
+                        <div class="row">
+                            <div class="col-md-2" id="draggableDiv">
+                                <ul id="templates">
+                                    @foreach (var fieldTemplate in Model.FieldTemplates)
+                                    {
+                                        <li class="ui-state-default" data-template-type="@fieldTemplate.Name">@fieldTemplate.Title</li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col-md-10" id="sortableDiv">
+                                <ul id="formItem"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-lg">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Form.Description, new { @class = "control-label" })
+                                @Html.TextAreaFor(m => m.Form.Description, new { @class = "form-control", rows = 4 })
+                                @Html.ValidationMessageFor(m => m.Form.Description)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.Form.IsDeleted)
+                    @Html.HiddenFor(m => m.Form.FormStatus)
+                    @Html.HiddenFor(m => m.Form.CreatedAt)
+                    @Html.HiddenFor(m => m.Form.UpdatedAt)
+                    @Html.HiddenFor(m => m.JsonFormFieldStr)
+                    @Html.HiddenFor(f => f.Form.Id)
+                    <input type="hidden" id="JsonFormPhysicalProgressStr" name="JsonFormPhysicalProgressStr" />
+                    <button type="submit" class="btn btn-primary" id="btnSaveForm">ذخیره اطلاعات</button>
+                </div>
+            </section>
+        }
+    </div>
+</div>
+<!-- end: page -->
+<section id="fieldTemplateHidden" style="display: none;">
+    @foreach (var fieldTemplate in Model.FieldTemplates)
+    {
+        @Html.Raw(fieldTemplate.AdminHtmlTemplate)
+    }
+</section>
+@section StyleSheet{
+    <style>
+        #selectSelectedCounty {
+            overflow: hidden;
+        }
+
+            #selectSelectedCounty option {
+                padding-bottom: 26px;
+            }
+
+        .physical-progress-col {
+            min-height: 150px;
+            max-height: 150px;
+            padding-bottom: 15px;
+            border: 1px solid #007ebd;
+            max-width: 32%;
+            margin: 0 10px 30px 0;
+            border-radius: 15px;
+            -webkit-transform: translateY(0);
+            -webkit-transition: all .6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: all .6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none; /* Standard */
+        }
+
+            .physical-progress-col:hover {
+                background-color: #f6f6f6;
+                box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.25), 0px 4px 10px rgba(0, 0, 0, 0.15);
+            }
+
+            .physical-progress-col .physical-progress-quota {
+                max-height: 100px;
+                overflow: auto;
+            }
+    </style>
+}
+
+@section Scripts
+{
+    @*<script src="~/Assets/vendor/jquery-ui/js/jquery-1.10.2.js"></script>*@
+    @*<script src="~/Assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+        <script src="~/Assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>*@
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @*<script src="~/Assets/javascripts/PageScripts/formbuilder.js"></script>*@
+
+    <script src="~/Assets/javascripts/PageScripts/utility.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            // به منظور چاپ نتایج از یک پرچم استفاده کردم
+            var debugEnabled = true; // اگر یک باشد یعنی خطایابی ها چاپ شود
+
+            var isQuotaValid = false;
+
+
+            // اضافه کردن فیلد های فرم از پایگاه داده در صورتی که در حالت ویرایش بودیم
+            function initFormField() {
+                @if (Model.Form.Id != 0)
+                {
+                    foreach (var field in Model.Form.Fields)
+                    {
+                        @Html.Raw($"addItemToFormField(null, '{field.FieldTemplateName}','{field.Id}', '{field.Title}', '{field.IsRequired}', '{field.HelpText}', '{field.IsHtmlHelp}');\r\n")
+                    }
+                }
+            }
+
+            initFormField();
+
+            function addItemToFormField(ui,
+                fieldTemplateName,
+                fieldId,
+                fieldTitle,
+                fieldIsRequired,
+                fieldHelpText,
+                fieldIsHtmlHelp) {
+
+                // اگر ui خالی بود
+                // یعنی این تابع از طریق initializeFormField اجرا شده
+
+                var isRunningByJqueryUi = true;
+
+                var li;
+                if (!ui) {
+                    li = $('<li class="ui-state-default ui-draggable" data-template-type="' +
+                        fieldTemplateName +
+                        '" style="display: list-item;"></li>');
+                    isRunningByJqueryUi = false;
+                } else {
+                    li = ui.item;
+                }
+
+                if (! li.hasClass("initialized")) {
+                    li.addClass("initialized");
+
+                    // get template type from li attribute
+                    var templateType = li.attr("data-template-type");
+
+                    // clear inner html of new list item
+                    li.html("");
+
+                    // create an instance of template and add it to form builder
+                    // یک نمونه از قالب فیلد ساخته و آن را در متغیر ذخیره میکنیم
+                    var templateDiv = $("#fieldTemplateHidden #" + templateType).clone();
+                    if (fieldId) {
+                        templateDiv.find('input[data-name="fieldId"]').eq(0).val(fieldId);
+                    }
+                    if (fieldTitle) {
+                        templateDiv.find('input[data-name="templateTitleField"]').eq(0).val(fieldTitle);
+                    }
+                    if (fieldIsRequired === 'True') {
+                        templateDiv.find('input[data-name="templateIsRequiredField"]').eq(0)
+                            .prop("checked", fieldIsRequired);
+                    }
+                    if (fieldHelpText) {
+                        templateDiv.find('input[data-name="templateHelpField"]').eq(0).val(fieldHelpText);
+                    }
+                    if (fieldIsHtmlHelp === 'True') {
+                        templateDiv.find('input[data-name="templateIsHtmlHelpField"]').eq(0)
+                            .prop("checked", fieldIsHtmlHelp);
+                    }
+
+                    templateDiv.appendTo(li);
+
+                    // add counter to list item
+                    li.prepend("<span class='template-icon template-icon-order' data-name='template-order'></span>");
+                    // add close button to list item
+                    li.prepend(
+                        "<span class='template-icon template-icon-close' data-field-id='"+fieldId+"' data-toggle='popover' data-placement='right' data-html='true' title='آیا از حذف مطمئن هستید؟' data-content='<a class=\"btn btn-success\" onclick=\"javascript:fnClosePopover()\">خیر فعلا نه!</a> <a class=\"btn btn-danger\" data-name-type=\"delete-field\">بله حذف کن!</a>\'><i class='fa fa-close'></i></span>");
+
+                    if (!isRunningByJqueryUi) {
+                        $('#formItem').append(li);
+                    }
+                }
+
+                // خروجی جیسون را محاسبه می کند
+                updateFormFieldJsonArray();
+            }
+
+            var editForm = $('#EditForm');
+
+            function initializeFormBuilder() {
+                // running sortable function from JqueryUI plugin
+                $("#sortableDiv #formItem").sortable({
+                    placeholder: "ui-state-highlight", // وقتی که انتخاب می شود چه کلاسی داشته باشد
+                    cursor: "Move", // هنگام جابجایی آیکون ماوس چه شکلی شود
+                    // وقتی که بروزرسانی انجام گرفت و یک آیتم جابجا شد این تابع اجرا می شود
+                    // در صورت اضافه شدن یک ردیف یا جابجایی یا حذف یکی از ردیف ها
+                    update: function(e, ui) {
+                        // به منظور تشخیص اینکه کدام مورد جدید می باشد و کدام ردیف قبلا اضافه شده بود
+                        // از کلاس استفاده کردیم
+                        // به این معنی که ردیف هایی که قبلا اضافه شده اند این کلاس را دارند
+                        addItemToFormField(ui);
+                    },
+                    start: function(e, ui) {
+                        ui.item.addClass("ui-state-on-move");
+                    },
+                    stop: function(e, ui) {
+                        ui.item.removeClass("ui-state-on-move");
+                    }
+                });
+                $("#draggableDiv #templates > li").draggable({
+                    connectToSortable: "#formItem",
+                    helper: "clone",
+                    revert: "invalid"
+                });
+
+                // close current
+                $("#formItem").on("click",
+                    "li span.template-icon-close",
+                    function() {
+                        //$(this).parents("li:first").remove();
+                        //updateFormFieldJsonArray();
+                    });
+                $("#formItem").on("change",
+                    "li input",
+                    function() {
+                        updateFormFieldJsonArray();
+                    });
+
+
+            };
+
+            function updateFormFieldJsonArray() {
+
+                var jsonArr = {
+                    length: 0,
+                    items: []
+                };
+
+                var jsonItems = [];
+
+                // foreach list item do ->
+                $("#formItem li").each(function(index) {
+                    // get templateDiv
+                    var templateDiv = $(this).children('div[data-name="templateDiv"]');
+                    var jsonObj = {
+                        id: templateDiv.find('input[data-name="fieldId"]').eq(0).val(),
+                        formId: @Model.Form.Id,
+                        fieldTemplateName: $(this).attr("data-template-type"),
+                        title: templateDiv.find('input[data-name="templateTitleField"]').eq(0).val(),
+                        isRequired: templateDiv.find('input[data-name="templateIsRequiredField"]').eq(0)
+                            .prop("checked"),
+                        helpText: templateDiv.find('input[data-name="templateHelpField"]').eq(0).val(),
+                        isHtmlHelp: templateDiv.find('input[data-name="templateIsHtmlHelpField"]').eq(0).prop("checked")
+                    };
+
+                    jsonItems[index] = jsonObj;
+
+                    // شماره گذاری هر کدام از فیلد ها
+                    $(this).find("span[data-name='template-order']").html(index + 1);
+                });
+
+
+                jsonArr.length = $("#formItem li").length;
+                jsonArr.items = jsonItems;
+
+                var tmpStr = JSON.stringify(jsonArr);
+
+                $('#JsonFormFieldStr').val(tmpStr);
+                //$('#JsonFormFieldStr').val(encodeURIComponent(tmpStr));
+
+                //initialize popover
+                $('[data-toggle="popover"]').popover();
+            }
+
+
+            initializeFormBuilder();
+            updateFormFieldJsonArray();
+
+
+            var selectSelectedCounty = $('#selectSelectedCounty');
+            var selectAllCounty = $('#selectAllCounties');
+            var divCountyAccessLevelQuotas = $('#divCountyAccessLevelQuotas');
+
+
+            function addValidateRuleToQuotaInput() {
+                $(divCountyAccessLevelQuotas).find('input[type="text"]').rules("add",
+                    {
+                        required: true,
+                        digits: true,
+                        messages: {
+                            required: "این فیلد ضروری می باشد",
+                            digits: "این یک فیلد عددی است",
+                        }
+                    });
+            }
+
+
+            // add county to selectedCounty list
+            $('#addCountyAccessLevel').click(function() {
+
+                //foreach selected item in selectAllCounty
+                selectAllCounty.find('option:selected').each(function(index, element) {
+                    // add selected county to left list
+                    selectSelectedCounty.append(this);
+
+                    var countyId = $(this).val();
+                    var countyName = $(this).text();
+
+                    var newItem = '<div class="form-group" data-countyId="' +
+                        countyId +
+                        '" data-countyName="' +
+                        countyName +
+                        '">' +
+                        '<label class="col-md-5 control-label" > سهمیه ' +
+                        countyName +
+                        ':</label>' +
+                        '<div class="col-md-7" >' +
+                        '<input type = "text" name="FormCountyQuotas" class= "form-control" value ="0" />' +
+                        '</div>' +
+                        '</div>';
+
+                    divCountyAccessLevelQuotas.append(newItem);
+                });
+                // remove all selected county from selectAllCounties
+                selectAllCounty.find('option:selected').remove();
+
+                selectSelectedCounty.find("option:selected").prop('selected', false);
+
+                selectSelectedCounty.attr('size', selectSelectedCounty.find("option").length);
+                sortSelectSelectedCounty();
+                updateQuotaSum();
+                addValidateRuleToQuotaInput();
+            });
+
+            // remove selected County
+            // and remove quota for this county
+            $('#removeCountyAccessLevel').click(function() {
+
+                //foreach selected item in selectAllCounty
+                selectSelectedCounty.find('option:selected').each(function(index, element) {
+                    // add selected county to left list
+                    selectAllCounty.append(this);
+
+                    var countyId = $(this).val();
+                    // remove county quota div
+                    $(divCountyAccessLevelQuotas).find('div.form-group[data-countyid="' + countyId + '"]').remove();
+
+                });
+                // remove all selected county from selectAllCounties
+                selectSelectedCounty.find('option:selected').remove();
+
+                //deselect all item in AllCounty List
+                selectAllCounty.find('option:selected').prop("selected", false);
+
+                selectSelectedCounty.attr('size', selectSelectedCounty.find("option").length);
+                sortSelectAllCounty();
+                updateQuotaSum();
+
+
+            });
+
+            function sortSelectAllCounty() {
+                var options = $("option", selectAllCounty); // Collect options
+                options.detach().sort(function(a, b) { // Detach from select, then Sort
+                    var at = $(a).text();
+                    var bt = $(b).text();
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
+                });
+                options.appendTo(selectAllCounty); // Re-attach to select
+            }
+
+            function sortSelectSelectedCounty() {
+                var options = $("option", selectSelectedCounty); // Collect options
+                options.detach().sort(function(a, b) { // Detach from select, then Sort
+                    var at = $(a).text();
+                    var bt = $(b).text();
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
+                });
+                options.appendTo(selectSelectedCounty); // Re-attach to select
+
+
+                var formGroups = divCountyAccessLevelQuotas.find('div.form-group');
+                formGroups.detach().sort(function(a, b) {
+                    var at = $(a).attr("data-countyName");
+                    var bt = $(b).attr("data-countyName");
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+                });
+                $(divCountyAccessLevelQuotas).html(formGroups);
+            }
+
+            var lblQuotaStatus = $('#lblCountyAccessLevelStatus');
+            var lblCountyQuotaSum = $('#lblCountyQuotaSum');
+
+            function updateQuotaSum() {
+                isQuotaValid = false;
+                var totalQuota = $('#Form_TotalQuota').val();
+                var sum = 0;
+                $(divCountyAccessLevelQuotas).find('div.form-group input[type="text"]').each(function(index, element) {
+                    var value = parseInt($(this).val());
+                    if (Number.isInteger(value)) {
+                        sum += value;
+                    } else {
+                        $(lblQuotaStatus).text('مقدار وارد شده صحیح نمی باشد');
+                        $(element).addClass('input-validation-error');
+                    }
+                });
+                $(lblCountyQuotaSum).text(sum);
+
+                if (totalQuota > sum) {
+                    setQuotaStatus(1);
+                } else if (totalQuota < sum) {
+                    setQuotaStatus(-1);
+                } else {
+                    setQuotaStatus(0);
+                    isQuotaValid = true;
+                }
+            }
+
+
+            function setQuotaStatus(g) {
+                if (g > 0) {
+
+                    $(lblQuotaStatus).text('سهمیه های وارد شده از سهمیه کل کمتر می باشد');
+                } else if (g < 0) {
+                    $(lblQuotaStatus).text('سهمیه های وارد شده از سهمیه کل بیشتر می باشد');
+                } else {
+                    $(lblQuotaStatus).text('');
+                }
+            }
+
+            //deselect all item in selected County List
+            selectSelectedCounty.find('option:selected').prop("selected", false);
+
+            $(divCountyAccessLevelQuotas).on('change',
+                'input',
+                function() {
+                    updateQuotaSum();
+                });
+
+            updateQuotaSum();
+            var isEditMode = (@Model.Form.Id) != 0;
+            if (isEditMode)
+                addValidateRuleToQuotaInput();
+
+            $('#Form_TotalQuota').on('change',
+                function() {
+                    updateQuotaSum();
+                });
+
+
+            // Section for Co Organization
+            var selectSelectedCoOrganization = $('#selectSelectedCoOrganization');
+            var selectAllCoOrganization = $('#selectAllCoOrganization');
+            var divPhysicalProgress = $('#divPhysicalProgress');
+
+            // add co organization
+            $('#addCoOrganization').click(function() {
+
+                //foreach selected item in selectAllCounty
+                selectAllCoOrganization.find('option:selected').each(function(index, element) {
+                    // add selected county to left list
+                    selectSelectedCoOrganization.append(this);
+                    var elementId = $(element).val();
+                    var elementName = $(element).text();
+                    var newItem = '<div class="form-group" data-coorganizationtypeid="' +
+                        elementId +
+                        '">' +
+                        '<label class="control-label col-md-6">کمک بلاعوض ' +
+                        elementName +
+                        ':</label>' +
+                        '<div class="col-md-6">' +
+                        '<input type="text" value="0" class="form-control">' +
+                        '</div>' +
+                        '</div>';
+
+                    divPhysicalProgress.find('div.physical-progress-quota').append(newItem);
+                });
+                // remove all selected co organization from select All co organization
+                selectAllCoOrganization.find('option:selected').remove();
+
+                //deselect newly added item
+                selectSelectedCoOrganization.find("option:selected").prop('selected', false);
+
+                sortSelectSelectedCoOrganization();
+                updateCoOrganization();
+                updatePhysicalProgressJson();
+            });
+
+            // remove co organization
+            $('#removeCoOrganization').click(function() {
+
+                //foreach selected item in selectAllCounty
+                selectSelectedCoOrganization.find('option:selected').each(function(index, element) {
+                    // add selected county to left list
+                    selectAllCoOrganization.append(this);
+                    var elementId = $(element).val();
+                    $(divPhysicalProgress).find('div[data-coorganizationtypeid="' + elementId + '"]').remove();
+                });
+                // remove all selected co organization from select All co organization
+                selectSelectedCoOrganization.find('option:selected').remove();
+
+                //deselect newly added item
+                selectAllCoOrganization.find("option:selected").prop('selected', false);
+
+                sortSelectAllCoOrganization();
+                updateCoOrganization();
+                updatePhysicalProgressJson();
+            });
+
+
+            function sortSelectSelectedCoOrganization() {
+                var options = $("option", selectSelectedCoOrganization); // Collect options
+                options.detach().sort(function(a, b) { // Detach from select, then Sort
+                    var at = $(a).text();
+                    var bt = $(b).text();
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
+                });
+                options.appendTo(selectSelectedCoOrganization); // Re-attach to select
+            }
+
+            function sortSelectAllCoOrganization() {
+                var options = $("option", selectAllCoOrganization); // Collect options
+                options.detach().sort(function(a, b) { // Detach from select, then Sort
+                    var at = $(a).text();
+                    var bt = $(b).text();
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
+                });
+                options.appendTo(selectAllCoOrganization); // Re-attach to select
+            }
+
+            function updateCoOrganization() {
+
+            }
+
+            //deselect all selected co organization by default
+            selectSelectedCoOrganization.find('option:selected').prop("selected", false);
+
+            //End Section Co Organization
+            // *****************************
+
+
+            // *****************************
+            //Section Physical Progress
+
+            // enable or disable Physical Progress data when checkbox is checked
+            divPhysicalProgress.on('change',
+                'input[type="checkbox"]',
+                function() {
+
+                    //var isChecked = $(this).val();
+                    //console.log("Checkbox state (this.checked) = " + this.checked);
+                    //console.log("Checkbox state (.val()) = " + $(this).val());
+                    //console.log("Checkbox state (.prop('checked)) = " + $(this).prop('checked'));
+                    //console.log("Checkbox state (.is(':checked')) = " + $(this).is(':checked'));
+                    var divPhysicalProgressQuota =
+                        $(this).parents('.physical-progress-col').find('div.physical-progress-quota');
+                    if (this.checked) {
+                        divPhysicalProgressQuota.removeClass('hidden');
+                    } else {
+                        divPhysicalProgressQuota.addClass('hidden');
+                    }
+                    updatePhysicalProgressJson();
+
+                });
+
+            divPhysicalProgress.on('change',
+                'input[type="text"]',
+                function() {
+                    updatePhysicalProgressJson();
+                });
+
+
+            var inputJsonPhysicalProgressStr = $('#jsonphysicalprogress');
+
+            function updatePhysicalProgressJson() {
+
+                var jsonPhysicalProgressList = [];
+
+                var index = 0;
+                $('.physical-progress-col', divPhysicalProgress).each(function(ind, physicalProgressColumn) {
+                    var isChecked = $('#physicalProgressState', physicalProgressColumn).is(':checked');
+                    if (isChecked) {
+                        var physicalProgressId = $(physicalProgressColumn).attr("data-physicalprogressid");
+
+                        //declare class JasonPhysicalProgress
+                        var jsonPhysicalProgressObj = {
+                            physicalProgressId: physicalProgressId, // numeric
+                            coOrganizationQuotaList: [] //array
+                        };
+                        var quotaIndex = 0;
+
+                        // get quota
+                        $('.physical-progress-quota div.form-group', physicalProgressColumn).each(
+                            function(helpQuotaIndex, helpQuotaItem) {
+
+                                var coOrganizationId = $(helpQuotaItem).attr('data-coorganizationtypeid');
+                                var helpAmount = $('input[type="text"]', helpQuotaItem).eq(0).val();
+
+                                //Declare  class CoOrganizationQuota
+                                var coOrganizationQuotaObj = {
+                                    coOrganizationTypeId: coOrganizationId,
+                                    helpAmount: helpAmount
+                                };
+                                // add quota item to quotaList
+                                jsonPhysicalProgressObj.coOrganizationQuotaList[helpQuotaIndex++] =
+                                    coOrganizationQuotaObj;
+                            });
+
+                        jsonPhysicalProgressList[index++] = jsonPhysicalProgressObj;
+                    }
+                });
+
+                var tmpStr = JSON.stringify(jsonPhysicalProgressList);
+
+                $('#JsonFormPhysicalProgressStr').val(tmpStr);
+            }
+
+            // End Section Physical Progress
+            // *****************************
+
+            // when form submit
+            var btnSaveForm = $('#btnSaveForm');
+
+            btnSaveForm.click(function() {
+                selectSelectedCounty.find('option').prop('selected', true);
+                selectSelectedCoOrganization.find('option').prop('selected', true);
+
+                selectAllCounty.find('option').prop('selected', false);
+                selectAllCoOrganization.find('option').prop('selected', false);
+                updateFormFieldJsonArray();
+            });
+            $('#EditForm').submit(function(e) {
+
+                editForm.validate();
+
+                if (isQuotaValid === false) {
+                    //e.preventDefault();
+                    return false;
+                }
+
+                if (!editForm.valid()) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            updatePhysicalProgressJson();
+
+
+        });
+
+        function fnClosePopover() {
+            $("[data-toggle='popover']").popover('hide');
+        }
+
+        $('a[data-name-type="delete-field"]').click(function() {
+            alert('clicked');
+        });
+    </script>
+}

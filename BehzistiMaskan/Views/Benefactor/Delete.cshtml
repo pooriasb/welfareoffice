@@ -1,0 +1,79 @@
+﻿@model BehzistiMaskan.Core.Models.Benefactor
+@{
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.Title = "حذف خیر از سامانه";
+}
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("List", "Benefactor")">
+                    <i class="fa fa-user-md"></i> خیرین
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<div class="row" id="page">
+    <div class="col-md-12">
+        @using (Html.BeginForm("DeletePost", "Benefactor", FormMethod.Post, new { @class = "form", id = "frmDeleteBenefactor" }))
+        {
+            @Html.AntiForgeryToken()
+            <section class="panel panel-featured panel-featured-danger">
+                <header class="panel-heading">@ViewBag.Title</header>
+
+                <div class="panel-body">
+                    <div class="alert alert-danger">
+                        کارشناس محترم، شما در حال حذف خیر با مشخصات زیر از سامانه می باشید. در صورت حذف اطلاعات خیر به کلی از سامانه حذف خواهد شد. لازم به ذکر است این عملیات غیر قابل بازگشت می باشد.
+                    </div>
+                    <h3>آیا از حذف مطمئن هستید؟</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>نام</th>
+                                <th>نام خانوادگی</th>
+                                <th>کد ملی</th>
+                                <th>استان</th>
+                                <th>شهرستان</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>@Model.Id</th>
+                                <th>@Model.Name</th>
+                                <th>@Model.Family</th>
+                                <th>@Model.NationalCode</th>
+                                <th>@Model.Province.Name</th>
+                                <th>@(Model.County != null ? Model.County.Name : "")</th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.Id)
+                    <a href="@Url.Action("List")" class="btn btn-success">خیر حذف نکن</a>
+                    <button type="submit" class="btn btn-danger">بله حذف کن!</button>
+                </div>
+            </section>
+        }
+
+    </div>
+</div>
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+}

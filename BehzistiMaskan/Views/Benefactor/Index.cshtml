@@ -1,0 +1,139 @@
+﻿@using System.Collections
+@using BehzistiMaskan.Core.Models
+@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.Core.Models.Benefactor
+@{
+    Layout = "../Shared/_LayoutEmptyWithHeader.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-6">
+                @using (Html.BeginForm("Login", "Benefactor", FormMethod.Post, new { @id = "benefactorLoginForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <section class="panel panel-featured panel-featured-success">
+                        <header class="panel-heading">
+                            ورود نیکوکاران به سامانه
+                        </header>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.NationalCode, new { @class = "control-label col-md-3" })
+                                <div class="col-md-9">
+                                    @Html.TextBoxFor(b => b.NationalCode, new { @class = "form-control text-dir-ltr", placeholder = "2281231231" })
+                                    @Html.ValidationMessageFor(b => b.NationalCode)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(b => b.Mobile, new { @class = "control-label col-md-3" })
+                                <div class="col-md-9">
+                                    @Html.PasswordFor(b => b.Mobile, new { @class = "form-control  text-dir-ltr" })
+                                    @Html.ValidationMessageFor(b => b.Mobile)
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="panel-footer">
+                            <button class="btn btn-success" type="submit">ورود به سامانه</button>
+                        </div>
+                    </section>
+                }
+
+            </div>
+            <div class="col-md-6">
+                <section class="panel panel-featured panel-featured-primary">
+                    <header class="panel-heading">
+                        ثبت نام نیکوکار جدید در سامانه
+                    </header>
+                    <div class="panel-body">
+                        <div class="alert alert-info">
+                            <p>در صورتی که برای اولین بار به این سایت مراجعه نموده اید، نسبت به <b>ثبت نام</b> در بخش متقاضی جدید اقدام نمایید. در غیر اینصورت با کدملی و شماره موبایل خود وارد سامانه شوید</p>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a href="@Url.Action("New")" class="btn btn-primary btn-block" type="submit">ثبت نام نیکوکار در سامانه</a>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="row mt-xlg">
+            <div class="alert alert-info">
+                <h3>اعلام نیاز شهرستان</h3>
+              
+                
+                
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <table class="table table-striped table-bordered table-hover table-responsive">
+                            <thead>
+                            <tr>
+                                <th>استان</th>
+                                <th>شهرستان</th>
+                                <th>نیازمندی</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @{
+                                foreach ( var item in ViewBag.RequiredMessage as IEnumerable<RequiredMessage2>)
+                                {
+                                    <tr>
+                                        <td>@item.County.Province.Name</td>
+                                        <td>@item.County.Name</td>
+                                        <td>@item.Message</td>
+                                    </tr>
+                                }
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1">
+
+    </div>
+</div>
+@section StyleSheet
+{
+
+
+}
+
+@section Scripts
+{
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+
+
+        @if (ViewBag.Status != null)
+                        {
+                            switch (((Status)ViewBag.Status).StatusType)
+                            {
+                                case ModelEnums.StatusTypeE.Success:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                                    break;
+                                case ModelEnums.StatusTypeE.Error:
+                        @Html.Raw("ShowNotifyStatus('مشخصات وارد شده صحیح نمی باشد!', 'error','ورود ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.ValidationError:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                                    break;
+                                case ModelEnums.StatusTypeE.DuplicateNationalCode:
+                        @Html.Raw("ShowNotifyStatus('خیر محترم، شما قبلا با این کد ملی در سامانه ثبت نام کرده اید! در صورتی که مشخصات ورود خود را فراموش کرده اید و یا فرد دیگری با کد ملی شما ثبت نام کرده است با بخش مسکن بهزیستی استان خود تماس بگیرید', 'error','کد ملی تکراری','fa fa-times');")
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+
+    </script>
+}

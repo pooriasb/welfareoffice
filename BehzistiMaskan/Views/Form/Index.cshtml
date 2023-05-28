@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "لیست طرح ها";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2> لیست طرح های مسکن</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><span>طرح ها</span></li>
+            <li><span>لیست طرح ها</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">لیست طرح ها  <a href="@Url.Action("New")" class="btn btn-primary"><i class="fa fa-plus"></i> افزودن طرح جدید</a></h2>
+            </header>
+            <div class="panel-body">
+                <table class="table table-bordered table-striped mb-none" id="formlist-table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نام فرم</th>
+                        <th>تاریخ ساخت</th>
+                        <th>سهمیه کل</th>
+                        <th>شهرستان هایی که طرح در آنها اجرا می شود</th>
+                        <th>سازمان های همکار</th>
+                        <th>وضعیت طرح</th>
+                        <th>عملیات</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+            <div class="panel-footer">
+            </div>
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet{
+    <link rel="stylesheet" href="/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+}
+
+@section Scripts
+{
+
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $.extend($.fn.dataTableExt.oStdClasses, {
+                "sFilterInput": "form-control"
+                //,
+                //"sLengthSelect": "form-control"
+            });
+
+            var datatableInit = function () {
+
+                $('#formlist-table').dataTable(
+                    {
+                        serverSide: true,
+                        processing: true,
+                        ajax: {
+                            url: '/api/forms/datatable',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: function (d) {
+                                return JSON.stringify(d);
+                            }
+                        },
+                        columns: [
+                            { "data": "Id" },
+                            { "data": "Name" },
+                            { "data": "CreatedAt" },
+                            { "data": "TotalQuota" },
+                            { "data": "AccessLevelStr" },
+                            { "data": "CoOrganizationRoleStr" },
+                            { "data": "FormStatus" },
+                            {
+                                "data": null,
+                                render: function (a, b, item) {
+                                    var editLnk = "<a class='btn btn-default btn-xs text-primary' href='@Url.Action("Edit")" + "/" + item.Id + "'><i class='fa fa-pencil'></i> ویرایش</a>";
+                                    var deleteLnk = "<a class='btn btn-default btn-xs text-danger' href='@Url.Action("Delete")" + "/" + item.Id + "'><i class='fa fa-close'></i> حذف</a>";
+                                    return editLnk + ' ' + deleteLnk;
+                                }
+                            }
+                        ],
+                        language: {
+                            url: '/Assets/vendor/jquery-datatables/localization/Persian.json'
+                        }
+                    });
+
+            };
+            datatableInit();
+        });
+    </script>
+}

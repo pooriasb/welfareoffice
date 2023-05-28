@@ -1,0 +1,973 @@
+﻿@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.ClientExemptionRequestViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - معافیت انشعابات";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditExemptionRequest";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+    var selectedExemptionRequestType = Model.ClientExemptionDetails.Where(ced => ced.HasRequestExemption).Select(ced => ced.RequestType).ToList();
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content" style="background: none !important;">
+                <div id="EditExemptionRequestTab" class="tab-pane active">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle=""></a></div>
+                            <h3 class="text-primary panel-title">خلاصه وضعیت معافیت انشعابات</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table id="tblExemptionSummary" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <td>نوع معافیت</td>
+                                                <td>متقاضی دریافت</td>
+                                                <td>آیا معرفی نامه دریافت کرده است؟</td>
+                                                <td>آیا بهره مند شده است؟</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var exemptionDetail in Model.ClientExemptionDetails)
+                                            {
+                                                <tr>
+                                                    <td>@exemptionDetail.RequestType.PersianShortTitle</td>
+                                                    <td>
+                                                        @if (exemptionDetail.HasRequestExemption)
+                                                        {
+                                                            <span class="text-primary">بلی</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>-</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (exemptionDetail.HasGetExemptionLetter)
+                                                        {
+                                                            <span class="text-primary">بلی</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>-</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (exemptionDetail.HasBenefitedFromExemption)
+                                                        {
+                                                            <span class="text-primary">بلی</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>-</span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @foreach (var exemptionDetail in Model.ClientExemptionDetails)
+                    {
+                        if (exemptionDetail.HasRequestExemption)
+                        {
+                            <div class="panel" data-client-request-id="@exemptionDetail.RequestType.Id" id="requestExemptionPanel">
+                                <div class="panel-heading p-sm">
+                                    <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle=""></a></div>
+                                    @exemptionDetail.RequestType.PersianShortTitle -
+                                    <a href="@Url.Action("GetClientExemptionForm", "Client", new {id= Model.ClientId, requestTypeId = exemptionDetail.RequestType.Id})" class="btn btn-sm btn-default text-xs">
+                                        <img src="~/Assets/images/microsoft-word-2019-icon-25px.png" />
+                                        دانلود فرم معرفی نامه @exemptionDetail.RequestType.PersianShortTitle
+                                    </a>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <span>معرفی نامه های دریافت شده</span>
+                                            <hr />
+                                            @if (exemptionDetail.GetLetters != null && exemptionDetail.GetLetters.Any())
+                                            {
+                                                <table class="table table-bordered" id="requestGetLetterTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>#</td>
+                                                            <td>تاریخ معرفی نامه</td>
+                                                            <td>شماره معرفی نامه</td>
+                                                            <td>تصویر بارگذاری شده</td>
+                                                            <td>عملیات</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @{ var ind = 0;}
+                                                        @foreach (var getLetter in exemptionDetail.GetLetters)
+                                                        {
+                                                            ind++;
+                                                            <tr data-getletterid="@getLetter.Id">
+                                                                <td>@ind</td>
+                                                                <td>@getLetter.LetterDate.ToJalali().ToString("yyyy/dd/MM")</td>
+                                                                <td>@getLetter.LetterNumber</td>
+                                                                <td><img src="@Url.Action("GetClientRequestGetLetterPhoto")/@getLetter.Id" style="max-width: 150px;" /></td>
+                                                                <td id="actionTableData"><button class="btn btn-xs btn-danger" id="deleteGetLetter"><i class="fa fa-times"></i> حذف </button></td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+
+                                            }
+                                            else
+                                            {
+                                                <span>هنوز معرفی نامه ای ثبت نشده است!</span>
+                                            }
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span>مشخصات بهره مندی</span>
+                                            <hr />
+                                            @if (exemptionDetail.ExemptionBenefits != null && exemptionDetail.ExemptionBenefits.Any())
+                                            {
+                                                <table class="table table-bordered" id="requestBenefitLetterTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>#</td>
+                                                            <td>تاریخ بهره مندی</td>
+                                                            <td>میزان معافیت</td>
+                                                            <td>تصویر بارگذاری شده</td>
+                                                            <td>عملیات</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        @{ var ind = 0;}
+                                                        @foreach (var benefit in exemptionDetail.ExemptionBenefits)
+                                                        {
+                                                            ind++;
+                                                            <tr data-benefitletterid="@benefit.Id">
+                                                                <td>@ind</td>
+                                                                <td>@benefit.BenefitDate.ToJalali().ToString("yyyy/dd/MM")</td>
+                                                                <td>@benefit.BenefitAmount.ToString("N0") ريال</td>
+                                                                <td><img src="@Url.Action("GetClientRequestBenefitLetterPhoto")/@benefit.Id" style="max-width: 150px;" /></td>
+                                                                <td id="actionTableData"><button class="btn btn-xs btn-danger" id="deleteBenefitLetter"><i class="fa fa-times"></i> حذف </button></td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+
+                                            }
+                                            else
+                                            {
+                                                <span>هنوز معرفی نامه ای ثبت نشده است!</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+
+                @using (Html.BeginForm("SaveClientExemptionRequestFormPhoto", "Client", FormMethod.Post, new { @class = "form", id = "clientGetExemptionForm" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="panel panel-featured panel-featured-primary" id="uploadGetLetterPanel">
+                        <div class="panel-heading">
+                            <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle=""></a></div>
+
+                            <h3 class="panel-title text-primary">ثبت معرفی نامه دریافت شده</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.GetLetterRequestTypeId, new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.GetLetterRequestTypeId,
+                                                new SelectList(selectedExemptionRequestType, "Id", "PersianShortTitle"),
+                                                "انتخاب کنید", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.GetLetterRequestTypeId)
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(c => c.GetFormLetterDate, new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#GetFormLetterDate" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </div>
+                                                @Html.TextBoxFor(c => c.GetFormLetterDate, "{0:yyyy/M/d}",
+                                                    new Dictionary<string, Object>
+                                                    {
+                                                        {"class", "form-control text-dir-ltr"},
+                                                        {"data-mddatetimepicker", "true"},
+                                                        {"data-targetselector", "#GetFormLetterDate"},
+                                                        {"data-trigger", "focus"},
+                                                        {"data-enabletimepicker", "false"},
+                                                        {"data-englishnumber", "true"},
+                                                    })
+                                            </div>
+                                            @Html.ValidationMessageFor(c => c.GetFormLetterDate)
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.GetFormLetterNumber, new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.GetFormLetterNumber, new { @class = "form-control text-dir-ltr" })
+                                            @Html.ValidationMessageFor(m => m.GetFormLetterNumber)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="ImageTemplate" class="form-group col-md-7">
+                                    <div class="col-md-3">
+                                        <div data-name="image-container" style="position: relative; min-width: 150px; max-width: 100%; min-height: 200px; max-height: 200px;">
+                                            <input id="imageSelect" type="file" name="file" accept="image/x-png,image/gif,image/jpeg" style="display: none" />
+                                            <img id="preview-image" class="image-uploader" alt=""/>
+                                            <img id="loading-image" src="/Assets/images/preloader.gif" style="display: none; margin: 0; position: absolute; top: 50%; left: 50%; -ms-opacity: 0.7; opacity: 0.7" alt=""/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" data-name="image-controls">
+                                        <button type="button" class="btn btn-default btn-block text-primary" id="select-image-btn">انتخاب تصویر</button>
+                                        <button type="button" class="btn btn-default btn-block text-danger" id="remove-image-btn" disabled="disabled">حذف</button>
+                                        <button type="button" class="btn btn-default btn-block text-success" id="upload-image-btn" disabled="disabled">بارگذاری</button>
+                                    </div>
+                                    <div class="col-md-6 mt-md" id="image-details">
+                                        <div><span>عرض: <span id="image-width"></span></span></div>
+                                        <div><span>ارتفاع: <span id="image-height"></span></span></div>
+                                        <div><span>سایز فایل: <span id="image-size"></span></span></div>
+                                        <div><span>وضعیت: <span id="image-status"></span></span></div>
+                                    </div>
+                                    @Html.HiddenFor(m => m.GetFormTemporaryImageId)
+                                    @Html.ValidationMessageFor(m => m.GetFormTemporaryImageId)
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                @Html.HiddenFor(m => m.ClientId)
+                                <button type="submit" class="btn btn-primary">ذخیره اطلاعات معرفی نامه</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @using (Html.BeginForm("SaveClientExemptionBenefitFormPhoto", "Client", FormMethod.Post, new { @class = "form", @id = "clientExemptionBenefitForm" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="panel panel-featured panel-featured-success" id="uploadBenefitLetterPanel">
+                        <div class="panel-heading">
+                            <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle=""></a></div>
+
+                            <h3 class="panel-title text-success">ثبت بهره مندی از معافیت</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-info">
+                                کارشناس محترم، برای ثبت اطلاعات بهره مندی مددجو از معافیت می توانید نامه اداره مذکور یا تصویر سامانه آن اداره را بارگذاری نمایید.
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.BenefitFormRequestTypeId, new {@class = "control-label col-md-4"})
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.BenefitFormRequestTypeId,
+                                                new SelectList(selectedExemptionRequestType, "Id", "PersianShortTitle"),
+                                                "انتخاب کنید", new {@class = "form-control"})
+                                            @Html.ValidationMessageFor(m => m.BenefitFormRequestTypeId)
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(c => c.BenefitFormLetterDate, new {@class = "control-label col-md-4"})
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#BenefitFormLetterDate" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </div>
+                                                @Html.TextBoxFor(c => c.BenefitFormLetterDate, "{0:yyyy/M/d}",
+                                                    new Dictionary<string, Object>
+                                                    {
+                                                        {"class", "form-control text-dir-ltr"},
+                                                        {"data-mddatetimepicker", "true"},
+                                                        {"data-targetselector", "#BenefitFormLetterDate"},
+                                                        {"data-trigger", "focus"},
+                                                        {"data-enabletimepicker", "false"},
+                                                        {"data-englishnumber", "true"},
+                                                    })
+                                            </div>
+                                            @Html.ValidationMessageFor(c => c.BenefitFormLetterDate)
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.BenefitAmount, new {@class = "control-label col-md-4"})
+                                        <div class="col-md-8">
+                                            <div class="input-group input-group-icon">
+                                                @Html.TextBoxFor(m => m.BenefitAmount, new {@class = "form-control text-left", data_type = "currency"})
+                                                <span class="input-group-addon"><span class="icon">ریال</span></span>
+                                            </div>
+
+                                            @Html.ValidationMessageFor(m => m.BenefitAmount)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="ImageTemplate" class="form-group col-md-7">
+                                    <div class="col-md-3">
+                                        <div data-name="image-container" style="position: relative; min-width: 150px; max-width: 100%; min-height: 200px; max-height: 200px;">
+                                            <input id="imageSelect" type="file" name="file" accept="image/x-png,image/gif,image/jpeg" style="display: none"/>
+                                            <img id="preview-image" class="image-uploader" alt=""/>
+                                            <img id="loading-image" src="/Assets/images/preloader.gif" style="display: none; margin: 0; position: absolute; top: 50%; left: 50%; -ms-opacity: 0.7; opacity: 0.7"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" data-name="image-controls">
+                                        <button type="button" class="btn btn-default btn-block text-primary" id="select-image-btn">انتخاب تصویر</button>
+                                        <button type="button" class="btn btn-default btn-block text-danger" id="remove-image-btn" disabled="disabled">حذف</button>
+                                        <button type="button" class="btn btn-default btn-block text-success" id="upload-image-btn" disabled="disabled">بارگذاری</button>
+                                    </div>
+                                    <div class="col-md-6 mt-md" id="image-details">
+                                        <div><span>عرض: <span id="image-width"></span></span></div>
+                                        <div><span>ارتفاع: <span id="image-height"></span></span></div>
+                                        <div><span>سایز فایل: <span id="image-size"></span></span></div>
+                                        <div><span>وضعیت: <span id="image-status"></span></span></div>
+                                    </div>
+                                    @Html.HiddenFor(m => m.BenefitFormTemporaryImageId)
+                                    @Html.ValidationMessageFor(m => m.BenefitFormTemporaryImageId)
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                @Html.HiddenFor(m => m.ClientId)
+                                <button type="submit" class="btn btn-primary">ذخیره اطلاعات بهره مندی از معافیت</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+<!-- Modal Delete GetLetter -->
+<div class="modal fade" id="modalDeleteGetLetter" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <section class="panel panel-danger">
+                <header class="panel-heading modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="panel-title">حذف معرفی نامه ثبت شده</h2>
+                </header>
+                @using (Html.BeginForm("DeleteGetLetter", "Client", FormMethod.Post, htmlAttributes: new { @class = "form", id = "deleteGetLetterForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="panel-body modal-body">
+                        <div class="row">
+                            <div class="alert alert-warning">
+                                کارشناس محترم شما در حال حذف اطلاعات معرفی نامه معافیت انشعابات مددجو می باشید. با حذف این مورد تصویر بارگذاری شده نیز حذف می گردد. آیا از انجام این کار اطمینان دارید؟
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="selectedGetLetterIdForDelete" name="Id" />
+
+                        <button id="btnCloseDeleteGetLetterModal" class="btn btn-primary" data-dismiss="modal">نه حذف نکن</button>
+                        <button id="btnDeleteGetLetter" class="btn btn-danger" type="submit">بله حذف کن</button>
+                    </div>
+                }
+            </section>
+
+        </div>
+
+    </div>
+</div>
+<!-- Modal AddFamily End -->
+
+<!-- Modal Delete BenefitLetter -->
+<div class="modal fade" id="modalDeleteBenefitLetter" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <section class="panel panel-danger">
+                <header class="panel-heading modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="panel-title">حذف بهره مندی ثبت شده</h2>
+                </header>
+                @using (Html.BeginForm("DeleteBenefitLetter", "Client", FormMethod.Post, htmlAttributes: new { @class = "form", id = "deleteBenefitLetterForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="panel-body modal-body">
+                        <div class="row">
+                            <div class="alert alert-warning">
+                                کارشناس محترم شما در حال حذف اطلاعات ثبت شده در مورد بهره مندی مددجو از معافیت انشعابات می باشید. با حذف این مورد تصویر بارگذاری شده نیز حذف می گردد. آیا از انجام این کار اطمینان دارید؟
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="selectedBenefitLetterIdForDelete" name="Id" />
+
+                        <button id="btnCloseDeleteBenefitLetterModal" class="btn btn-primary" data-dismiss="modal">نه حذف نکن</button>
+                        <button id="btnDeleteBenefitLetter" class="btn btn-danger" type="submit">بله حذف کن</button>
+                    </div>
+                }
+            </section>
+
+        </div>
+
+    </div>
+</div>
+<!-- Modal AddFamily End -->
+
+@section StyleSheet
+{
+    <link rel="stylesheet" href="~/Assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css" />
+    <link href="~/Assets/vendor/leaflet/leaflet.css" rel="stylesheet" />
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Assets/javascripts/PageScripts/utility.js"></script>
+
+    <script>
+
+        //با این خط کد به پلاگین میگوییم که فیلدهای مخفی رو هم در ارزیابی قرار بده
+        //say jquery validation to User Hidden fields
+        $.validator.setDefaults({ ignore: '' });
+
+        $(document).ready(function() {
+
+            @if (Model.Status != null)
+            {
+                switch (Model.Status.StatusType)
+                {
+                    case ModelEnums.StatusTypeE.Success:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');")
+                        ;
+                        break;
+                    case ModelEnums.StatusTypeE.Error:
+                        @Html.Raw("ShowNotifyStatus('ذخیره اطلاعات با خطا مواجه شده است!', 'error','عملیات ناموفق','fa fa-times');")
+                        break;
+                    case ModelEnums.StatusTypeE.ValidationError:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //#region مسکن فعلی
+
+            // وقتی فرم نمایش داده شد اولین ورودی را انتخاب کنید
+            $('div#page form').eq(0).find('.form-control').eq(0).focus();
+            $('div#page form').eq(0).find('.form-control').eq(0).select();
+
+            // وقتی که کاربر دکمه اینتر رو میزنه نباید صفحه ذخیره بشه
+            // برای زیبا تر شدن کار با وب سایت کلید اینتر عمل تب را انجام می دهد
+            $('div#page form .form-control').keydown(function(event) { //event==Keyevent
+                if (event.which == 13) {
+                    var inputs = $(this).closest('form').find(':visible.form-control');
+                    console.log('inputs.index(this): ' + inputs.index(this));
+                    console.log('(inputs.length - 1): ' + (inputs.length - 1));
+
+                    if (inputs.index(this) == (inputs.length - 1))
+                        $('div#page form button').eq(0).focus();
+                    else
+                        inputs.eq(inputs.index(this) + 1).focus();
+                    event.preventDefault(); //Disable standard Enterkey action
+                }
+            });
+
+
+            $('#btnSave').click(function(e) {
+                var selectedItem = $('input[type="radio"][name="RequestTypeBuildingId"]:checked').val();
+                if (selectedItem == 0) {
+
+                    var out = $('input[type="checkbox"][name="IsRequestWaterExemption"]:checked').length +
+                        $('input[type="checkbox"][name="IsRequestElectricalExemption"]:checked').length +
+                        $('input[type="checkbox"][name="IsRequestGasExemption"]:checked').length +
+                        $('input[type="checkbox"][name="IsRequestProductionLicenseExemption"]:checked').length;
+
+                    if (out == 0) {
+                        alert(
+                            'شما گزینه فقط متقاضی دریافت معافیت انشعابات هستم را انتخاب کرده اید اما هیچ کدام از موارد معافیت را انتخاب نکرده اید.')
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+
+            $('#clientRequestFrm').on('submit',
+                function(e) {
+                    var selectedItem = $('input[type="radio"][name="RequestTypeBuildingId"]:checked').val();
+                    if (selectedItem == 0) {
+
+                        var out = $('input[type="checkbox"][name="IsRequestWaterExemption"]:checked').length +
+                            $('input[type="checkbox"][name="IsRequestElectricalExemption"]:checked').length +
+                            $('input[type="checkbox"][name="IsRequestGasExemption"]:checked').length +
+                            $('input[type="checkbox"][name="IsRequestProductionLicenseExemption"]:checked').length;
+
+                        if (out == 0) {
+                            alert(
+                                'شما گزینه فقط متقاضی دریافت معافیت انشعابات هستم را انتخاب کرده اید اما هیچ کدام از موارد معافیت را انتخاب نکرده اید.')
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+
+
+            // ------------------------------------------------------------
+            // ************************************************************
+            // کد حذف معرفی نامه از پایگاه داده
+            // ------------------------------------------------------------
+            // ************************************************************
+
+            $('div#requestExemptionPanel table#requestGetLetterTable td#actionTableData button#deleteGetLetter')
+                .click(function() {
+
+
+                    var getLetterId = $(this).parent().parent().attr('data-getletterid');
+                    console.log($(this).parent());
+                    console.log('getletterid: ' + getLetterId);
+                    $("#modalDeleteGetLetter #selectedGetLetterIdForDelete").val(getLetterId);
+                    $("#modalDeleteGetLetter").modal();
+                });
+
+            // ------------------------------------------------------------
+            // ************************************************************
+            // کد آپلود تصویر معرفی نامه
+            // ------------------------------------------------------------
+            // ************************************************************
+
+            var uploadGetLetterPanel = $('#uploadGetLetterPanel');
+
+            var previewImageGetLetter = $('#preview-image', uploadGetLetterPanel);
+            var loadingImageGetLetter = $('#loading-image', uploadGetLetterPanel);
+
+            var btnSelectImageGetLetter = $('#select-image-btn', uploadGetLetterPanel);
+            var btnRemoveImageGetLetter = $('#remove-image-btn', uploadGetLetterPanel);
+            var btnUploadImageGetLetter = $('#upload-image-btn', uploadGetLetterPanel);
+
+            var inputImageSelectGetLetter = $('#imageSelect', uploadGetLetterPanel);
+
+            var imageTempIdHiddenGetLetter = $('#GetFormTemporaryImageId', uploadGetLetterPanel);
+
+            var spanImageSizeGetLetter = $('#image-size', uploadGetLetterPanel);
+            var spanImageStatusGetLetter = $('#image-status', uploadGetLetterPanel);
+            var spanImageWidthGetLetter = $('#image-width', uploadGetLetterPanel);
+            var spanImageHeightGetLetter = $('#image-height', uploadGetLetterPanel);
+
+            //When click on image show file input dialog
+            previewImageGetLetter.click(function(event) {
+                //if image is disabled ---> we are uploading an image to server! so don't show select file dialog
+                if (!$(this).prop('disabled'))
+                    inputImageSelectGetLetter.click();
+            });
+
+            //image select btn click event
+            btnSelectImageGetLetter.click(function(event) {
+                inputImageSelectGetLetter.click();
+            });
+
+            btnRemoveImageGetLetter.click(
+                function(event) {
+                    //clear displayed image
+                    previewImageGetLetter.attr('src', '');
+
+                    //clear ImageUniqueId
+                    imageTempIdHiddenGetLetter.val('');
+
+                    inputImageSelectGetLetter.val('');
+
+                    //disable upload btn
+                    btnUploadImageGetLetter.prop('disabled', true);
+
+                    //disable remove btn
+                    $(this).prop('disabled', true);
+
+                    //clear detail data
+                    spanImageSizeGetLetter.html('');
+                    spanImageWidthGetLetter.html('');
+                    spanImageHeightGetLetter.html('');
+                    spanImageStatusGetLetter.html('');
+
+
+                });
+
+            btnUploadImageGetLetter.click(
+                function(event) {
+
+                    $(this).prop('disabled', true);
+
+                    //disable remove and upload btn
+                    btnRemoveImageGetLetter.prop('disabled', true);
+                    btnSelectImageGetLetter.prop('disabled', true);
+
+                    //set preview image opacity to 30%
+                    previewImageGetLetter.css('opacity', 0.3).prop('disabled', true);
+
+                    //show loading image
+                    loadingImageGetLetter.show();
+
+
+                    var clientId = @Model.Client.Id;
+                    var fieldId = $(this).parent().parent().parent('div#ImageTemplate').attr('data-field-id');
+
+
+                    var file = $(inputImageSelectGetLetter)[0].files[0];
+
+                    var formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('clientId', clientId);
+                    formData.append('fieldId', 0);
+
+                    var currentBtn = this;
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("UploadClientDocumentImage", "Client")',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function(data, textStatus, jqXhr) {
+                            var res = data.split('#');
+                            if (res[0] === "Created") {
+                                var tempImageId = res[1];
+                                // در صورتی که کاربر تصویر تازه ای  را بارگذاری کرده بود
+                                // در قسمت کد یکتای تصویر در انتها کلمه جدید با یک هشتگ اضافه میشود
+                                // با این کار کنترل این که تصویر جدید است یا همان تصویر قدیمی می باشد آسان می باشد
+                                imageTempIdHiddenGetLetter.val(tempImageId);
+
+                                //set status of successful upload to server
+                                spanImageStatusGetLetter.removeClass()
+                                    .html(
+                                        'عکس به صورت موقت در سرور ذخیره شد. برای ثبت دائمی می بایست دکمه ذخیره تصویر معرفی نامه را بزنید')
+                                    .addClass('text-success');
+
+                            } else if (res[0] === "Error") {
+                                spanImageStatusGetLetter.removeClass().html(res[1]).addClass('text-danger');
+
+                            }
+                        },
+                        error: function(err) {
+                            // enable upload btn
+                            $(currentBtn).prop('disabled', false);
+                            //enable remove and select image btn
+                            $(currentBtn).siblings('button').prop('disabled', false);
+                            //set error message in image status
+                            spanImageStatusGetLetter.removeClass().html('در ارسال اطلاعات خطایی رخ داده است' + err)
+                                .addClass('text-danger');
+                        },
+                        complete: function() {
+                            //set preview image opacity to 100%
+                            previewImageGetLetter.css('opacity', 1).prop('disabled', false);
+
+                            //hide loading image
+                            loadingImageGetLetter.hide();
+
+                        }
+                    });
+                });
+
+
+            //when select a new image display it
+            // input file change event
+            inputImageSelectGetLetter.change(function(event) {
+
+                if (this.files && this.files[0]) {
+
+                    var fileSize = this.files[0].size;
+
+                    //set file size in detail
+                    spanImageSizeGetLetter.html(Math.round(fileSize / 1024 / 1024 * 100) / 100 + ' مگابایت');
+
+                    btnRemoveImageGetLetter.prop('disabled', false);
+
+                    //enable upload btn
+                    btnUploadImageGetLetter.prop('disabled', false);
+
+                    //check image file size (max is 1 MB)
+                    if (fileSize > 1150000) {
+
+                        //$('#imgStatus').html('حجم فایل انتخاب شده زیاد تر از محدوده می باشد!');
+
+
+                        //Disabled upload button if file size is bigger than max
+                        btnUploadImageGetLetter.prop('disabled', true);
+
+                        //set image status
+                        spanImageStatusGetLetter.html('حجم فایل انتخاب شده بیشتر از حد مجاز می باشد').removeClass()
+                            .addClass('text-danger');
+                    } else {
+                        //set image status
+                        spanImageStatusGetLetter
+                            .html('سایز عکس مورد تایید می باشد، دکمه بارگذاری را جهت ارسال به سرور کلیک کنید.')
+                            .removeClass().addClass('text-primary');
+                    }
+
+                    var currentInputFile = $(this);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        //set image to display it
+                        previewImageGetLetter.attr('src', e.target.result);
+
+                        var image = new Image();
+
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+
+                        image.onload = function() {
+                            var height = this.height;
+                            var width = this.width;
+
+                            //set image width in detail panel
+                            spanImageWidthGetLetter.html(width + ' پیکسل');
+                            //set image height in detail panel
+                            spanImageHeightGetLetter.html(height + ' پیکسل');
+                        };
+
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            // انتهای کد آپلود فرم معرفی نامه
+
+
+
+            // ------------------------------------------------------------
+            // ************************************************************
+            // کد حذف بهره مندی ثبت شده از پایگاه داده
+            // ------------------------------------------------------------
+            // ************************************************************
+
+            $('div#requestExemptionPanel table#requestBenefitLetterTable td#actionTableData button#deleteBenefitLetter')
+                .click(function() {
+                    var benefitLetterId = $(this).parent().parent().attr('data-benefitletterid');
+                    console.log($(this).parent());
+                    console.log('benefitLetterId: ' + benefitLetterId);
+                    $("#modalDeleteBenefitLetter #selectedBenefitLetterIdForDelete").val(benefitLetterId);
+                    $("#modalDeleteBenefitLetter").modal();
+                });
+
+
+            // ------------------------------------------------------------
+            // ************************************************************
+            // کد آپلود تصویر نامه بهره مندی
+            // ------------------------------------------------------------
+            // ************************************************************
+
+            var uploadBenefitLetterPanel = $('#uploadBenefitLetterPanel');
+
+            var previewImageBenefitLetter = $('#preview-image', uploadBenefitLetterPanel);
+            var loadingImageBenefitLetter = $('#loading-image', uploadBenefitLetterPanel);
+
+            var btnSelectImageBenefitLetter = $('#select-image-btn', uploadBenefitLetterPanel);
+            var btnRemoveImageBenefitLetter = $('#remove-image-btn', uploadBenefitLetterPanel);
+            var btnUploadImageBenefitLetter = $('#upload-image-btn', uploadBenefitLetterPanel);
+
+            var inputImageSelectBenefitLetter = $('#imageSelect', uploadBenefitLetterPanel);
+
+            var imageTempIdHiddenBenefitLetter = $('#BenefitFormTemporaryImageId', uploadBenefitLetterPanel);
+
+            var spanImageSizeBenefitLetter = $('#image-size', uploadBenefitLetterPanel);
+            var spanImageStatusBenefitLetter = $('#image-status', uploadBenefitLetterPanel);
+            var spanImageWidthBenefitLetter = $('#image-width', uploadBenefitLetterPanel);
+            var spanImageHeightBenefitLetter = $('#image-height', uploadBenefitLetterPanel);
+
+            //When click on image show file input dialog
+            previewImageBenefitLetter.click(function(event) {
+                //if image is disabled ---> we are uploading an image to server! so don't show select file dialog
+                if (!$(this).prop('disabled'))
+                    inputImageSelectBenefitLetter.click();
+            });
+
+            //image select btn click event
+            btnSelectImageBenefitLetter.click(function(event) {
+                inputImageSelectBenefitLetter.click();
+            });
+
+            btnRemoveImageBenefitLetter.click(
+                function(event) {
+                    //clear displayed image
+                    previewImageBenefitLetter.attr('src', '');
+
+                    //clear ImageUniqueId
+                    imageTempIdHiddenBenefitLetter.val('');
+
+                    inputImageSelectBenefitLetter.val('');
+
+                    //disable upload btn
+                    btnUploadImageBenefitLetter.prop('disabled', true);
+
+                    //disable remove btn
+                    $(this).prop('disabled', true);
+
+                    //clear detail data
+                    spanImageSizeBenefitLetter.html('');
+                    spanImageWidthBenefitLetter.html('');
+                    spanImageHeightBenefitLetter.html('');
+                    spanImageStatusBenefitLetter.html('');
+
+
+                });
+
+            btnUploadImageBenefitLetter.click(
+                function(event) {
+
+                    $(this).prop('disabled', true);
+
+                    //disable remove and upload btn
+                    btnRemoveImageBenefitLetter.prop('disabled', true);
+                    btnSelectImageBenefitLetter.prop('disabled', true);
+
+                    //set preview image opacity to 30%
+                    previewImageBenefitLetter.css('opacity', 0.3).prop('disabled', true);
+
+                    //show loading image
+                    loadingImageBenefitLetter.show();
+
+
+                    var clientId = @Model.Client.Id;
+                    var fieldId = $(this).parent().parent().parent('div#imageTemplate').attr('data-field-id');
+
+
+                    var file = $(inputImageSelectBenefitLetter)[0].files[0];
+
+                    var formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('clientId', clientId);
+                    formData.append('fieldId', 0);
+
+                    var currentBtn = this;
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("UploadClientDocumentImage", "Client")',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function(data, textStatus, jqXhr) {
+                            var res = data.split('#');
+                            if (res[0] === "Created") {
+                                var tempImageId = res[1];
+                                // در صورتی که کاربر تصویر تازه ای  را بارگذاری کرده بود
+                                // در قسمت کد یکتای تصویر در انتها کلمه جدید با یک هشتگ اضافه میشود
+                                // با این کار کنترل این که تصویر جدید است یا همان تصویر قدیمی می باشد آسان می باشد
+                                imageTempIdHiddenBenefitLetter.val(tempImageId);
+
+                                //set status of successful upload to server
+                                spanImageStatusBenefitLetter.removeClass()
+                                    .html(
+                                        'عکس به صورت موقت در سرور ذخیره شد. برای ثبت دائمی می بایست دکمه ذخیره تصویر معرفی نامه را بزنید')
+                                    .addClass('text-success');
+
+                            } else if (res[0] === "Error") {
+                                spanImageStatusBenefitLetter.removeClass().html(res[1]).addClass('text-danger');
+
+                            }
+                        },
+                        error: function(err) {
+                            // enable upload btn
+                            $(currentBtn).prop('disabled', false);
+                            //enable remove and select image btn
+                            $(currentBtn).siblings('button').prop('disabled', false);
+                            //set error message in image status
+                            spanImageStatusBenefitLetter.removeClass().html('در ارسال اطلاعات خطایی رخ داده است' + err)
+                                .addClass('text-danger');
+                        },
+                        complete: function() {
+                            //set preview image opacity to 100%
+                            previewImageBenefitLetter.css('opacity', 1).prop('disabled', false);
+
+                            //hide loading image
+                            loadingImageBenefitLetter.hide();
+
+                        }
+                    });
+                });
+
+
+            //when select a new image display it
+            // input file change event
+            inputImageSelectBenefitLetter.change(function(event) {
+
+                if (this.files && this.files[0]) {
+
+                    var fileSize = this.files[0].size;
+
+                    //set file size in detail
+                    spanImageSizeBenefitLetter.html(Math.round(fileSize / 1024 / 1024 * 100) / 100 + ' مگابایت');
+
+                    btnRemoveImageBenefitLetter.prop('disabled', false);
+
+                    //enable upload btn
+                    btnUploadImageBenefitLetter.prop('disabled', false);
+
+                    //check image file size (max is 1 MB)
+                    if (fileSize > 1150000) {
+
+                        //$('#imgStatus').html('حجم فایل انتخاب شده زیاد تر از محدوده می باشد!');
+
+
+                        //Disabled upload button if file size is bigger than max
+                        btnUploadImageBenefitLetter.prop('disabled', true);
+
+                        //set image status
+                        spanImageStatusBenefitLetter.html('حجم فایل انتخاب شده بیشتر از حد مجاز می باشد').removeClass()
+                            .addClass('text-danger');
+                    } else {
+                        //set image status
+                        spanImageStatusBenefitLetter
+                            .html('سایز عکس مورد تایید می باشد، دکمه بارگذاری را جهت ارسال به سرور کلیک کنید.')
+                            .removeClass().addClass('text-primary');
+                    }
+
+                    var currentInputFile = $(this);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        //set image to display it
+                        previewImageBenefitLetter.attr('src', e.target.result);
+
+                        var image = new Image();
+
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+
+                        image.onload = function() {
+                            var height = this.height;
+                            var width = this.width;
+
+                            //set image width in detail panel
+                            spanImageWidthBenefitLetter.html(width + ' پیکسل');
+                            //set image height in detail panel
+                            spanImageHeightBenefitLetter.html(height + ' پیکسل');
+                        };
+
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            // انتهای کد آپلود بهره مندی
+
+
+
+        }); //end document.ready
+
+        //#endregion
+
+    </script>
+}

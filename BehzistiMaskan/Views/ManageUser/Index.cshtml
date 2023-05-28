@@ -1,0 +1,50 @@
+﻿@model BehzistiMaskan.Models.IndexViewModel
+@{
+    ViewBag.Title = "پروفایل کاربر";
+}
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "ManageUser")">
+                    @ViewBag.Title
+                </a>
+            </li>
+        </ol>
+    </div>
+</header>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+    <h4>تغییر تنظیمات فعلی شما</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>رمز:</dt>
+        <dd>
+            [
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("تغییر رمز عبور", "ChangePassword")
+            }
+            else
+            {
+                @Html.ActionLink("Create", "SetPassword")
+            }
+            ]
+        </dd>
+        <dt>اعتبار سنجی دو مرحله ای (2FA):</dt>
+        <dd>
+            <p>
+                فعلا در سیستم هیچ اعتبار سنجی دو مرحله ای وجود ندارد
+            </p>
+        </dd>
+    </dl>
+</div>

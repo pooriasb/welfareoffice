@@ -1,0 +1,324 @@
+﻿@using BehzistiMaskan.Core.Utility
+@model BehzistiMaskan.ViewModels.EditClientRateFormViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - وضعیت پرونده";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditClientRateForm";
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if (Model.Client.FormEmtiazBandi == null || Model.Client.FormEmtiazBandi.Id == 0)
+                            {
+                                // اگر هیچ فرم امتیاز بندی هم برای مددجو ثبت نشده بود
+                                <div class="alert alert-info">
+                                    در حال حاضر فرم امتیاز بندی برای این مددجو ثبت نشده است.
+                                    <br />
+                                    مددجو در حال حاضر در وضعیت @Model.Client.ClientStateStr می باشد.
+                                </div>
+
+                                <h4>ثبت فرم به صورت آفلاین</h4>
+                                <hr />
+                                using (Html.BeginForm("SaveClientFormEmtiazBandiKarshenasOstan", "Client", FormMethod.Post, new { @class = "form form-bordered", @id = "frmSaveClientFormEmtiazBandi" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.Client.FormEmtiazBandi.Rate, new { @class = "control-label col-md-2" })
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(m => m.Client.FormEmtiazBandi.Rate, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(m => m.Client.FormEmtiazBandi.Rate)
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.Client.FormEmtiazBandi.Amount, new { @class = "control-label col-md-2" })
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(m => m.Client.FormEmtiazBandi.Amount, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(m => m.Client.FormEmtiazBandi.Amount)
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+
+                                            </div>
+
+                                        </div>
+                                        <div id="ImageTemplate" class="form-group col-md-7">
+                                            <div class="col-md-3">
+                                                <div data-name="image-container" style="position: relative; min-width: 150px; max-width: 100%; min-height: 200px; max-height: 200px;">
+                                                    <input id="imageSelect" type="file" name="file" accept="image/x-png,image/gif,image/jpeg" style="display: none" />
+                                                    <img id="preview-image" style="position: absolute; right: 0; top: 0; min-width: 150px; max-height: 100%; min-height: 200px; max-width: 150px; border: 2px solid #999;" />
+                                                    <img id="loading-image" src="/Assets/images/preloader.gif" style="display: none; margin: 0; position: absolute; top: 50%; left: 50%; opacity: 0.7" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" data-name="image-controls">
+                                                <button type="button" class="btn btn-default btn-block text-primary" id="select-image-btn">انتخاب تصویر</button>
+                                                <button type="button" class="btn btn-default btn-block text-danger" id="remove-image-btn" disabled="disabled">حذف</button>
+                                                <button type="button" class="btn btn-default btn-block text-success" id="upload-image-btn" disabled="disabled">بارگذاری</button>
+                                            </div>
+                                            <div class="col-md-6 mt-md" id="image-details">
+                                                <div><span>عرض: <span id="image-width"></span></span></div>
+                                                <div><span>ارتفاع: <span id="image-height"></span></span></div>
+                                                <div><span>سایز فایل: <span id="image-size"></span></span></div>
+                                                <div><span>وضعیت: <span id="image-status"></span></span></div>
+                                            </div>
+                                            @Html.HiddenFor(m => m.TempImageIdFormEmtiazBandi)
+                                            @Html.ValidationMessageFor(m => m.TempImageIdFormEmtiazBandi)
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <button class="btn btn-primary" type="submit">ذخیره فرم امتیاز بندی به صورت آفلاین</button>
+                                    </div>
+                                }
+
+                            }
+                            else
+                            {
+                                <h4>مشخصات فرم امتیاز بندی:</h4>
+                                <hr />
+                                <div class="row text-lg">
+                                    <div class="col-md-3">
+                                        امتیاز : @Model.Client.FormEmtiazBandi.Rate
+                                    </div>
+                                    <div class="col-md-3">
+                                        مبلغ : @Model.Client.FormEmtiazBandi.Amount
+                                    </div>
+                                </div>
+                                <hr />
+                                @Html.Partial("_FormEmtiazBandiStatePartial")
+                                <hr />
+
+
+
+                            }
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        //با این خط کد به پلاگین میگوییم که فیلدهای مخفی رو هم در ارزیابی قرار بده
+        //say jquery validation to User Hidden fields
+        $.validator.setDefaults({ ignore: null });
+
+
+        $(document).ready(function () {
+
+
+            var previewImage = $('#preview-image');
+            var loadingImage = $('#loading-image');
+
+            var btnSelectImage = $('#select-image-btn');
+            var btnRemoveImage = $('#remove-image-btn');
+            var btnUploadImage = $('#upload-image-btn');
+
+            var inputImageSelect = $('#imageSelect');
+
+            var imageTempIdHidden = $('#TempImageIdFormEmtiazBandi');
+
+            var spanImageSize = $('#image-size');
+            var spanImageStatus = $('#image-status');
+            var spanImageWidth = $('#image-width');
+            var spanImageHeight = $('#image-height');
+
+            //When click on image show file input dialog
+            previewImage.click(function (event) {
+                //if image is disabled ---> we are uploading an image to server! so don't show select file dialog
+                if (!$(this).prop('disabled'))
+                    inputImageSelect.click();
+            });
+
+            //image select btn click event
+            btnSelectImage.click(function (event) {
+                inputImageSelect.click();
+
+            });
+
+            btnRemoveImage.click(
+                function (event) {
+                    //clear displayed image
+                    previewImage.attr('src', '');
+
+                    //clear ImageUniqueId
+                    imageTempIdHidden.val('');
+
+
+                    //disable upload btn
+                    btnUploadImage.prop('disabled', true);
+
+                    //disable remove btn
+                    $(this).prop('disabled', true);
+
+                    //clear detail data
+                    spanImageSize.html('');
+                    spanImageWidth.html('');
+                    spanImageHeight.html('');
+                    spanImageStatus.html('');
+
+
+                });
+
+            btnUploadImage.click(
+                function (event) {
+
+                    $(this).prop('disabled', true);
+
+                    //disable remove and upload btn
+                    btnRemoveImage.prop('disabled', true);
+                    btnSelectImage.prop('disabled', true);
+
+                    //set preview image opacity to 30%
+                    previewImage.css('opacity', 0.3).prop('disabled', true);
+
+                    //show loading image
+                    loadingImage.show();
+
+
+                    var clientId = @Model.Client.Id;
+                    var fieldId = $(this).parent().parent().parent('div#ImageTemplate').attr('data-field-id');
+
+
+                    var file = $(inputImageSelect)[0].files[0];
+
+                    var formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('clientId', clientId);
+                    formData.append('fieldId', 0);
+
+                    var currentBtn = this;
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("UploadClientDocumentImage", "Client")',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function (data, textStatus, jqXhr) {
+                            var res = data.split('#');
+                            if (res[0] === "Created") {
+                                var tempImageId = res[1];
+                                // در صورتی که کاربر تصویر تازه ای  را بارگذاری کرده بود
+                                // در قسمت کد یکتای تصویر در انتها کلمه جدید با یک هشتگ اضافه میشود
+                                // با این کار کنترل این که تصویر جدید است یا همان تصویر قدیمی می باشد آسان می باشد
+                                imageTempIdHidden.val(tempImageId);
+
+                                //set status of successful upload to server
+                                spanImageStatus.removeClass().html('عکس به صورت موقت در سرور ذخیره شد. برای ثبت دائمی می بایست گزینه تایید اطلاعات زده شود')
+                                    .addClass('text-success');
+
+                            } else if (res[0] === "Error") {
+                                spanImageStatus.removeClass().html(res[1]).addClass('text-danger');
+
+                            }
+                        },
+                        error: function (err) {
+                            // enable upload btn
+                            $(currentBtn).prop('disabled', false);
+                            //enable remove and select image btn
+                            $(currentBtn).siblings('button').prop('disabled', false);
+                            //set error message in image status
+                            spanImageStatus.removeClass().html('در ارسال اطلاعات خطایی رخ داده است' + err).addClass('text-danger');
+                        },
+                        complete: function () {
+                            //set preview image opacity to 100%
+                            previewImage.css('opacity', 1).prop('disabled', false);
+
+                            //hide loading image
+                            loadingImage.hide();
+
+                        }
+                    });
+                });
+
+
+            //when select a new image display it
+            // input file change event
+            inputImageSelect.change(function (event) {
+
+                if (this.files && this.files[0]) {
+
+                    var fileSize = this.files[0].size;
+
+                    //set file size in detail
+                    spanImageSize.html(Math.round(fileSize / 1024 / 1024 * 100) / 100 + ' مگابایت');
+
+                    btnRemoveImage.prop('disabled', false);
+
+                    //enable upload btn
+                    btnUploadImage.prop('disabled', false);
+
+                    //check image file size (max is 1 MB)
+                    if (fileSize > 1150000) {
+
+                        //$('#imgStatus').html('حجم فایل انتخاب شده زیاد تر از محدوده می باشد!');
+
+
+                        //Disabled upload button if file size is bigger than max
+                        btnUploadImage.prop('disabled', true);
+
+                        //set image status
+                        spanImageStatus.html('حجم فایل انتخاب شده بیشتر از حد مجاز می باشد').removeClass().addClass('text-danger');
+                    } else {
+                        //set image status
+                        spanImageStatus.html('سایز عکس مورد تایید می باشد، دکمه بارگذاری را جهت ارسال به سرور کلیک کنید.').removeClass().addClass('text-primary');
+                    }
+
+                    var currentInputFile = $(this);
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        //set image to display it
+                        previewImage.attr('src', e.target.result);
+
+                        var image = new Image();
+
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+
+                        image.onload = function () {
+                            var height = this.height;
+                            var width = this.width;
+
+                            //set image width in detail panel
+                            spanImageWidth.html(width + ' پیکسل');
+                            //set image height in detail panel
+                            spanImageHeight.html(height + ' پیکسل');
+                        };
+
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+
+        });
+    </script>
+}

@@ -1,0 +1,391 @@
+﻿@model BehzistiMaskan.ViewModels.GenerateReportViewModel
+@{
+    ViewBag.Title = "خروجی گزارش " + Model.Report.ReportName;
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Report")">
+                    <i class="fa fa-home"></i> لیست گزارش ها
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel panel-success">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">جدول تولید شده </h2>
+            </header>
+            <div class="panel-body" style="overflow: scroll; height: 70vh;">
+                <table class="table table-bordered table-striped mb-none" id="report-list-table">
+                    <thead>
+                        <tr>
+                            @if (Model.Report.ClientAssistance)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.)
+                            {
+                                <td rowspan="2"></td>
+                            }
+                            @if (Model.Report.PhysicalProgress)
+                            {
+                                <td colspan="@Model.PhysicalProgresses.Count()">مراحل پیشرفت فیزیکی</td>
+                            }
+                            @foreach (var selectedForm in Model.Report.ReportForms)
+                            {
+                                <td colspan="@(selectedForm.ReportFormFields?.Count() ?? 1)" class="text-primary">@(selectedForm.Form.Name)</td>
+                            }
+                        </tr>
+
+                        <tr>
+                            @if (Model.Report.PhysicalProgress)
+                            {
+                                foreach (var physicalProgress in Model.PhysicalProgresses)
+                                {
+                                    <td>@physicalProgress.Name</td>
+                                }
+                            }
+                            @foreach (var selectedForm in Model.Report.ReportForms)
+                            {
+                                foreach (var formField in selectedForm.ReportFormFields)
+                                {
+                                    <td>@formField.Field.Title</td>
+
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var inx = 1;
+                        }
+                        @foreach (var client in Model.ReportResult)
+                        {
+                            <tr>
+                                <td>@(inx++)</td>
+                                <td>@client.Person.NationalCode</td>
+
+                                @if (Model.Report.ClientCertificateNo)
+                                {
+                                    <td>@client.Person.BirthCertificateNo</td>
+                                }
+                                @if (Model.Report.ClientCertificateMosalsal)
+                                {
+                                    <td>@</td>
+                                }
+                                @if (Model.Report.ClientCertificateDescription)
+                                {
+                                    <td>@</td>
+                                }
+                                @if (Model.Report.ClientProvinceOfBirth)
+                                {
+                                    <td>@(client.Person.CityOfBirth!=null? client.Person.CityOfBirth.District.County.Province.Name:"")</td>
+                                }
+                                @if (Model.Report.ClientCountyOfBirth)
+                                {
+                                    <td>@(client.Person.CityOfBirth!=null? client.Person.CityOfBirth.District.County.Name:"")</td>
+                                }
+                                @if (Model.Report.ClientDistrictOfBirth)
+                                {
+                                    <td>@(client.Person.CityOfBirth!=null? client.Person.CityOfBirth.District.Name:"")</td>
+                                }
+                                @if (Model.Report.ClientCityOfBirth)
+                                {
+                                    <td>@(client.Person.CityOfBirth != null?client.Person.CityOfBirth.Name:"")</td>
+                                }
+                                @if (Model.Report.ClientBehzistiDocumentCounty)
+                                {
+                                    <td>@client.City.District.County.Name</td>
+                                }
+                                @if (Model.Report.ClientBehzistiDocumentDistrict)
+                                {
+                                    <td>@client.City.District.Name</td>
+                                }
+                                @if (Model.Report.ClientBehzistiDocumentCity)
+                                {
+                                    <td>@client.City.Name</td>
+                                    <td>@(client.City.IsVillage ? "روستایی" : "شهری")</td>
+                                }
+                                @if (Model.Report.ClientAssistance)
+                                {
+                                    <td>@client.AssistanceType.Name</td>
+                                }
+                                @if (Model.Report.ClientType)
+                                {
+                                    <td>@(client.ClientType!=null? client.ClientType.Name:"")</td>
+                                }
+                                @if (Model.Report.ClientDescription)
+                                {
+                                    <td>@client.ClientTypeDescription</td>
+                                }
+                                @if (Model.Report.BehzistiCode)
+                                {
+                                    <td>@client.BehzistiCode</td>
+                                }
+                                @if (Model.Report.GlobalBehzistiUiCode)
+                                {
+                                    <td>@client.GlobalBehzistiUiCode</td>
+                                }
+                                @if (Model.Report.NumberOfDisabledInFamily)
+                                {
+                                    <td>@client.NumberOfDisabledInFamily</td>
+                                }
+                                @if (Model.Report.IsHouseHold)
+                                {
+                                    <td>@(client.IsHouseHold != null && (bool)client.IsHouseHold ? "سرپرست خانوار" : "")</td>
+                                }
+                                @if (Model.Report.CurrentHousing_CurrentHouseTypeId)
+                                {
+                                    if (client.CurrentHousing != null)
+                                    {
+                                        <td>@(client.CurrentHousing.CurrentHouseType.Name)</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.CurrentHousing_DepositAmount)
+                                {
+                                    if (client.CurrentHousing != null)
+                                    {
+                                        <td>@client.CurrentHousing.DepositAmount</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.CurrentHousing_MonthlyRentalRate)
+                                {
+                                    if (client.CurrentHousing != null)
+                                    {
+                                        <td>@client.CurrentHousing.MonthlyRentalRate</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.CurrentHousing_Address)
+                                {
+                                    if (client.CurrentHousing != null)
+                                    {
+                                        <td>@(client.CurrentHousing?.City?.District.County.Province.Name + ", " + client.CurrentHousing?.City?.District.County.Name + ", " + client.CurrentHousing?.City?.District.Name + ", " + client.CurrentHousing?.City?.Name + ", " + client.CurrentHousing?.Address)</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.CurrentHousing_PostalCode)
+                                {
+                                    if (client.CurrentHousing != null)
+                                    {
+                                        <td>@client.CurrentHousing.PostalCode</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.ContactInfo_HomeTel)
+                                {
+                                    if (client.ContactInfo != null)
+                                    {
+                                        <td>@client.ContactInfo.HomeTel</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.ContactInfo_Mobile)
+                                {
+                                    if (client.ContactInfo != null)
+                                    {
+                                        <td>@client.ContactInfo.Mobile</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.ContactInfo_EmergencyTel)
+                                {
+                                    if (client.ContactInfo != null)
+                                    {
+                                        <td>@client.ContactInfo.EmergencyTel</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.BankInfo_BankTypeId)
+                                {
+                                    if (client.BankInfo != null)
+                                    {
+                                        <td>@client.BankInfo.BankType.Name</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.BankInfo_AccountNumber)
+                                {
+                                    if (client.BankInfo != null)
+                                    {
+                                        <td>@client.BankInfo.AccountNumber</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.BankInfo_CardNumber)
+                                {
+                                    if (client.BankInfo != null)
+                                    {
+                                        <td>@client.BankInfo.CardNumber</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                                @if (Model.Report.PhysicalProgress)
+                                {
+                                    foreach (var physicalProgress in Model.PhysicalProgresses)
+                                    {
+                                        var isDone = client.ClientPhysicalProgresses.Any(cph => cph.IsDone && cph.PhysicalProgressId == physicalProgress.Id);
+                                        <td>@(isDone ? "1" : "")</td>
+                                    }
+                                }
+                                @foreach (var selectedForm in Model.Report.ReportForms)
+                                {
+                                    foreach (var formField in selectedForm.ReportFormFields)
+                                    {
+                                        <td>
+                                            @(client.ClientForms.SingleOrDefault(cf=>cf.FormId == selectedForm.FormId)?.ClientFormFields.SingleOrDefault(cff=>cff.FieldId == formField.FieldId)?.Value??"")
+                                        </td>
+
+                                    }
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="panel-footer">
+            </div>
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+
+@section StyleSheet{
+    <link rel="stylesheet" href="/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+}
+
+
+
+@section Scripts
+{
+
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            //$('#report-list-table').dataTable();
+        });
+
+    </script>
+}

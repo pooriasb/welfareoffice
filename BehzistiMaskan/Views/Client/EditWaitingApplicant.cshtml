@@ -1,0 +1,853 @@
+﻿@model BehzistiMaskan.ViewModels.MadadjooRegisterViewModel
+
+@{
+    ViewBag.Title = "ویرایش اطلاعات متقاضی در صف انتظار";
+    Layout = "../Shared/_LayoutPorto.cshtml";
+
+    if (Model.ClientWaitingApplicant.Latitude == 0.0d)
+    {
+        Model.ClientWaitingApplicant.Latitude = 29.61342;
+    }
+    if (Model.ClientWaitingApplicant.Longitude == 0.0d)
+    {
+        Model.ClientWaitingApplicant.Longitude = 52.50611;
+    }
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><a href="@Url.Action("WaitingApplicantList")">متقاضیان در صف انتظار</a></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">ویرایش اطلاعات متقاضی با کد ملی <b class="text-primary">@Model.ClientWaitingApplicant.NationalCode</b></h2>
+            </header>
+            @using (Html.BeginForm("SaveWaitingApplicant", "Client", FormMethod.Post, new { @class = "form", @id = "frmSaveWaitingApplicant" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="panel-body">
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-featured panel-featured-primary">
+                            <div class="panel-heading p-sm text-primary">تاریخچه تقاضا</div>
+                            <div class="panel-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <td>#</td>
+                                        <td>تاریخ</td>
+                                        <td>توضیحات</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var log in Model.ClientWaitingApplicantLogs)
+                                    {
+                                        <tr>
+                                            <td>@log.Id</td>
+                                            <td>@log.CreatedAt</td>
+                                            <td>@log.Description</td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="text-primary">نوع تقاضا</h4>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-group">
+                            <div class="panel panel-featured panel-featured-primary">
+                                <div class="panel-heading p-sm text-primary">متقاضی کمک به تعمیر مسکن فعلی و یا دریافت کمک هزینه ساخت یا خرید مسکن</div>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        @foreach (var request in Model.RequestTypes)
+                                        {
+                                            if (!request.IsExemption)
+                                            {
+                                                <div class="radio">
+                                                    <label>@Html.RadioButtonFor(m => m.RequestTypeBuildingId, request.Id) @request.PersianTitle</label>
+                                                </div>
+                                            }
+                                        }
+                                        @Html.ValidationMessageFor(m => m.RequestTypeBuildingId)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-featured panel-featured-primary">
+                                <div class="panel-heading p-sm text-primary">متقاضی دریافت معافیت انشعابات</div>
+                                <div class="panel-body">
+
+                                    <div class="form-group">
+                                        <label>@Html.CheckBoxFor(m => m.IsRequestWaterExemption) متقاضی معافیت انشعاب آب</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>@Html.CheckBoxFor(m => m.IsRequestElectricalExemption) متقاضی معافیت انشعاب برق</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>@Html.CheckBoxFor(m => m.IsRequestGasExemption) متقاضی معافیت انشعاب گاز</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>@Html.CheckBoxFor(m => m.IsRequestProductionLicenseExemption) متقاضی معافیت عوارض صدور پروانه ساخت</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <h4 class="text-primary mt-sm">اطلاعات فردی</h4>
+                <hr/>
+                <div class="row mb-md">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.Name, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.Name, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.Name)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.Family, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.Family, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.Family)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.FatherName, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.FatherName, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.FatherName)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.MotherName, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.MotherName, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.MotherName)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mb-md">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.BirthCertificateNo, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.BirthCertificateNo, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.BirthCertificateNo)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.BirthCertificateMosalsal, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.BirthCertificateMosalsal, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.BirthCertificateMosalsal)
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.BirthCertificateDescription, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.BirthCertificateDescription, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.BirthCertificateDescription)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mb-md">
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.Birthdate, new {@class = "control-label"})
+                            <div class="input-group">
+                                <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#Client_Person_Birthdate" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </div>
+                                @Html.TextBoxFor(c => c.ClientWaitingApplicant.Birthdate, "{0:yyyy/M/d}",
+                                    new Dictionary<string, Object>
+                                    {
+                                        {"class", "form-control text-dir-ltr"},
+                                        {"data-mddatetimepicker", "true"},
+                                        {"data-targetselector", "#Client_Person_Birthdate"},
+                                        {"data-trigger", "focus"},
+                                        {"data-enabletimepicker", "false"},
+                                        {"data-englishnumber", "true"},
+                                    })
+                            </div>
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.Birthdate)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.GenderTypeId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.ClientWaitingApplicant.GenderTypeId, new SelectList(Model.GenderTypes, "Id", "Name"), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.GenderTypeId)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.MarriageTypeId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.ClientWaitingApplicant.MarriageTypeId, new SelectList(Model.MarriageTypes, "Id", "Name"), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.MarriageTypeId)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.NumberOfChildren, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.NumberOfChildren, new {@class = "form-control text-left"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.NumberOfChildren)
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ProvinceOfBirthId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.ProvinceOfBirthId, new SelectList(Model.AllProvinces, "Id", "Name"), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ProvinceOfBirthId)
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.CountyOfBirthId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.CountyOfBirthId, new SelectList(Model.CountyOfBirthList, "Id", "Name", Model.ClientWaitingApplicant.CityOfBirth?.District.CountyId), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.CountyOfBirthId)
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.DistrictOfBirthId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.DistrictOfBirthId, new SelectList(Model.DistrictOfBirthList, "Id", "Name", Model.ClientWaitingApplicant.CityOfBirth?.DistrictId), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.DistrictOfBirthId)
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.CityOfBirthId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.ClientWaitingApplicant.CityOfBirthId, new SelectList(Model.CityOfBirthList, "Id", "Name", Model.ClientWaitingApplicant.CityOfBirthId), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.CityOfBirthId)
+                        </div>
+                    </div>
+
+
+                </div>
+                <h4 class="mt-xl text-primary">مشخصات پرونده بهزیستی</h4>
+                <hr/>
+
+                <div class="row mb-sm">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.CountyOfBehzistiDocumentId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.CountyOfBehzistiDocumentId, new SelectList(Model.CountyOfBirthList, "Id", "Name", Model.CountyOfBehzistiDocumentId), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.CountyOfBehzistiDocumentId)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.DistrictOfBehzistiDocumentId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.DistrictOfBehzistiDocumentId, new SelectList(Model.DistrictOfBehzistiDocumentList, "Id", "Name", Model.DistrictOfBehzistiDocumentId), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.DistrictOfBehzistiDocumentId)
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.CityId, new {@class = ""})
+                            @Html.DropDownListFor(c => c.ClientWaitingApplicant.CityId, new SelectList(Model.CityOfBehzistiDocumentList, "Id", "Name", Model.ClientWaitingApplicant.CityId), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.CityId)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-sm">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.ClientTypeId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.ClientWaitingApplicant.ClientTypeId, new SelectList(Model.ClientTypes, "Id", "Name"), "انتخاب کنید", new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.ClientTypeId)
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-lg">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBoxFor(c => c.ClientWaitingApplicant.IsDisabled) آیا دارای معلولیت می باشید؟
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.NumberOfDisabledInFamily, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.NumberOfDisabledInFamily, new {@class = "form-control text-dir-ltr"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.NumberOfDisabledInFamily)
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-lg">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBoxFor(c => c.ClientWaitingApplicant.IsHouseHold) آیا سرپرست خانوار می باشد؟
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mt-xl text-primary">مشخصات تماس</h4>
+                <hr/>
+
+                <div class="row mb-sm">
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.Mobile, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.Mobile, new {@class = "form-control text-dir-ltr"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.Mobile)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.EmergencyTel, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.EmergencyTel, new {@class = "form-control text-dir-ltr"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.EmergencyTel)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.HomeTel, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.HomeTel, new {@class = "form-control text-dir-ltr"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.HomeTel)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.WorkTel, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.WorkTel, new {@class = "form-control text-dir-ltr"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.WorkTel)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mb-xlg">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.WorkAddress, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.WorkAddress, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.WorkAddress)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(m => m.ClientWaitingApplicant.CurrentHouseTypeId, new {@class = "control-label text-primary text-lg", @style = "float:right !important; line-height: 2;"})
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                @Html.DropDownListFor(c => c.ClientWaitingApplicant.CurrentHouseTypeId, new SelectList(Model.CurrentHouseTypes, "Id", "Name"), "انتخاب کنید", new {@class = "form-control"})
+                                @Html.ValidationMessageFor(m => m.ClientWaitingApplicant.CurrentHouseTypeId)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="divPleaseSelectState" class="alert alert-default">
+                            لطفا یکی از گزینه های وضعیت سکونت را انتخاب کنید
+                        </div>
+                        <div class="row" id="divEjare">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ClientWaitingApplicant.DepositAmount, new {@class = "control-label"})
+                                    @Html.TextBoxFor(m => m.ClientWaitingApplicant.DepositAmount, new {@class = "form-control text-dir-ltr"})
+                                    @Html.ValidationMessageFor(m => m.ClientWaitingApplicant.DepositAmount)
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ClientWaitingApplicant.MonthlyRentalRate, new {@class = "control-label"})
+                                    @Html.TextBoxFor(m => m.ClientWaitingApplicant.MonthlyRentalRate, new {@class = "form-control text-dir-ltr"})
+                                    @Html.ValidationMessageFor(m => m.ClientWaitingApplicant.MonthlyRentalRate)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divBastegan">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ClientWaitingApplicant.RelativeFamilyNameWhoClientLiveInHerHouse, new {@class = "control-label"})
+                                    @Html.TextBoxFor(c => c.ClientWaitingApplicant.RelativeFamilyNameWhoClientLiveInHerHouse, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.ClientWaitingApplicant.RelativeFamilyNameWhoClientLiveInHerHouse)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divKhayer">
+
+                        </div>
+                        <div class="row" id="divSayer">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ClientWaitingApplicant.OtherDescription, new {@class = "control-label"})
+                                    @Html.TextBoxFor(c => c.ClientWaitingApplicant.OtherDescription, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.ClientWaitingApplicant.OtherDescription)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="mt-md text-primary">آدرس مسکن فعلی</h4>
+                <hr/>
+                <div class="row mb-md">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.HouseCountyId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.HouseCountyId, new SelectList(Model.AllCounties, "Id", "Name"), new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.HouseCountyId)
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.HouseDistrictId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.HouseDistrictId, new SelectList(new List<SelectListItem>(), "", ""), new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.HouseDistrictId)
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.HouseCityId, new {@class = "control-label"})
+                            @Html.DropDownListFor(c => c.ClientWaitingApplicant.HouseCityId, new SelectList(new List<SelectListItem>(), "", ""), new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.HouseCityId)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-md">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.Address, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.Address, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.Address)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(c => c.ClientWaitingApplicant.PostalCode, new {@class = "control-label"})
+                            @Html.TextBoxFor(c => c.ClientWaitingApplicant.PostalCode, new {@class = "form-control text-dir-ltr"})
+                            @Html.ValidationMessageFor(c => c.ClientWaitingApplicant.PostalCode)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-md">
+                    <div class="col-md-3">
+                        <div class="form-group mb-sm">
+                            @Html.LabelFor(m => m.ClientWaitingApplicant.Latitude)
+                            @Html.TextBoxFor(m => m.ClientWaitingApplicant.Latitude, new {@class = "form-control  text-dir-ltr"})
+                            @Html.ValidationMessageFor(m => m.ClientWaitingApplicant.Latitude)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.ClientWaitingApplicant.Longitude)
+                            @Html.TextBoxFor(m => m.ClientWaitingApplicant.Longitude, new {@class = "form-control  text-dir-ltr"})
+                            @Html.ValidationMessageFor(m => m.ClientWaitingApplicant.Longitude)
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <label class="control-label">انتخاب از روی نقشه</label>
+                        <div id="locationPicker" style="width: auto; height: 300px;"></div>
+                    </div>
+                </div>
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.ClientWaitingApplicant.NationalCode)
+                    @Html.HiddenFor(m => m.ClientWaitingApplicant.Id)
+                    <a href="@Url.Action("WaitingApplicantList")" class="btn btn-default"><span class="fa fa-backward"></span> برگشت به لیست متقاضیان در انتظار</a>
+                    <button type="submit" class="btn btn-default text-primary"><span class="fa fa-save"></span> ذخیره تغییرات</button>
+                </div>
+            }
+            @using (Html.BeginForm("AcceptOrRejectApplicant", "Client", FormMethod.Post, new { @id = "frmAcceptOrRejectApplicant", @class = "form form-horizontal" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Description, new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Description)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.IsApproved)
+                    @Html.HiddenFor(m => m.IsRejected)
+                    @Html.HiddenFor(m=>m.ClientWaitingApplicant.Id)
+                    @Html.HiddenFor(m=>m.ClientWaitingApplicant.NationalCode)
+                    <button type="button" id="btnRejectApplicant" class="btn btn-danger"><span class="fa fa-close"></span> عدم تایید اطلاعات</button>
+                    <button type="button" id="btnApproveApplicantAsClient" class="btn btn-success"><span class="fa fa-check"></span> تایید به عنوان مددجوی بهزیستی</button>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+
+
+
+
+@section StyleSheet
+{
+    <link href="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
+    <link href="~/Assets/vendor/leaflet/leaflet.css" rel="stylesheet" />
+}
+
+@section Scripts
+{
+
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+    <script src="~/Assets/vendor/leaflet/leaflet.js"></script>
+    <script src="~/Assets/javascripts/OSMLocationPicker.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+
+        $(document).ready(function() {
+
+            var btnApproveApplicantAsClient = $('#btnApproveApplicantAsClient');
+            var btnRejectApplicant = $('#btnRejectApplicant');
+
+            var fieldIsApproved = $('#IsApproved');
+            var fieldIsRejected = $('#IsRejected');
+
+            var frmAcceptOrRejectApplicant = $('#frmAcceptOrRejectApplicant');
+
+
+
+            btnApproveApplicantAsClient.click(function() {
+                fieldIsApproved.val('true');
+                fieldIsRejected.val('false');
+
+                if (confirm("آیا از تایید متقاضی به عنوان مددجو اطمینان دارید؟")) {
+                    frmAcceptOrRejectApplicant.submit();
+                }
+            });
+
+            btnRejectApplicant.click(function() {
+                fieldIsApproved.val('false');
+                fieldIsRejected.val('true');
+
+                if (confirm("آیا از عدم تایید متقاضی به عنوان مددجو اطمینان دارید؟")) {
+                    frmAcceptOrRejectApplicant.submit();
+                }
+            });
+
+
+            // کد مربوط به شهرستان و بخش و شهر
+            // پرونده بهزیستی
+
+
+            //کد های جاوااسکریپت مربوط به بخش اطلاعات اولیه
+            //این کد ها مربوط به انتخاب مکان جغرافیایی محل تولد
+            // و شهری است که مددجو در آن پرونده بهزیستی دارد
+            var countyDropDown = $('#CountyOfBehzistiDocumentId');
+            var districtDropDown = $('#DistrictOfBehzistiDocumentId');
+            var cityDropDown = $('#ClientWaitingApplicant_CityId');
+
+
+            // CountyId Select Index Change
+            countyDropDown.change(function() {
+                var countyId = countyDropDown.val();
+                if (countyId) {
+                    $.getJSON("/api/counties/" + countyId + "/districts",
+                        function(districts) {
+                            districtDropDown.children('option').remove();
+
+                            $.each(districts,
+                                function(i, district) {
+                                    districtDropDown.append(new Option(district.name, district.id));
+                                });
+                            districtDropDown.trigger('change');
+                        });
+                } else {
+                    //districtDropDown.children('option:not(:first)').remove();
+                    districtDropDown.children('option').remove();
+                    districtDropDown.append('<option value="">انتخاب کنید</option>');
+                    districtDropDown.trigger('change');
+                }
+            });
+
+            // DistrictId Select Index Change
+            districtDropDown.change(function() {
+                var districtId = districtDropDown.val();
+                if (districtId) {
+                    $.getJSON("/api/districts/" + districtId + "/cities",
+                        function(cities) {
+                            cityDropDown.children('option').remove();
+
+                            $.each(cities,
+                                function(key, city) {
+                                    cityDropDown.append(new Option(city.name, city.id));
+                                });
+                            cityDropDown.change();
+                        });
+                } else {
+                    cityDropDown.children('option').remove();
+                    cityDropDown.append('<option value="">انتخاب کنید</option>');
+                    cityDropDown.change();
+                }
+            });
+
+
+            // -------------------------------------------------------------------
+            // کد های مربوط به استان و شهرستان و بخش محل تولد
+            // -------------------------------------------------------------------
+
+            var provinceOfBirthDropDown = $('#ProvinceOfBirthId');
+            var countyOfBirthDropDown = $('#CountyOfBirthId');
+            var districtOfBirthDropDown = $('#DistrictOfBirthId');
+            var cityOfBirthDropDown = $('#ClientWaitingApplicant_CityOfBirthId');
+
+            provinceOfBirthDropDown.change(function() {
+                var provinceId = provinceOfBirthDropDown.val();
+                if (provinceId) {
+                    countyOfBirthDropDown.children('option').remove();
+
+                    $.getJSON("/api/provinces/" + provinceId + "/counties",
+                        function(counties) {
+                            $.each(counties,
+                                function(key, county) {
+                                    countyOfBirthDropDown.append(new Option(county.name, county.id));
+                                });
+                            countyOfBirthDropDown.trigger('change');
+                        });
+                } else {
+                    countyOfBirthDropDown.children('option').remove();
+                    countyOfBirthDropDown.append('<option value="">انتخاب کنید</option>');
+                    countyOfBirthDropDown.trigger('change');
+                }
+            });
+
+            countyOfBirthDropDown.change(function() {
+                var countyId = countyOfBirthDropDown.val();
+                if (countyId) {
+                    districtOfBirthDropDown.children('option').remove();
+
+                    $.getJSON("/api/counties/" + countyId + "/districts",
+                        function(districts) {
+                            $.each(districts,
+                                function(key, district) {
+                                    districtOfBirthDropDown.append(new Option(district.name, district.id));
+                                });
+                            districtOfBirthDropDown.change();
+                        });
+                } else {
+                    districtOfBirthDropDown.children('option').remove();
+                    districtOfBirthDropDown.append('<option value="">انتخاب کنید</option>');
+                    districtOfBirthDropDown.change();
+                }
+            });
+
+            districtOfBirthDropDown.change(function() {
+                var districtId = districtOfBirthDropDown.val();
+                if (districtId) {
+                    cityOfBirthDropDown.children('option').remove();
+
+                    $.getJSON("/api/districts/" + districtId + "/cities",
+                        function(cities) {
+                            $.each(cities,
+                                function(key, city) {
+                                    cityOfBirthDropDown.append(new Option(city.name, city.id));
+                                });
+                            cityOfBirthDropDown.change();
+                        });
+                } else {
+                    cityOfBirthDropDown.children('option').remove();
+                    cityOfBirthDropDown.append('<option value="">انتخاب کنید</option>');
+                    cityOfBirthDropDown.change();
+                }
+            });
+
+
+            // بهتر کردن عملکرد تقویم که هنگام فوکس شدن روی تاریخ تولد باز می شود
+            // باید وقتی که از روی تاریخ تولد رفتیم تقویم مخفی شود
+            var personBirthdateInput = $('#ClientWaitingApplicant_Birthdate');
+
+            personBirthdateInput.focusout(function() {
+                personBirthdateInput.MdPersianDateTimePicker('hide');
+            });
+
+
+            // -------------------------------------------------------------------
+            // کد مربوط به وضعیت مسکن فعلی
+            // -------------------------------------------------------------------
+
+
+            var currentHouseDropDown = $('#ClientWaitingApplicant_CurrentHouseTypeId');
+            var divSelectStatus = $('#divPleaseSelectState');
+            var divEjare = $('#divEjare');
+            var divBastegan = $('#divBastegan');
+            var divKhayer = $('#divKhayer');
+            var divSayer = $('#divSayer');
+
+            function hideAllCurrentHouseDiv() {
+                divEjare.hide();
+                divBastegan.hide();
+                divKhayer.hide();
+                divSayer.hide();
+                divSelectStatus.hide();
+            }
+
+            currentHouseDropDown.change(function() {
+                var selectedState = currentHouseDropDown.val();
+                if (selectedState) {
+                    switch (selectedState) {
+                        case '1': //اجاره ای
+                            hideAllCurrentHouseDiv();
+                            divEjare.show();
+                            break;
+                        case '2': //بستگان
+                            hideAllCurrentHouseDiv();
+                            divBastegan.show();
+                            break;
+                        case '3': //خیرین
+                            hideAllCurrentHouseDiv();
+                            divKhayer.show();
+                            break;
+                        case '4': //سایر
+                            hideAllCurrentHouseDiv();
+                            divSayer.show();
+                        default:
+                    }
+                } else {
+                    hideAllCurrentHouseDiv();
+                    divSelectStatus.show();
+                }
+            });
+
+            hideAllCurrentHouseDiv();
+
+            var countyCurrentHouseDropDown = $('#HouseCountyId');
+            var districtCurrentHouseDropDown = $('#HouseDistrictId');
+            var cityCurrentHouseDropDown = $('#ClientWaitingApplicant_HouseCityId');
+
+            // CountyId Select Index Change
+            countyCurrentHouseDropDown.change(function() {
+                var countyId = countyCurrentHouseDropDown.val();
+                if (countyId) {
+                    $.getJSON("/api/counties/" + countyId + "/districts",
+                        function(districts) {
+                            districtCurrentHouseDropDown.children('option').remove();
+
+                            $.each(districts,
+                                function(i, district) {
+                                    districtCurrentHouseDropDown.append(new Option(district.name, district.id));
+                                });
+                            districtCurrentHouseDropDown.trigger('change');
+                        });
+                } else {
+                    //districtCurrentHouseDropDown.children('option:not(:first)').remove();
+                    districtCurrentHouseDropDown.children('option').remove();
+                    districtCurrentHouseDropDown.append('<option value="">انتخاب کنید</option>');
+                    districtCurrentHouseDropDown.trigger('change');
+                }
+            });
+
+            // DistrictId Select Index Change
+            districtCurrentHouseDropDown.change(function() {
+                var districtId = districtCurrentHouseDropDown.val();
+                if (districtId) {
+                    $.getJSON("/api/districts/" + districtId + "/cities",
+                        function(cities) {
+                            cityCurrentHouseDropDown.children('option').remove();
+
+                            $.each(cities,
+                                function(key, city) {
+                                    cityCurrentHouseDropDown.append(new Option(city.name, city.id));
+                                });
+                            cityCurrentHouseDropDown.change();
+                        });
+                } else {
+                    cityCurrentHouseDropDown.children('option').remove();
+                    cityCurrentHouseDropDown.append('<option value="">انتخاب کنید</option>');
+                    cityCurrentHouseDropDown.change();
+                }
+            });
+
+
+            countyCurrentHouseDropDown.change();
+
+
+            // تنظیم اولیه مربوط به نقشه
+            var latitude = @Model.ClientWaitingApplicant.Latitude;
+            var longitude = @Model.ClientWaitingApplicant.Longitude;
+
+            var radius = 30;
+            var zoom = 16;
+            var divName = 'locationPicker';
+
+
+            OSMPICKER.initmappicker(divName,
+                latitude,
+                longitude,
+                radius,
+                zoom,
+                {
+                    addressId: "addressOSM",
+                    latitudeId: "ClientWaitingApplicant_Latitude",
+                    longitudeId: "ClientWaitingApplicant_Longitude"
+                });
+
+            // در صورتی که کاربر روی نقشه کلید کرد دکمه ثبت انتخاب شود
+            $('#' + divName).focusin(function() {
+                $('button[type="submit"]').focus();
+            });
+            //#endregion
+
+
+        });
+
+    </script>
+}

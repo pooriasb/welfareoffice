@@ -1,0 +1,93 @@
+﻿<div class="row text-lg">
+    <div class="col-md-3">
+        نحوه بارگذاری فرم: @(Model.FormEmtiazBandi.IsApprovedOffline ? "آفلاین" : "آنلاین")
+    </div>
+    <div class="col-md-3">
+        امتیاز : @Model.FormEmtiazBandi.Rate
+    </div>
+    <div class="col-md-3">
+        مبلغ : @Model.FormEmtiazBandi.Amount
+    </div>
+</div>
+<hr />
+<div class="row mt-lg">
+    <div class="col-md-2  text-lg">وضعیت:</div>
+    <div class="col-md-2">
+        <span class="text-success">تایید شده توسط کارشناس شهرستان در تاریخ @Model.FormEmtiazBandi.DateOfKarshenasShahrestanApprove.ToString() </span>
+    </div>
+    <div class="col-md-2">
+        @if (Model.FormEmtiazBandi.IsApproveByModirShahrestan)
+        {
+            <span class="text-success"> تایید شده توسط مدیر شهرستان در تاریخ @Model.FormEmtiazBandi.DateOfModirShahrestanApprove.ToString()</span>
+        }
+        else
+        {
+            if (Model.FormEmtiazBandi.DateOfModirShahrestanApprove != null)
+            {
+                <span class="text-danger">این فرم در تاریخ @(((DateTime)Model.FormEmtiazBandi.DateOfModirShahrestanApprove).ToString("yyyy/M/d")) توسط مدیر شهرستان رد شده است</span>
+            }
+            else
+            {
+                <span class="text-warning">هنوز توسط مدیر شهرستان تایید نشده است</span>
+            }
+        }
+    </div>
+    <div class="col-md-2">
+        @if (Model.FormEmtiazBandi.IsApproveByMoavenMosharekatAssistance)
+        {
+            <span class="text-success"> تایید شده توسط معاون مشارکت ها در تاریخ @Model.FormEmtiazBandi.DateOfMoavenMosharekatAssistanceApprove.ToString()</span>
+        }
+        else
+        {
+            if (Model.FormEmtiazBandi.DateOfMoavenMosharekatAssistanceApprove != null)
+            {
+                <span class="text-danger">این فرم در تاریخ @(((DateTime)Model.FormEmtiazBandi.DateOfMoavenMosharekatAssistanceApprove).ToString("yyyy/M/d")) توسط معاون مشارکت ها رد شده است</span>
+            }
+            else
+            {
+                <span class="text-warning">هنوز توسط معاون مشارکت ها تایید نشده است</span>
+            }
+        }
+    </div>
+    <div class="col-md-2">
+        @if (Model.FormEmtiazBandi.IsApproveByRelatedAssistance)
+        {
+            <span class="text-success"> تایید شده توسط معاون تخصصی مربوطه در تاریخ @Model.FormEmtiazBandi.DateOfRelatedAssistanceApprove.ToString()</span>
+        }
+        else
+        {
+            if (Model.FormEmtiazBandi.DateOfRelatedAssistanceApprove != null)
+            {
+                <span class="text-danger">این فرم در تاریخ @(((DateTime)Model.FormEmtiazBandi.DateOfRelatedAssistanceApprove).ToString("yyyy/M/d")) توسط معاون تخصصی رد شده است</span>
+            }
+            else
+            {
+                <span class="text-warning">هنوز توسط معاون تخصصی مربوطه تایید نشده است</span>
+            }
+        }
+    </div>
+    <div class="col-md-2">
+        @if (Model.FormEmtiazBandi.IsApproveByModirKol)
+        {
+            <span class="text-success"> تایید شده توسط مدیر کل در تاریخ @Model.FormEmtiazBandi.DateOfModirKolApprove.ToString()</span>
+        }
+        else
+        {
+            if (Model.FormEmtiazBandi.DateOfModirKolApprove != null)
+            {
+                <span class="text-danger">این فرم در تاریخ @(((DateTime)Model.FormEmtiazBandi.DateOfModirKolApprove).ToString("yyyy/M/d")) توسط مدیر کل رد شده است</span>
+            }
+            else
+            {
+                <span class="text-warning">هنوز توسط توسط مدیر کل تایید نشده است</span>
+            }
+        }
+    </div>
+</div>
+<hr/>
+<div class="row ">
+    <div class="col-md-12">
+        <h3>تصویر فرم امتیاز بندی</h3>
+        <img style="max-width: 100vw;" src="@Url.Action("ShowFormEmtiazBandiOnline", "Client", new {id = Model.Client.Id})" />
+    </div>
+</div>

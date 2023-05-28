@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = "../Shared/_LayoutEmptyWithHeader.cshtml";
+    ViewBag.Title = "ثبت موفق اطلاعات نیکوکار";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <section class="panel panel-featured panel-featured-primary">
+                <header class="panel-heading">
+                    ثبت نام خیر جدید
+                </header>
+                <div class="panel-body">
+                    <div class="alert alert-success">
+                        <h2>نیکوکار محترم اطلاعات شما با موفقیت در سامانه ثبت شد.</h2> 
+                    </div>
+                    <div class="alert alert-info">
+                        <h3>در صورت تمایل به مراجعه مجدد می توانید با استفاده از کد ملی و شماره موبایل خود وارد سامانه شوید.</h3> 
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <a href="@Url.Action("Index")" type="submit" class="btn btn-default">بازگشت به صفحه اولیه</a>
+                </div>
+        </section>
+    </div>
+</div>
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+}

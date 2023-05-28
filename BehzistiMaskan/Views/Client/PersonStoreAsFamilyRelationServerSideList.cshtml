@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "افراد ثبت شده به عنوان اعضای خانواده مددجویان";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    string message = ViewBag.StatusMessage;
+}
+
+<header class="page-header">
+    <h2> مددجویان</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">لیست افراد ثبت شده به عنوان اعضای خانواده مددجویان  </h2>
+
+            </header>
+            <div class="panel-body">
+                <div class="alert alert-info">
+                    در این بخش لیست مددجویانی که به عنوان اعضای خانواده یکی از مددجویان تایید شده ثبت شده اند نمایش داده می شود.
+                    با توجه به اینکه از اطلاعات این فرد یک تقاضای دیگر ثبت شده است پس این مددجو نمی تواند درخواست دیگری را ثبت نماید.
+                </div>
+
+                @if (!string.IsNullOrEmpty(message))
+                {
+                    <div class="row">
+                        <div class="alert alert-danger">
+                            @message
+                        </div>
+                    </div>
+                }
+                <table class="table table-bordered table-striped mb-none" id="client-list-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نام</th>
+                            <th>نام خانوادگی</th>
+                            <th>کد ملی</th>
+                            <th>وضعیت</th>
+                            <th>شهرستان</th>
+                            <th>بخش</th>
+                            <th>شهر یا روستا</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+            <div class="panel-footer">
+            </div>
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+
+@section StyleSheet{
+    <link rel="stylesheet" href="/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
+}
+
+@section Scripts
+{
+
+    <script src="~/Assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="~/Assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $.extend($.fn.dataTableExt.oStdClasses, {
+                "sFilterInput": "form-control"
+                //,
+                //"sLengthSelect": "form-control"
+            });
+
+            var oTable = $('#client-list-table').dataTable(
+                {
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        url: '/api/persons/familyrelationdatatable',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: function (d) {
+                            return JSON.stringify(d);
+                        }
+                    },
+                    columns: [
+                        { "data": "Id" },
+                        { "data": "Name" },
+                        { "data": "Family" },
+                        { "data": "NationalCode" },
+                        {
+                            "data": "IsDisabled",
+                            render: function (data, type, row) {
+                                if (row.IsDisabled)
+                                    return "معلول";
+                                return null;
+                            }
+                        },
+                        { "data": "CountyOfBirthName" },
+                        { "data": "DistrictOfBirthName" },
+                        { "data": "CityOfBirthName" },
+                        {
+                            "data": null,
+                            render: function (data, type, row) {
+                                var editLnk = "<a class='btn btn-xs btn-default text-primary' href='@Url.Action("EditPerson")" + "/" + row.Id + "'><i class='fa fa-pencil'></i> ویرایش</a>";
+                                var newLnk = "<a class='btn btn-xs btn-default text-success' href='@Url.Action("New", "Client")" + "/" + row.Id + "'><i class='fa fa-save'></i> ثبت به عنوان مددجو</a>";
+                                var deleteLnk = "<a class='btn btn-xs btn-default text-danger' href='@Url.Action("DeletePerson", "Client")" + "/" + row.Id + "'><i class='fa fa-remove'></i> حذف</a>";
+                                return editLnk;// + ' ' + newLnk + ' ' + deleteLnk;
+                            }
+                        }
+                    ],
+                    language: {
+                        url: '/Assets/vendor/jquery-datatables/localization/Persian.json'
+                    }
+
+                });
+
+            $(document).on('focus', '.dataTables_filter input', function () {
+                $(this).unbind().bind('keyup', function (e) {
+                    if (e.keyCode == 13) {
+                        oTable.fnFilter(this.value);
+                    }
+                });
+
+            });
+        });
+    </script>
+}

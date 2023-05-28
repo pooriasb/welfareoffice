@@ -1,0 +1,389 @@
+﻿@model BehzistiMaskan.ViewModels.UserFormViewModel
+@{
+    ViewBag.Title = string.IsNullOrEmpty(Model.UserId) ? "کاربر جدید" : "ویرایش کاربر";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    string message = ViewBag.StatusMessage;
+}
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="">
+                    <i class="fa fa-home"></i> میز کار
+                </a>
+            </li>
+            <li><span>ویرایش کاربر</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions"> <a href="#" alt="toggle" class="panel-action panel-action-toggle" data-panel-toggle></a></div>
+                <h2 class="panel-title">@ViewBag.Title</h2>
+            </header>
+            @using (Html.BeginForm("Save", "User", FormMethod.Post, new { @class = "form form-bordered", id = "fromUserForm", autocomplete = "off", autoCompleteType = "disable" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="panel-body">
+                    @Html.ValidationSummary(null, new { @class = "text-danger" })
+                    <div class="row mb-xlg">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserName, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserName)
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="@(Model.UserId != null ? "display: none" : "")">
+                            <div class="form-group">
+                                @*this line: autocomplete = "new-password" is for google chrome autocomplete :( *@
+                                @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", autocomplete = "new-password" })
+                                @Html.ValidationMessageFor(m => m.Password)
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="@(Model.UserId != null ? "display: none" : "")">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-sm">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserInfo.Name, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.UserInfo.Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserInfo.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserInfo.Family, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.UserInfo.Family, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserInfo.Family)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserInfo.Mobile, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.UserInfo.Mobile, new { @class = "form-control text-dir-ltr" })
+                                @Html.ValidationMessageFor(m => m.UserInfo.Mobile)
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-sm">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserRoleNames, new { @class = "control-label" })
+                                @Html.ListBoxFor(m => m.UserRoleNames,
+                                    new MultiSelectList(Model.UserRoles, "Name", "PersianName", Model.UserRoleNames),
+                                    new { @class = "form-control", multiple = "multiple", size = 8 })
+                                @Html.ValidationMessageFor(m => m.UserRoleNames)
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="checkbox mt-xlg">
+                                <label>@Html.CheckBoxFor(m => m.CanManageClient) آیا مجوز ویرایش مددجو را دارد؟</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-sm">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserInfo.ProvinceId, new { @class = "control-label" })
+                                @Html.DropDownListFor(m => m.UserInfo.ProvinceId,
+                                    new SelectList(Model.Provinces, "Id", "Name"), "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserInfo.ProvinceId)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserInfo.CountyId, new { @class = "control-label" })
+                                @Html.DropDownListFor(m => m.UserInfo.CountyId,
+                                    new SelectList(Model.Counties, "Id", "Name"), "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserInfo.CountyId)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserInfo.AssistanceTypeId, new { @class = "control-label" })
+                                @Html.DropDownListFor(m => m.UserInfo.AssistanceTypeId,
+                                    new SelectList(Model.AssistanceTypes, "Id", "Name"), "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserInfo.AssistanceTypeId)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-sm">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserInfo.CoOrganizationTypeId, new { @class = "control-label" })
+                                @Html.DropDownListFor(m => m.UserInfo.CoOrganizationTypeId,
+                                    new SelectList(Model.CoOrganizationTypes, "Id", "Name"), "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserInfo.CoOrganizationTypeId)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            امضای کاربر
+                        </div>
+                        <div id="ImageTemplate" class="form-group col-md-10">
+                            <div class="col-md-3">
+                                <div data-name="image-container" style="position: relative; min-width: 150px; max-width: 100%; min-height: 200px; max-height: 200px;">
+                                    <input id="imageSelect" type="file" name="file" accept="image/x-png,image/gif,image/jpeg" style="display: none"/>
+                                    <img id="preview-image" style="position: absolute; right: 0; top: 0; min-width: 150px; max-height: 100%; min-height: 200px; max-width: 150px; border: 2px solid #999;" src="@(Model.IsSignUploaded?Url.Action("GetUserSignPhoto", new {id=Model.UserId}):"")"/>
+                                    <img id="loading-image" src="/Assets/images/preloader.gif" style="display: none; margin: 0; position: absolute; top: 50%; left: 50%; opacity: 0.7"/>
+                                </div>
+                            </div>
+                            <div class="col-md-3" data-name="image-controls">
+                                <button type="button" class="btn btn-default btn-block text-primary" id="select-image-btn">انتخاب تصویر</button>
+                                <button type="button" class="btn btn-default btn-block text-danger" id="remove-image-btn" disabled="disabled">حذف</button>
+                                <button type="button" class="btn btn-default btn-block text-success" id="upload-image-btn" disabled="disabled">بارگذاری</button>
+                            </div>
+                            <div class="col-md-6 mt-md" id="image-details">
+                                <div><span>عرض: <span id="image-width"></span></span></div>
+                                <div><span>ارتفاع: <span id="image-height"></span></span></div>
+                                <div><span>سایز فایل: <span id="image-size"></span></span></div>
+                                <div><span>وضعیت: <span id="image-status"></span></span></div>
+                            </div>
+                            @Html.HiddenFor(m => m.TempImageId)
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(m => m.UserId)
+                    <a href="@Url.Action("Index")" class="btn btn-default">لغو و مشاهده لیست کاربران</a>
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> ذخیره</button>
+
+                </div>
+            }
+        </section>
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+
+            var previewImage = $('#preview-image');
+            var loadingImage = $('#loading-image');
+
+            var btnSelectImage = $('#select-image-btn');
+            var btnRemoveImage = $('#remove-image-btn');
+            var btnUploadImage = $('#upload-image-btn');
+
+            var inputImageSelect = $('#imageSelect');
+
+            var imageTempIdHidden = $('#TempImageId');
+
+            var spanImageSize = $('#image-size');
+            var spanImageStatus = $('#image-status');
+            var spanImageWidth = $('#image-width');
+            var spanImageHeight = $('#image-height');
+
+            // اگر عکس بارگذاری شده بود دکمه حذف فعال شود
+            if ('@Model.IsSignUploaded' === 'True') {
+                btnRemoveImage.prop('disabled', false);
+            }
+
+            //When click on image show file input dialog
+            previewImage.click(function (event) {
+                //if image is disabled ---> we are uploading an image to server! so don't show select file dialog
+                if (!$(this).prop('disabled'))
+                    inputImageSelect.click();
+            });
+
+            //image select btn click event
+            btnSelectImage.click(function (event) {
+                inputImageSelect.click();
+
+            });
+
+            btnRemoveImage.click(
+                function (event) {
+                    //clear displayed image
+                    previewImage.attr('src', '');
+
+                    //clear ImageUniqueId
+                    imageTempIdHidden.val('');
+
+
+                    //disable upload btn
+                    btnUploadImage.prop('disabled', true);
+
+                    //disable remove btn
+                    $(this).prop('disabled', true);
+
+                    //clear detail data
+                    spanImageSize.html('');
+                    spanImageWidth.html('');
+                    spanImageHeight.html('');
+                    spanImageStatus.html('');
+
+
+                });
+
+            btnUploadImage.click(
+                function (event) {
+
+                    $(this).prop('disabled', true);
+
+                    //disable remove and upload btn
+                    btnRemoveImage.prop('disabled', true);
+                    btnSelectImage.prop('disabled', true);
+
+                    //set preview image opacity to 30%
+                    previewImage.css('opacity', 0.3).prop('disabled', true);
+
+                    //show loading image
+                    loadingImage.show();
+
+
+                    var fieldId = $(this).parent().parent().parent('div#ImageTemplate').attr('data-field-id');
+
+
+                    var file = $(inputImageSelect)[0].files[0];
+
+                    var formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('fieldId', 0);
+
+                    var currentBtn = this;
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("UploadTempSignImage", "User")',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function (data, textStatus, jqXhr) {
+                            var res = data.split('#');
+                            if (res[0] === "Created") {
+                                var tempImageId = res[1];
+                                // در صورتی که کاربر تصویر تازه ای  را بارگذاری کرده بود
+                                // در قسمت کد یکتای تصویر در انتها کلمه جدید با یک هشتگ اضافه میشود
+                                // با این کار کنترل این که تصویر جدید است یا همان تصویر قدیمی می باشد آسان می باشد
+                                imageTempIdHidden.val(tempImageId);
+
+                                //set status of successful upload to server
+                                spanImageStatus.removeClass().html('عکس به صورت موقت در سرور ذخیره شد. برای ثبت دائمی می بایست گزینه تایید اطلاعات زده شود')
+                                    .addClass('text-success');
+
+                            } else if (res[0] === "Error") {
+                                spanImageStatus.removeClass().html(res[1]).addClass('text-danger');
+
+                            }
+                        },
+                        error: function (err) {
+                            // enable upload btn
+                            $(currentBtn).prop('disabled', false);
+                            //enable remove and select image btn
+                            $(currentBtn).siblings('button').prop('disabled', false);
+                            //set error message in image status
+                            spanImageStatus.removeClass().html('در ارسال اطلاعات خطایی رخ داده است' + err).addClass('text-danger');
+                        },
+                        complete: function () {
+                            //set preview image opacity to 100%
+                            previewImage.css('opacity', 1).prop('disabled', false);
+
+                            //hide loading image
+                            loadingImage.hide();
+                        }
+                    });
+                });
+
+
+            //when select a new image display it
+            // input file change event
+            inputImageSelect.change(function (event) {
+
+                if (this.files && this.files[0]) {
+
+                    var fileSize = this.files[0].size;
+
+                    //set file size in detail
+                    spanImageSize.html(Math.round(fileSize / 1024 / 1024 * 100) / 100 + ' مگابایت');
+
+                    btnRemoveImage.prop('disabled', false);
+
+                    //enable upload btn
+                    btnUploadImage.prop('disabled', false);
+
+                    //check image file size (max is 1 MB)
+                    if (fileSize > 1150000) {
+
+                        //$('#imgStatus').html('حجم فایل انتخاب شده زیاد تر از محدوده می باشد!');
+
+
+                        //Disabled upload button if file size is bigger than max
+                        btnUploadImage.prop('disabled', true);
+
+                        //set image status
+                        spanImageStatus.html('حجم فایل انتخاب شده بیشتر از حد مجاز می باشد').removeClass().addClass('text-danger');
+                    } else {
+                        //set image status
+                        spanImageStatus.html('سایز عکس مورد تایید می باشد، دکمه بارگذاری را جهت ارسال به سرور کلیک کنید.').removeClass().addClass('text-primary');
+                    }
+
+                    var currentInputFile = $(this);
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        //set image to display it
+                        previewImage.attr('src', e.target.result);
+
+                        var image = new Image();
+
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+
+                        image.onload = function () {
+                            var height = this.height;
+                            var width = this.width;
+
+                            //set image width in detail panel
+                            spanImageWidth.html(width + ' پیکسل');
+                            //set image height in detail panel
+                            spanImageHeight.html(height + ' پیکسل');
+                        };
+
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+
+
+        });
+    </script>
+}

@@ -1,0 +1,238 @@
+﻿@{
+    Dictionary<int, string> clientSelectedFormTabItems = ViewBag.ClientSelectedFormTabItems ?? new Dictionary<int, string>();
+    string selectedTab = ViewBag.SelectedTabMenu;
+    int? selectedFormId = ViewBag.ClientSelectedFormId;
+
+    // در صورتی که فقط متقاضی دریافت معافیت انشعابات بود نباید سربرگ های زیر را مشاهده کند
+    //اعضای خانواده، اطلاعات بانکی، پیشرفت فیزیکی، کمک های مالی، ثبت مددجو در طرح، مدارک طرح، فرم امتیاز بندی
+    bool onlyRequestExemption = ViewBag.OnlyRequestExemption;
+    bool isRequestAnyExemption = ViewBag.IsRequestAnyExemption;
+}
+
+<ul class="nav nav-tabs">
+    @if (selectedTab == "EditBasic")
+    {
+        <li class="active">
+            <a data-toggle="tab" aria-expanded="True"><i class="fa fa-star"></i> اطلاعات اولیه</a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a href="@Url.Action("EditBasic", "Client", new {id = Model.Client.Id})"><i class="fa fa-star"></i> اطلاعات اولیه</a>
+        </li>
+    }
+
+    @if (selectedTab == "EditRequest")
+    {
+        <li class="active">
+            <a data-toggle="tab" aria-expanded="True"><i class="fa fa-book"></i> نوع تقاضا</a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a href="@Url.Action("EditRequest", "Client", new {id = Model.Client.Id})"><i class="fa fa-book"></i> نوع تقاضا</a>
+        </li>
+    }
+    @*در صورتی که حداقل یکی از معافیت های انشعابات را انتخاب کرده بود سربرگ معافیت انشعابات برای اون نمایش داده شود*@
+    @if (isRequestAnyExemption)
+    {
+
+        if (selectedTab == "EditExemptionRequest")
+        {
+            <li class="active">
+                <a data-toggle="tab" aria-expanded="True"><i class="fa fa-book"></i> معافیت انشعابات</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditExemptionRequest", "Client", new {id = Model.Client.Id})"><i class="fa fa-book"></i> معافیت انشعابات</a>
+            </li>
+        }
+    }
+    @if (selectedTab == "EditCurrentHousing")
+    {
+        <li class="active">
+            <a><i class="fa fa-building"></i> اطلاعات مسکن</a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a href="@Url.Action("EditCurrentHousing", "Client", new {id = Model.Client.Id})"><i class="fa fa-building"></i> اطلاعات مسکن</a>
+        </li>
+    }
+
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditDocument")
+        {
+            <li class="active">
+                <a><i class="fa fa-file"></i> مدارک</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditDocument", "Client", new {id = Model.Client.Id})"><i class="fa fa-file"></i> مدارک</a>
+            </li>
+        }
+    }
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditFamily")
+        {
+            <li class="active">
+                <a><i class="fa fa-users"></i> اعضای خانواده</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditFamily", "Client", new {id = Model.Client.Id})"><i class="fa fa-users"></i> اعضای خانواده</a>
+            </li>
+        }
+    }
+    @if (selectedTab == "EditContactInfo")
+    {
+        <li class="active">
+            <a><i class="fa fa-envelope"></i> اطلاعات تماس</a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a href="@Url.Action("EditContactInfo", "Client", new {id = Model.Client.Id})"><i class="fa fa-envelope"></i> اطلاعات تماس</a>
+        </li>
+    }
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditBankInfo")
+        {
+            <li class="active">
+                <a><i class="fa fa-bank"></i> اطلاعات بانکی</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditBankInfo", "Client", new {id = Model.Client.Id})"><i class="fa fa-bank"></i> اطلاعات بانکی</a>
+            </li>
+        }
+    }
+    
+    
+@if (!onlyRequestExemption)
+{
+    if (selectedTab == "EditClientForm")
+    {
+        <li class="active">
+            <a><i class="fa fa-list-alt"></i> ثبت مددجو در طرح</a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a href="@Url.Action("EditClientForm", "Client", new {id = Model.Client.Id})"><i class="fa fa-list-alt"></i> ثبت مددجو در طرح</a>
+        </li>
+    }
+    foreach (var tabItem in clientSelectedFormTabItems)
+    {
+        if (tabItem.Key != selectedFormId)
+        {
+            <li>
+
+                <a href="@Url.Action("EditClientFormData", "Client", new {id = Model.Client.Id, clientFormId = tabItem.Key})"><i class="fa fa-list-alt"></i> مدارک @tabItem.Value</a>
+            </li>
+        }
+        else
+        {
+            <li class="active">
+                <a><i class="fa fa-list-alt"></i> مدارک @tabItem.Value</a>
+            </li>
+        }
+    }
+}
+    
+    
+
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditClientPhysicalProgress")
+        {
+            <li class="active">
+                <a><i class="fa fa-list-alt"></i> پیشرفت فیزیکی</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditClientPhysicalProgress", "Client", new {id = Model.Client.Id})"><i class="fa fa-list-alt"></i> پیشرفت فیزیکی</a>
+            </li>
+        }
+    }
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditClientFinancialAid")
+        {
+            <li class="active">
+                <a><i class="fa fa-list-alt"></i> کمک های مالی</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditClientFinancialAid", "Client", new {id = Model.Client.Id})"><i class="fa fa-list-alt"></i> کمک های مالی</a>
+            </li>
+        }
+    }
+  
+
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditClientState")
+        {
+            <li class="active">
+                <a><i class="fa fa-list-alt"></i> وضعیت پرونده</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditClientState", "Client", new {id = Model.Client.Id})"><i class="fa fa-list-alt"></i> وضعیت پرونده</a>
+            </li>
+        }
+    }
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditClientRateForm")
+        {
+            <li class="active">
+                <a><i class="fa fa-list-alt"></i> فرم امتیاز بندی</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditFormEmtiazBandi", "Client", new {id = Model.Client.Id})"><i class="fa fa-list-alt"></i> فرم امتیاز بندی</a>
+            </li>
+        }
+    }
+    @if (!onlyRequestExemption)
+    {
+        if (selectedTab == "EditRequiredMaterial")
+        {
+            <li class="active">
+                <a><i class="fa fa-list-alt"></i> مصالح مورد نیاز</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("EditRequiredMaterial", "Client", new {id = Model.Client.Id})"><i class="fa fa-dedent"></i> مصالح مورد نیاز</a>
+            </li>
+        }
+    }
+</ul>

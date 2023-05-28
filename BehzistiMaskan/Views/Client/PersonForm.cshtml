@@ -1,0 +1,304 @@
+﻿@model BehzistiMaskan.ViewModels.PersonFormViewModel
+
+@{
+    ViewBag.Title = Model.Person.Id == 0 ? "فرد جدید" : "ویرایش اطلاعات فرد";
+    Layout = "../Shared/_LayoutPorto.cshtml";
+}
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="@Url.Action("Index", "Dashboard")">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("IncompleteRegisterList", "Client")">
+                    لیست افراد
+                </a>
+            </li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+    </div>
+</header>
+
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        @using (Html.BeginForm("SavePerson", "Client", FormMethod.Post, new { @class = "form form-bordered", @name = "personEditFrom" }))
+            {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "خطاهای زیر را برطرف نمایید.", new { @class = "alert alert-danger" })
+
+            <section class="panel">
+                <header class="panel-heading">@ViewBag.Title</header>
+                <div class="panel-body">
+                    <div class="row mb-sm">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.NationalCode, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.NationalCode, new { @class = "form-control text-dir-ltr" })
+                                @Html.ValidationMessageFor(c => c.Person.NationalCode)
+
+                            </div>
+                        </div>
+                        <div class="col-md-3 mt-xlg">
+                            <div class="checkbox">
+                                <label>@Html.CheckBoxFor(m => m.Person.IsDisabled) آیا معلول است</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-sm">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.Name, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.Family, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.Family, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.Family)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.FatherName, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.FatherName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.FatherName)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.MotherName, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.MotherName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.MotherName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-sm">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.Birthdate, new { @class = "control-label" })
+                                <div class="input-group">
+                                    <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#Person_Birthdate" data-enabletimepicker="false" data-englishnumber="true" data-placement="right">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                    @Html.TextBoxFor(c => c.Person.Birthdate, "{0:yyyy/M/d}",
+                                            new Dictionary<string, Object>
+                                            {
+                                                {"class", "form-control text-dir-ltr"},
+                                                {"data-mddatetimepicker", "true"},
+                                                {"data-targetselector", "#Person_Birthdate"},
+                                                {"data-trigger", "focus"},
+                                                {"data-enabletimepicker", "false"},
+                                                {"data-englishnumber", "true"},
+                                            })
+                                </div>
+                                @Html.ValidationMessageFor(c => c.Person.Birthdate)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.GenderTypeId, new { @class = "control-label" })
+                                @Html.DropDownListFor(c => c.Person.GenderTypeId, new SelectList(Model.GenderTypes, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.GenderTypeId)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.MarriageTypeId, new { @class = "control-label" })
+                                @Html.DropDownListFor(c => c.Person.MarriageTypeId, new SelectList(Model.MarriageTypes, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.MarriageTypeId)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.NumberOfChildren, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.NumberOfChildren, new { @class = "form-control text-left" })
+                                @Html.ValidationMessageFor(c => c.Person.NumberOfChildren)
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-sm">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.BirthCertificateNo, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.BirthCertificateNo, new { @class = "form-control text-left" })
+                                @Html.ValidationMessageFor(c => c.Person.BirthCertificateNo)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.BirthCertificateMosalsal, new { @class = "control-label" })
+                                @Html.TextBoxFor(c => c.Person.BirthCertificateMosalsal, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.BirthCertificateMosalsal)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.BirthCertificateDescription, new { @class = "" })
+                                @Html.TextBoxFor(c => c.Person.BirthCertificateDescription, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.BirthCertificateDescription)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-sm">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.ProvinceOfBirthId, new { @class = "control-label" })
+                                @Html.DropDownListFor(c => c.Person.ProvinceOfBirthId, new SelectList(Model.ProvinceOfBirth, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.ProvinceOfBirthId)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.CountyOfBirthId, new { @class = "control-label" })
+                                @Html.DropDownListFor(c => c.Person.CountyOfBirthId, new SelectList(Model.CountyOfBirth, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.CountyOfBirthId)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.DistrictOfBirthId, new { @class = "control-label" })
+                                @Html.DropDownListFor(c => c.Person.DistrictOfBirthId, new SelectList(Model.DistrictOfBirth, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.DistrictOfBirthId)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(c => c.Person.CityOfBirthId, new { @class = "" })
+                                @Html.DropDownListFor(c => c.Person.CityOfBirthId, new SelectList(Model.CityOfBirth, "Id", "Name"), "انتخاب کنید", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(c => c.Person.CityOfBirthId)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    @Html.HiddenFor(c => c.Person.Id, new { @id = "personIdHidden" })
+                    <button class="btn btn-primary" id="saveClient" type="submit">ذخیره اطلاعات <i class="fa fa-save"></i></button>
+                </div>
+            </section>
+        }
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet
+{
+    <link href="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
+}
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // #region اطلاعات اولیه
+
+            // وقتی فرم نمایش داده شد اولین ورودی را انتخاب کنید
+            $('div#page form').eq(0).find('input:visible').eq(0).select();
+
+            // وقتی که کاربر دکمه اینتر رو میزنه نباید صفحه ذخیره بشه
+            // برای زیبا تر شدن کار با وب سایت کلید اینتر عمل تب را انجام می دهد
+            $('div#page form .form-control').keydown(function (event) { //event==Keyevent
+                if (event.which == 13) {
+                    var inputs = $(this).closest('form').find(':visible.form-control');
+
+                    if (inputs.index(this) == (inputs.length - 1))
+                        $('div#page form button').eq(0).focus();
+                    else
+                        inputs.eq(inputs.index(this) + 1).focus();
+                    event.preventDefault(); //Disable standard Enterkey action
+                }
+                // event.preventDefault(); <- Disable all keys  action
+            });
+
+            //کد های جاوااسکریپت مربوط به بخش اطلاعات اولیه
+            //این کد ها مربوط به انتخاب مکان جغرافیایی محل تولد
+            // و شهری است که مددجو در آن پرونده بهزیستی دارد
+
+            var provinceOfBirthDropDown = $('#Person_ProvinceOfBirthId');
+            var countyOfBirthDropDown = $('#Person_CountyOfBirthId');
+            var districtOfBirthDropDown = $('#Person_DistrictOfBirthId');
+            var cityOfBirthDropDown = $('#Person_CityOfBirthId');
+
+            provinceOfBirthDropDown.change(function () {
+                var provinceId = provinceOfBirthDropDown.val();
+                if (provinceId) {
+                    countyOfBirthDropDown.children('option').remove();
+
+                    $.getJSON("/api/provinces/" + provinceId + "/counties",
+                        function (counties) {
+                            $.each(counties, function (key, county) {
+                                countyOfBirthDropDown.append(new Option(county.name, county.id));
+                            });
+                            countyOfBirthDropDown.trigger('change');
+                        });
+                } else {
+                    countyOfBirthDropDown.children('option').remove();
+                    countyOfBirthDropDown.append('<option value="">انتخاب کنید</option>');
+                    countyOfBirthDropDown.trigger('change');
+                }
+            });
+
+            countyOfBirthDropDown.change(function () {
+                var countyId = countyOfBirthDropDown.val();
+                if (countyId) {
+                    districtOfBirthDropDown.children('option').remove();
+
+                    $.getJSON("/api/counties/" + countyId + "/districts",
+                        function (districts) {
+                            $.each(districts, function (key, district) {
+                                districtOfBirthDropDown.append(new Option(district.name, district.id));
+                            });
+                            districtOfBirthDropDown.change();
+                        });
+                } else {
+                    districtOfBirthDropDown.children('option').remove();
+                    districtOfBirthDropDown.append('<option value="">انتخاب کنید</option>');
+                    districtOfBirthDropDown.change();
+                }
+            });
+
+            districtOfBirthDropDown.change(function () {
+                var districtId = districtOfBirthDropDown.val();
+                if (districtId) {
+                    cityOfBirthDropDown.children('option').remove();
+
+                    $.getJSON("/api/districts/" + districtId + "/cities",
+                        function (cities) {
+                            $.each(cities, function (key, city) {
+                                cityOfBirthDropDown.append(new Option(city.name, city.id));
+                            });
+                            cityOfBirthDropDown.change();
+                        });
+                } else {
+                    cityOfBirthDropDown.children('option').remove();
+                    cityOfBirthDropDown.append('<option value="">انتخاب کنید</option>');
+                    cityOfBirthDropDown.change();
+                }
+            });
+
+
+            // بهتر کردن عملکرد تقویم که هنگام فوکس شدن روی تاریخ تولد باز می شود
+            // باید وقتی که از روی تاریخ تولد رفتیم تقویم مخفی شود
+            var personBirthdateInput = $('#Person_Birthdate');
+
+            personBirthdateInput.focusout(function () {
+                personBirthdateInput.MdPersianDateTimePicker('hide');
+            });
+            //#endregion
+
+
+        });
+    </script>
+}

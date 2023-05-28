@@ -1,0 +1,20 @@
+﻿@using BehzistiMaskan.Core.Utility
+
+<li class="nav-active">
+    <a href="@Url.Action("Index", "Modir")">
+        <i class="fa fa-home" aria-hidden="true"></i>
+        <span>میز کار</span>
+    </a>
+</li>
+<li class="nav-parent">
+    <a>
+        <i class="fa fa-envelope" aria-hidden="true"></i>
+        <span>مددجویان</span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a href="@Url.Action("Index", "Client")">لیست مددجویان</a>
+        </li>
+
+    </ul>
+</li>

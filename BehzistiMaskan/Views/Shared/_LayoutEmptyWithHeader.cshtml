@@ -1,0 +1,136 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html class="fixed">
+<head>
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+
+    <title>@ViewBag.Title - سامانه سبا (توانمند سازی بهزیستی)</title>
+    <meta name="keywords" content="Behzisti Fars - Maskan MIS" />
+    <meta name="description" content="سامانه مسکن مددجویان بهزیستی استان فارس">
+    <meta name="author" content="Ali Amanzadegan علی امان زادگان">
+    <!-- طراح و سازنده این سامانه علی امان زادگان می باشد. استفاده از تمام یا بخشی از این سامانه بدون اجازه سازنده غیر قانونی می باشد -->
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Vendor CSS -->
+    @Styles.Render("~/stylesheets/bootstrap")
+
+    <link rel="stylesheet" href="~/Assets/vendor/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/magnific-popup/magnific-popup.css" />
+
+    <!-- Specific Page Vendor CSS -->
+    <link rel="stylesheet" href="~/Assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/morris/morris.css" />
+    <link href="~/Assets/vendor/pnotify/pnotify.custom.css" rel="stylesheet" />
+
+    <!-- Head Libs -->
+    @Scripts.Render("~/bundles/modernizr")
+
+    @RenderSection("StyleSheet", false)
+
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/theme.css" />
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/skins/default.css" />
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/theme-custom.css">
+
+</head>
+<body>
+    <section class="body">
+        <!-- start: header -->
+        <header class="header headerdark">
+            <div class="hidden-xs hidden-sm">
+                <a href="../" class="logo">
+                    <img src="assets/images/logo.png" height="35" alt="Maskan MIS" />
+                </a>
+            </div>
+            <div>
+                <span class="header-title">سامانه جامع مسکن مددجویان بهزیستی استان فارس</span>
+            </div>
+        </header>
+        <!-- end: header -->
+
+        <div class="inner-wrapper">
+            <section role="main" class="container" style="margin-bottom: 40px;">
+                @RenderBody()
+            </section>
+        </div>
+
+
+
+        <!-- start: footer -->
+        <footer class="footerdark">
+            <span>
+                تمامی حقوق مادی و معنوی این سامانه متعلق به <a href="http://tirazis.net"><strong>طراح</strong></a> و <strong>اداره بهزیستی استان فارس</strong>  می باشد. 1398 &copy;
+            </span>
+            <div class="footer-menu">
+                <ul>
+                    <li><a href="@Url.Action("Index", "Home")">صفحه اصلی</a></li>
+                    <li>راهنما</li>
+                    @*<li><a href="@Url.Action("Index", "Dashboard")">ورود کارشناس</a></li>*@
+                </ul>
+            </div>
+        </footer>
+        <!-- end: header -->
+    </section>
+
+    <!-- Vendor -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script src="~/Assets/vendor/nanoscroller/nanoscroller.js"></script>
+    <script src="~/Assets/vendor/magnific-popup/magnific-popup.js"></script>
+
+    <!-- Specific Page Vendor -->
+    <script src="~/Assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+    <script src="~/Assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+    <script src="~/Assets/vendor/jquery-appear/jquery.appear.js"></script>
+    <script src="~/Assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <link href="/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet">
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+    <script src="~/Assets/vendor/pnotify/pnotify.custom.js"></script>
+
+    <script>
+        var stack_topleft = { "dir1": "down", "dir2": "right", "push": "top" };
+        var stack_bottomleft = { "dir1": "right", "dir2": "up", "push": "top" };
+        var stack_bottomright = { "dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15 };
+        var stack_bar_top = { "dir1": "down", "dir2": "right", "push": "top", "spacing1": 0, "spacing2": 0 };
+        var stack_bar_bottom = { "dir1": "up", "dir2": "right", "spacing1": 0, "spacing2": 0 };
+
+        function ShowNotifyStatus(text, type, title, icon) {
+            var notice = new PNotify({
+                title: title,
+                text: text,
+                type: type,
+                icon: icon,
+                addclass: 'stack-bottomright',
+                stack: stack_bottomright
+            });
+        }
+    </script>
+
+    @RenderSection("Scripts", false)
+
+    <!-- Theme Base, Components and Settings -->
+    <script src="~/Assets/javascripts/theme.js"></script>
+
+    <!-- Theme Custom -->
+    <script src="~/Assets/javascripts/theme.custom.js"></script>
+
+    <!-- Theme Initialization Files -->
+    <script src="~/Assets/javascripts/theme.init.js"></script>
+
+</body>
+</html>

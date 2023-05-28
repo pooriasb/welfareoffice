@@ -1,0 +1,614 @@
+﻿@model BehzistiMaskan.ViewModels.ClientEditFormDataViewModel
+
+@{
+    ViewBag.Title = "ویرایش طرح های ثبت شده مددجو";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+
+                <div id="EditContactInfoTab" class="tab-pane active">
+                    @using (Html.BeginForm("SaveClientForm", "Client", FormMethod.Post, new { @class = "form form-bordered", @id = "frmClientFormData" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div id="clientFormFields" class="col-md-12">
+                            </div>
+                            @Html.HiddenFor(m => m.JsonFormFieldData)
+                            @Html.HiddenFor(m => m.Client.Id)
+                            @Html.HiddenFor(m => m.ClientForm.Id)
+                            @Html.HiddenFor(m => m.Form.Id)
+                        </div>
+                        <div class="panel-footer">
+                            @Html.HiddenFor(m => m.Client.Id)
+                            <button class="btn btn-primary" id="saveFormData" type="submit">ذخیره اطلاعات <i class="fa fa-save"></i></button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+
+<section id="fieldTemplateHidden" style="display: none;">
+    @foreach (var fieldTemplate in Model.FieldTemplates)
+    {
+        @Html.Raw(fieldTemplate.UserHtmlTemplate)
+    }
+</section>
+
+@section StyleSheet
+{
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function() {
+
+            var divClientFormFields = $('#clientFormFields');
+            var fieldTemplateHidden = $('#fieldTemplateHidden');
+            var btnSaveFormData = $('#saveFormData');
+            var frmClientFormData = $('#frmClientFormData');
+
+            var clientId = @Model.Client.Id;
+            var formId = @Model.Form.Id;
+            var clientFormId = @Model.ClientForm.Id;
+
+            function updateOutputJson() {
+                console.log('Update Output JSON');
+                var outputJson = [];
+
+                $('#clientFormFields div[data-name="form-field"]').each(function(index) {
+                    var value;
+                    var fieldTemplate = $(this).prop('id');
+                    var fieldId = $(this).attr('data-field-id');
+                    switch (fieldTemplate) {
+                    case "TextBoxTemplate":
+                        value = $(this).find('input[data-name="text-input"]').first().val();
+                        break;
+                    case "DateTemplate":
+                        value = $(this).find('input[data-name="date-input"]').first().val();
+                        break;
+                    case "NumberTemplate":
+                        value = $(this).find('input[data-name="number-input"]').first().val();
+                        break;
+                    case "ImageTemplate":
+                        value = $(this).find('input[data-name="unique-image-id"]').first().val();
+                        break;
+                    default:
+                        value = "";
+                    }
+                    var fieldObj = {
+                        fieldId: fieldId,
+                        fieldValue: value
+                    };
+
+                    outputJson[index] = fieldObj;
+                });
+
+                var jsonResStr = JSON.stringify(outputJson);
+                $('#JsonFormFieldData').val(jsonResStr);
+            }
+
+            function validateFormFieldHtmlForm() {
+                frmClientFormData.validate();
+            }
+
+            validateFormFieldHtmlForm();
+
+            // نمایش محتوای فرم در صفحه
+            function initFormField() {
+                @if (Model.Form.Id != 0)
+                {
+                    foreach (var field in Model.Form.Fields)
+                    {
+                        var clientFormField = Model.ClientForm.ClientFormFields.SingleOrDefault(cf => cf.FieldId == field.Id);
+
+                        switch (field.FieldTemplateName)
+                        {
+                            case "HeaderBigTemplate":
+                                @Html.Raw($"addHeaderBig('{field.FieldTemplateName}','{field.Id}','{field.Title}', '{field.HelpText}');\r\n")
+                                break;
+                            case "HeaderMediumTemplate":
+                                @Html.Raw($"addHeaderMedium('{field.FieldTemplateName}','{field.Id}','{field.Title}', '{field.HelpText}');\r\n")
+                                break;
+                            case "HeaderSmallTemplate":
+                                @Html.Raw($"addHeaderSmall('{field.FieldTemplateName}','{field.Id}','{field.Title}', '{field.HelpText}');\r\n")
+                                break;
+                            case "SplitterTemplate":
+                                @Html.Raw($"addSplitter('{field.FieldTemplateName}', '{field.Id}');\r\n")
+                                break;
+                            case "TextBoxTemplate":
+                                var fieldValue = "";
+                                if (clientFormField != null)
+                                {
+                                    fieldValue = clientFormField.Value;
+                                }
+                                @Html.Raw($"addTextBox( '{field.FieldTemplateName}','{field.Id}', '{field.Title}', '{field.IsRequired.ToString().ToLower()}', '{field.HelpText}', '{field.IsHtmlHelp}', '{fieldValue}');\r\n")
+                                break;
+                            case "NumberTemplate":
+                                fieldValue = "";
+                                if (clientFormField != null)
+                                {
+                                    fieldValue = clientFormField.Value;
+                                }
+                                @Html.Raw($"addNumberBox( '{field.FieldTemplateName}','{field.Id}', '{field.Title}', '{field.IsRequired.ToString().ToLower()}', '{field.HelpText}', '{field.IsHtmlHelp}', '{fieldValue}');\r\n")
+                                break;
+                            case "DateTemplate":
+                                fieldValue = "";
+                                if (clientFormField != null)
+                                {
+                                    fieldValue = clientFormField.Value;
+                                }
+                                @Html.Raw($"addDateBox( '{field.FieldTemplateName}','{field.Id}', '{field.Title}', '{field.IsRequired.ToString().ToLower()}', '{field.HelpText}', '{field.IsHtmlHelp}', '{fieldValue}');\r\n")
+                                break;
+                            case "ImageTemplate":
+                                fieldValue = "";
+                                if (clientFormField != null)
+                                {
+                                    fieldValue = clientFormField.Value;
+                                }
+                                @Html.Raw($"addImageBox( '{field.FieldTemplateName}','{Model.Client.Id}','{field.Id}', '{field.Title}', '{field.IsRequired.ToString().ToLower()}', '{field.HelpText}', '{field.IsHtmlHelp}', '{fieldValue}');\r\n")
+                                break;
+                        }
+                    }
+                }
+            }
+
+            function addImageBox(templateType,
+                clientId,
+                fieldId,
+                fieldTitle,
+                fieldIsRequired,
+                fieldHelpText,
+                fieldIsHtmlHelp,
+                fieldValue) {
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                newElement.attr('data-field-id', fieldId);
+                newElement.html(newElement.html().replace("%%ClientId%%", clientId));
+
+                $(newElement).children('label[data-name="templateTitle"]').text(fieldTitle);
+                $(newElement).children('label[data-name="helpText"]').text(fieldHelpText);
+                if (fieldValue != "") {
+                    //load image from server
+                    $(newElement).find('img[data-name="preview-image"]')
+                        .attr('src', '@Url.Action("GetFormFieldsImage")/' + fieldValue);
+
+                    //set status
+                    $(newElement).find('span[data-name="image-status"]').first().html('فایل در سرور بارگذاری شده است')
+                        .removeClass().addClass('text-primary');
+
+                    // enable remove btn
+                    $(newElement).find('button[data-name="remove-image-btn"]').prop('disabled', false);
+
+                    //set Unique Image Id
+                    newElement.html(newElement.html().replace("%%UniqueImageId%%", fieldValue+'#Old'));
+
+
+                } else {
+                    newElement.html(newElement.html().replace("%%UniqueImageId%%", ''));
+
+                }
+
+                //$(newElement).find('input[type="text"]').attr('data-val', fieldIsRequired);
+                $(newElement).find('input[data-name="unique-image-id"]').first().change(function() {
+                    updateOutputJson();
+                });
+
+                $(newElement).appendTo(divClientFormFields);
+
+            }
+
+
+            function addDateBox(templateType,
+                fieldId,
+                fieldTitle,
+                fieldIsRequired,
+                fieldHelpText,
+                fieldIsHtmlHelp,
+                fieldValue) {
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                $(newElement).attr('data-field-id', fieldId);
+                $(newElement).children('label[data-name="templateTitle"]').text(fieldTitle);
+                $(newElement).children('label[data-name="helpText"]').text(fieldHelpText);
+
+                $(newElement).find('input[type="text"]').val(fieldValue);
+
+                //$(newElement).find('input[type="text"]').attr('data-val', fieldIsRequired);
+
+
+                //$(newElement).find('input[type="text"]').prop('id', 'form'+formId+'field'+fieldId);
+                //$(newElement).find('span').attr('data-valmsg-for', 'form'+formId+'field'+fieldId);
+
+
+                //$(newElement).MdPersianDateTimePicker({
+                //    trigger: 'focus',
+                //    enableTimePicker: 'false',
+                //    targetDateSelector: this,
+                //    englishNumber: 'true'
+                //});
+
+                //باید موقع تغییر اطلاعات خروجی Json تهیه شود
+                $(newElement).find('input[data-name="date-input"]').first().change(function() {
+                    updateOutputJson();
+                });
+
+
+                $(newElement).appendTo(divClientFormFields);
+
+                //if (fieldIsRequired === 'true') {
+                //    console.log('dateboxisrequired');
+
+                //    $(newElement).find('input[type="text"]').eq(0).rules('add',
+                //        {
+                //            required: true,
+                //            messages: {
+                //                required: "وارد کردن این فیلد ضروری می باشد"
+                //            }
+                //        });
+                //}
+                //jQuery.validator.unobtrusive.parse(frmClientFormData);
+                //frmClientFormData.valid();
+            }
+
+
+            function addNumberBox(templateType,
+                fieldId,
+                fieldTitle,
+                fieldIsRequired,
+                fieldHelpText,
+                fieldIsHtmlHelp,
+                fieldValue) {
+
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                $(newElement).attr('data-field-id', fieldId);
+                $(newElement).children('label[data-name="templateTitle"]').text(fieldTitle);
+                $(newElement).children('label[data-name="helpText"]').text(fieldHelpText);
+
+                $(newElement).find('input[type="text"]').val(fieldValue);
+                //$(newElement).find('input[type="text"]').attr('data-val', fieldIsRequired);
+
+
+                $(newElement).find('input[type="text"]').prop('id', 'form' + formId + 'field' + fieldId);
+                //$(newElement).find('span').attr('data-valmsg-for', 'form'+formId+'field'+fieldId);
+
+                //باید موقع تغییر اطلاعات خروجی Json تهیه شود
+                $(newElement).find('input[data-name="number-input"]').first().change(function() {
+                    updateOutputJson();
+                });
+
+                $(newElement).appendTo(divClientFormFields);
+
+                //if (fieldIsRequired) {
+                //    $(newElement).find('input[type="text"]').eq(0).rules('add',
+                //        {
+                //            required: true,
+                //            messages: {
+                //                required: "وارد کردن این فیلد ضروری می باشد"
+                //            }
+                //        });
+                //}
+                //jQuery.validator.unobtrusive.parse(frmClientFormData);
+                //frmClientFormData.valid();
+            }
+
+            function addTextBox(templateType,
+                fieldId,
+                fieldTitle,
+                fieldIsRequired,
+                fieldHelpText,
+                fieldIsHtmlHelp,
+                fieldValue) {
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                $(newElement).attr('data-field-id', fieldId);
+                $(newElement).children('label[data-name="templateTitle"]').text(fieldTitle);
+                $(newElement).children('label[data-name="helpText"]').text(fieldHelpText);
+
+                $(newElement).find('input[type="text"]').val(fieldValue);
+                $(newElement).find('input[type="text"]').attr('data-val', fieldIsRequired);
+
+
+                $(newElement).find('input[type="text"]').prop('id', 'form' + formId + 'field' + fieldId);
+                $(newElement).find('span').attr('data-valmsg-for', 'form' + formId + 'field' + fieldId);
+
+                //باید موقع تغییر اطلاعات خروجی Json تهیه شود
+                $(newElement).find('input[data-name="text-input"]').first().change(function() {
+                    updateOutputJson();
+                });
+
+
+                $(newElement).appendTo(divClientFormFields);
+
+                //if (fieldIsRequired) {
+
+                //    $(newElement).find('input[type="text"]').eq(0).rules('add',
+                //        {
+                //            required: true,
+                //            messages: {
+                //                required: "وارد کردن این فیلد ضروری می باشد"
+                //            }
+                //        });
+                //}
+                //jQuery.validator.unobtrusive.parse(frmClientFormData);
+                //frmClientFormData.valid();
+            }
+
+            function addHeaderBig(templateType, fieldId, headerTitle, helpText) {
+
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                $(newElement).attr('data-field-id', fieldId);
+                $(newElement).children('h2').text(headerTitle);
+                $(newElement).appendTo(divClientFormFields);
+            }
+
+            function addHeaderMedium(templateType, fieldId, headerTitle, helpText) {
+
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                $(newElement).attr('data-field-id', fieldId);
+                $(newElement).children('h3').text(headerTitle);
+                $(newElement).appendTo(divClientFormFields);
+            }
+
+            function addHeaderSmall(templateType, fieldId, headerTitle, helpText) {
+
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                $(newElement).attr('data-field-id', fieldId);
+                $(newElement).children('h4').text(headerTitle);
+                $(newElement).appendTo(divClientFormFields);
+            }
+
+
+            function addSplitter(templateType, fieldId) {
+                var newElement = $("#" + templateType, fieldTemplateHidden).clone();
+
+                $(newElement).attr('data-field-id', fieldId);
+                $(newElement).appendTo(divClientFormFields);
+            }
+
+
+            btnSaveFormData.click(function() {
+                console.log('click on save');
+                frmClientFormData.validate();
+            });
+
+
+            initFormField();
+
+
+            //-----------------------------------------------------
+            //-----------------------------------------------------
+            //Image Template scripts
+            //-----------------------------------------------------
+            //-----------------------------------------------------
+
+
+            //When click on image show file input dialog
+            $('#ImageTemplate div[data-name="image-container"] img[data-name="preview-image"]').click(function(event) {
+                //if image is disabled ---> we are uploading an image to server! so don't show select file dialog
+                if (!$(this).prop('disabled'))
+                    $(this).parent('div[data-name="image-container"]').children('input[type="file"]').first().click();
+            });
+
+            //image select btn click event
+            $('#ImageTemplate div[data-name="image-controls"] button[data-name="select-image-btn"]').click(
+                function(event) {
+                    $(this).parent().parent().children('div[data-name="image-container"]')
+                        .children('input[type="file"]').first().click();
+                });
+
+            //delete image btn click event
+            $('#ImageTemplate div[data-name="image-controls"] button[data-name="remove-image-btn"]').click(
+                function(event) {
+                    //clear displayed image
+                    $(this).parent().parent().children('div[data-name="image-container"]')
+                        .children('img[data-name="preview-image"]').first().attr('src', '');
+
+                    //clear ImageUniqueId
+                    $(this).parent().parent().children('input[data-name="unique-image-id"]').val('');
+
+
+                    //disable upload btn
+                    $(this).siblings('button[data-name="upload-image-btn"]').prop('disabled', true);
+                    //disable remove btn
+                    $(this).prop('disabled', true);
+
+                    //clear detail data
+                    $(this).parent().parent().siblings('div[data-name="image-details"]').find('span[data-name]')
+                        .html('');
+
+                    updateOutputJson();
+
+                });
+
+            //upload image btn click event
+            $('#ImageTemplate div[data-name="image-controls"] button[data-name="upload-image-btn"]').click(
+                function(event) {
+
+                    $(this).prop('disabled', true);
+
+                    //disable remove and upload btn
+                    $(this).siblings('button').prop('disabled', true);
+
+                    //set preview image opacity to 30%
+                    $(this).parent().parent().children('div[data-name="image-container"]')
+                        .children('img[data-name="preview-image"]').first().css('opacity', 0.3).prop('disabled', true);
+
+                    //show loading image
+                    $(this).parent().parent().children('div[data-name="image-container"]')
+                        .children('img[data-name="loading-image"]').first().show();
+
+
+                    var clientId = $(this).parent().siblings('input[data-name="client-id"]').val();
+                    var fieldId = $(this).parent().parent().parent('div#ImageTemplate').attr('data-field-id');
+
+
+                    var file = $(this).parent().parent().children('div[data-name="image-container"]')
+                        .children('input[type="file"]')[0].files[0];
+
+                    var formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('clientId', clientId);
+                    formData.append('fieldId', fieldId);
+
+                    var currentBtn = this;
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("UploadClientFieldImage", "Client")',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function(data, textStatus, jqXhr) {
+                            var res = data.split('#');
+                            if (res[0] === "Created") {
+                                var tempImageId = res[1];
+                                // در صورتی که کاربر تصویر تازه ای  را بارگذاری کرده بود
+                                // در قسمت کد یکتای تصویر در انتها کلمه جدید با یک هشتگ اضافه میشود
+                                // با این کار کنترل این که تصویر جدید است یا همان تصویر قدیمی می باشد آسان می باشد
+                                $(currentBtn).parent().siblings('input[data-name="unique-image-id"]').first()
+                                    .val(tempImageId + '#New');
+
+                                //enable remove and upload btn
+                                $(currentBtn).siblings('button').prop('disabled', false);
+
+                                //set status of successful upload to server
+                                $(currentBtn).parent().parent().parent().children('div[data-name="image-details"]')
+                                    .find('span[data-name="image-status"]')
+                                    .removeClass()
+                                    .html(
+                                        'عکس به صورت موقت در سرور ذخیره شد. برای ثبت دائمی می بایست گزینه تایید اطلاعات زده شود')
+                                    .addClass('text-success');
+
+                            } else if (res[0] === "Error") {
+                                $(currentBtn).parent().parent().parent().children('div[data-name="image-details"]')
+                                    .find('span[data-name="image-status"]')
+                                    .removeClass().html(res[1]).addClass('text-danger');
+
+                            }
+                        },
+                        error: function(err) {
+                            // enable upload btn
+                            $(currentBtn).prop('disabled', false);
+                            //enable remove and select image btn
+                            $(currentBtn).siblings('button').prop('disabled', false);
+                            //set error message in image status
+                            $(currentBtn).parent().parent().parent().children('div[data-name="image-details"]')
+                                .find('span[data-name="image-status"]')
+                                .removeClass().html('در ارسال اطلاعات خطایی رخ داده است' + err).addClass('text-danger');
+                        },
+                        complete: function() {
+                            //set preview image opacity to 100%
+                            $(currentBtn).parent().parent().children('div[data-name="image-container"]')
+                                .children('img[data-name="preview-image"]').first().css('opacity', 1)
+                                .prop('disabled', false);
+
+                            //hide loading image
+                            $(currentBtn).parent().parent().children('div[data-name="image-container"]')
+                                .children('img[data-name="loading-image"]').first().hide();
+
+                            updateOutputJson();
+
+                        }
+                    });
+                });
+
+
+            //when select a new image display it
+            // input file change event
+            $('#ImageTemplate div[data-name="image-container"] input[type="file"]').change(function(event) {
+
+                if (this.files && this.files[0]) {
+
+                    var fileSize = this.files[0].size;
+
+                    //set file size in detail
+                    $(this).parent().parent().parent().find('span[data-name="image-size"]').first()
+                        .html(Math.round(fileSize / 1024 / 1024 * 100) / 100 + ' مگابایت');
+
+                    $(this).parent().parent().find('button[data-name="remove-image-btn"]')
+                        .prop('disabled', false);
+                    //enable upload btn
+                    $(this).parent().parent().find('button[data-name="upload-image-btn"]')
+                        .prop('disabled', false);
+
+                    //check image file size (max is 1 MB)
+                    if (fileSize > 1150000) {
+
+                        //$('#imgStatus').html('حجم فایل انتخاب شده زیاد تر از محدوده می باشد!');
+
+
+                        //Disabled upload button if file size is bigger than max
+                        $(this).parent().parent().find('button[data-name="upload-image-btn"]').first()
+                            .prop('disabled', true);
+
+                        //set image status
+                        $(this).parent().parent().parent().find('span[data-name="image-status"]').first()
+                            .html('حجم فایل انتخاب شده بیشتر از حد مجاز می باشد').removeClass().addClass('text-danger');
+                    } else {
+                        //set image status
+                        $(this).parent().parent().parent().find('span[data-name="image-status"]').first()
+                            .html('سایز عکس مورد تایید می باشد، دکمه بارگذاری را جهت ارسال به سرور کلیک کنید.')
+                            .removeClass().addClass('text-primary');
+                    }
+
+                    var currentInputFile = $(this);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        //set image to display it
+                        $(currentInputFile).parent().find('img[data-name="preview-image"]').first(0)
+                            .attr('src', e.target.result);
+
+                        //set image width in detail
+                        $(currentInputFile).parent().parent().parent().find('span[data-name="image-width"]').first()
+                            .html(e.target.result.clientWidth);
+
+                        var image = new Image();
+
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+
+                        image.onload = function() {
+                            var height = this.height;
+                            var width = this.width;
+
+                            //set image width in detail panel
+                            $(currentInputFile).parent().parent().parent().find('span[data-name="image-width"]').first()
+                                .html(width + ' پیکسل');
+                            //set image height in detail panel
+                            $(currentInputFile).parent().parent().parent().find('span[data-name="image-height"]')
+                                .first().html(height + ' پیکسل');
+                        };
+
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            updateOutputJson();
+
+        });
+    </script>
+}
+

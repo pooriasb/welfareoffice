@@ -1,0 +1,120 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>سامانه مدیریت مسکن مددجویان بهزیستی استان فارس</title>
+    <meta name="keywords" content="Behzisti Maskan MIS" />
+    <meta name="description" content="Behzisti Maskan MIS">
+    <meta name="author" content="Ali Amanzadegan">
+
+    @Styles.Render("~/stylesheets/bootstrap")
+    <link href="~/Assets/stylesheets/HomeStyle.css" rel="stylesheet" />
+</head>
+<body>
+    <main>
+        <div class="TopNav">
+
+            <img src="~/Assets/images/madadjooHome/behzisti-logo-white-50px.png" />
+            <b class="Title">سامانه مسکن مددجویان بهزیستی استان فارس</b>
+        </div>
+
+        <div class="TableContent">
+            <div class="row">
+                <div class="alert alert-success" style="font-size: 1.3em;">
+                    مددجوی محترم! اگر اطلاعات شما قبلا در سامانه بهزیستی ثبت شده باشد، برای دریافت کد رهگیری به اداره بهزیستی شهرستان خود مراجعه نمایید.
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <section class="body-sign">
+                        <div class="center-sign madadjooLogin">
+                            <div class="panel-title">
+                                ورود متقاضی ثبت شده
+                            </div>
+                            <div class="panel-body">
+                                @using (Html.BeginForm("MadadjooLogin", "Home", FormMethod.Post, new { @class = "form-horizontal" }))
+                                {
+
+                                    <div class="form-group">
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" name="nationalCode" id="loginNationalCode" placeholder="کد ملی مددجوی متقاضی مسکن" />
+                                        </div>
+                                        <label class="col-lg-3 hidden-sm hidden-xs hidden-md" for="loginNationalCode">کد ملی</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" name="activationCode" id="loginActivationCode" placeholder="کد رهگیری که قبلا برای شما ارسال شده است" />
+                                        </div>
+                                        <label class="col-lg-3 hidden-sm hidden-xs hidden-md" for="loginActivationCode">کد رهگیری</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-4">
+                                            <div style="background: url(/Assets/images/madadjooHome/bg_pattern.gif) repeat; width: 100%; height: 45px;"></div>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <input type="text" class="form-control" id="loginCaptcha" placeholder="کدی که در تصویر مشاهده میکنید" />
+                                        </div>
+                                        <label class="col-lg-3 hidden-sm hidden-xs hidden-md" for="loginCaptcha">کد امنیتی</label>
+                                    </div>
+                                    <div class="submit-panel">
+                                        <button type="submit" class="form-control">ورود به بخش مدیریت اطلاعات مددجو</button>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-md-6">
+                    <div class="hidden-md hidden-lg col-sm-12 col-xs-12" style="height: 20px;"></div>
+                    <div class="col-md-12 madadjooRegister">
+                        <div class="panel-title">
+                            ثبت نام متقاضی جدید
+                        </div>
+                        <div class="panel-body">
+                            @using (Html.BeginForm("MadadjooRegister", "Home", FormMethod.Post, new { @class = "form-horizontal" }))
+                            {
+
+                            <div class="form-group">
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" name="nationalCode" id="registerNationalCode" placeholder="کد ملی مددجوی متقاضی مسکن" />
+                                </div>
+                                <label class="col-lg-3 hidden-sm hidden-xs hidden-md" for="registerNationalCode">کد ملی</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-4">
+                                    <div style="background: url(/Assets/images/madadjooHome/bg_pattern.gif) repeat; width: 100%; height: 45px;"></div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="text" class="form-control" id="registerCaptcha" placeholder="کدی که در تصویر مشاهده میکنید" />
+                                </div>
+                                <label class="col-lg-3 hidden-sm hidden-xs hidden-md" for="registerCaptcha">کد امنیتی</label>
+                            </div>
+                            <div class="submit-panel" style="margin-top: 70px;">
+                                <button type="submit" class="form-control">ثبت نام مددجو</button>
+                            </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="FNav">
+            <div class="copyright">تمامی حقوق مادی و معنوی این سامانه متعلق به طراح و اداره بهزیستی استان فارس می باشد. 1398 ©</div>
+            <div class="links">@Html.ActionLink("ورود کارشناس", "Login", "Account")</div>
+        </div>
+    </main>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Assets/vendor/jquery.backstretch/jquery.backstretch.min.js"></script>
+    <script src="~/Assets/javascripts/PageScripts/MadadjooHome.js"></script>
+</body>
+</html>

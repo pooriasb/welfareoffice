@@ -1,0 +1,166 @@
+﻿@using BehzistiMaskan.Core.Utility
+@using Microsoft.AspNet.Identity
+
+@if (User.IsInRole(RoleName.KarshenasOstan) || User.IsInRole(RoleName.KarshenasShahrestan) ||
+     User.IsInRole(RoleName.ModirKolOstan) || User.IsInRole(RoleName.MoavenOstan) ||
+     User.IsInRole(RoleName.MoavenMosharekat) || User.IsInRole(RoleName.ModirShahrestan))
+{
+}
+<li class="nav-active">
+    <a href="@Url.Action("Index", "Dashboard")">
+        <i class="fa fa-home" aria-hidden="true"></i>
+        <span>میز کار</span>
+    </a>
+</li>
+<li class="nav-parent">
+    <a>
+        <i class="fa fa-users" aria-hidden="true"></i>
+        <span>مددجویان</span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a href="@Url.Action("Index", "Client")" class="text-success">مددجویان تایید شده</a>
+        </li>
+        <li>
+            <a href="@Url.Action("WaitingApplicantList", "Client")" class="text-warning">متقاضیان در لیست انتظار</a>
+        </li>
+        <li>
+            <a href="@Url.Action("ExemptionList", "Client")">مددجویان متقاضی دریافت معافیت</a>
+        </li>
+        <li>
+            <a href="@Url.Action("IncompleteRegisterList", "Client")">مددجویان با اطلاعات ناقص</a>
+        </li>
+        <li>
+            <a href="@Url.Action("PersonStoreAsFamilyRelationList", "Client")">اعضای خانواده مددجویان</a>
+        </li>
+        <li>
+            <a href="@Url.Action("DeletedClientList", "Client")">مددجویان حذف شده</a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-parent">
+    <a>
+        <i class="fa fa-user-md" aria-hidden="true"></i>
+        <span>خیرین</span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a href="@Url.Action("List", "Benefactor")">مدیریت خیرین</a>
+        </li>
+        <li>
+            <a href="@Url.Action("EditRequiredMessage", "Benefactor")">مدیریت پیام اعلام نیاز</a>
+        </li>
+    </ul>
+</li>
+
+
+@if (User.IsInRole(RoleName.KarshenasOstan))
+{
+    <li class="nav-parent">
+        <a>
+            <i class="fa fa-copy" aria-hidden="true"></i>
+            <span>طرح ها</span>
+        </a>
+        <ul class="nav nav-children">
+            <li>
+                <a href="@Url.Action("Index", "Form")">
+                    لیست طرح ها
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("New", "Form")">
+                    طرح ساز
+                </a>
+            </li>
+
+        </ul>
+    </li>
+}
+else if (User.IsInRole(RoleName.KarshenasShahrestan))
+{
+
+}
+
+
+@if (User.IsInRole((RoleName.KarshenasOstan)) || User.IsInRole(RoleName.KarshenasShahrestan))
+{
+
+}
+<li class="nav-parent">
+    <a>
+        <i class="fa fa-th-list" aria-hidden="true"></i>
+        <span>گزارش گیری</span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a href="@Url.Action("Index", "Report")">
+                لیست گزارش ها
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("New", "Report")" class="text-success">
+                گزارش ساز
+            </a>
+        </li>
+
+        <li>
+            <a href="@Url.Action("Exemption", "Report")" style="border-top: 1px solid #abb4be;">
+                معافیت انشعابات
+            </a>
+        </li>
+
+    </ul>
+</li>
+
+
+@if (User.IsInRole(RoleName.SystemAdministrator))
+{
+    <li class="nav-parent">
+        <a>
+            <i class="fa fa-buysellads" aria-hidden="true"></i>
+            <span>کاربران</span>
+        </a>
+        <ul class="nav nav-children">
+            <li>
+                <a href="@Url.Action("Index", "User")">مدیریت کاربران</a>
+            </li>
+            <li>
+                <a href="@Url.Action("New", "User")"><i class="fa fa-user-plus"></i> کاربر جدید</a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-parent">
+        <a>
+            <i class="fa fa-buysellads" aria-hidden="true"></i>
+            <span>تنظیمات</span>
+        </a>
+        <ul class="nav nav-children">
+            <li>
+                <a href="@Url.Action("Index", "User")">مدیریت مناطق جغرافیایی</a>
+            </li>
+            <li>
+                <a href="@Url.Action("New", "User")"><i class="fa fa-user-plus"></i> کاربر جدید</a>
+            </li>
+        </ul>
+    </li>
+}
+
+@*<li class="nav-parent">
+        <a>
+            <i class="fa fa-align-left" aria-hidden="true"></i>
+            <span>گزارش گیری</span>
+        </a>
+        <ul class="nav nav-children">
+            <li>
+                <a href="">
+                    گزارش ساز
+                </a>
+            </li>
+            <li>
+                <a href="">
+                    گزارش های آماده از قبل
+                </a>
+            </li>
+        </ul>
+    </li>*@

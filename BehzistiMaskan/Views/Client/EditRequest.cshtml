@@ -1,0 +1,196 @@
+﻿@using BehzistiMaskan.Core.Utility
+@using BehzistiMaskan.Migrations
+@model BehzistiMaskan.ViewModels.ClientRequestViewModel
+@{
+    ViewBag.Title = "ویرایش اطلاعات - نوع تقاضای مددجو";
+    Layout = "~/Views/Shared/_LayoutPorto.cshtml";
+    ViewBag.SelectedTabMenu = "EditRequest";
+
+    ViewBag.OnlyRequestExemption = Model.Client.OnlyRequestExemption;
+    ViewBag.IsRequestAnyExemption = Model.Client.IsRequestAnyExemption;
+}
+
+@Html.Partial("_EditClientHeaderPartial")
+<!-- start: page -->
+<div class="row" id="page">
+    <div class="col-md-12">
+        <div class="tabs tabs-primary">
+            @Html.Partial("_EditClientTabMenuPartial")
+
+            <div class="tab-content">
+                <div id="EditCurrentHousingTab" class="tab-pane active">
+                    @using (Html.BeginForm("SaveRequest", "Client", FormMethod.Post, new { @class = "form form-bordered", @name = "clientRequestFrm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="panel panel-featured panel-featured-primary">
+                            <div class="panel-heading p-sm text-primary">نوع تقاضای مددجو در زمینه تامین مسکن</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    @foreach (var request in Model.RequestTypes)
+                                    {
+                                        if (!request.IsExemption)
+                                        {
+                                            <div class="radio">
+                                                <label>@Html.RadioButtonFor(m => m.RequestTypeBuildingId, request.Id, request.Id == 0 && Model.HasBenefitFromBuildingAid ? (object)new { disabled = "disabled" } : (object)new { }) @request.PersianTitle</label>
+                                                @if (request.Id == 0 && Model.HasBenefitFromBuildingAid)
+                                                {
+                                                    <span class="text-info">(با توجه به اینکه مددجو از کمک هزینه خرید یا ساخت مسکن استفاده نموده یا در صف پرداخت می باشد امکان انتخاب این گزینه وجود ندارد)</span>
+                                                }
+
+                                            </div>
+                                        }
+                                    }
+                                    @Html.ValidationMessageFor(m => m.RequestTypeBuildingId)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-featured panel-featured-primary">
+                            <div class="panel-heading p-sm text-primary">نوع تقاضا در مورد معافیت انشعابات</div>
+                            <div class="panel-body">
+
+                                <div class="form-group">
+                                    <label>@Html.CheckBoxFor(m => m.HasRequestWaterExemption, Model.HasBenefitWaterExemption ? (object)new { disabled = "disabled" } : (object)new { }) متقاضی معافیت انشعاب آب</label>
+                                    @if (Model.HasBenefitWaterExemption)
+                                    {
+                                        <span class="text-info">   (با توجه به اینکه مددجو از این معافیت بهره مند شده است امکان برداشتن تقاضای آن وجود ندارد)</span>
+                                    }
+                                </div>
+                                <div class="form-group">
+                                    <label>@Html.CheckBoxFor(m => m.HasRequestElectricalExemption, Model.HasBenefitElectricalExemption ? (object)new { disabled = "disabled" } : (object)new { }) متقاضی معافیت انشعاب برق</label>
+                                    @if (Model.HasBenefitElectricalExemption)
+                                    {
+                                        <span class="text-info">   (با توجه به اینکه مددجو از این معافیت بهره مند شده است امکان برداشتن تقاضای آن وجود ندارد)</span>
+                                    }
+                                </div>
+                                <div class="form-group">
+                                    <label>@Html.CheckBoxFor(m => m.HasRequestGasExemption, Model.HasBenefitGasExemption ? (object)new { disabled = "disabled" } : (object)new { }) متقاضی معافیت انشعاب گاز</label>
+                                    @if (Model.HasBenefitGasExemption)
+                                    {
+                                        <span class="text-info">   (با توجه به اینکه مددجو از این معافیت بهره مند شده است امکان برداشتن تقاضای آن وجود ندارد)</span>
+                                    }
+                                </div>
+                                <div class="form-group">
+                                    <label>@Html.CheckBoxFor(m => m.HasRequestProductionLicenseExemption, Model.HasBenefitProductionLicenseExemption ? (object)new { disabled = "disabled" } : (object)new { }) متقاضی معافیت عوارض صدور پروانه ساخت</label>
+                                    @if (Model.HasBenefitProductionLicenseExemption)
+                                    {
+                                        <span class="text-info">   (با توجه به اینکه مددجو از این معافیت بهره مند شده است امکان برداشتن تقاضای آن وجود ندارد)</span>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            @Html.HiddenFor(m => m.ClientId)
+                            @Html.HiddenFor(m => m.HasBenefitWaterExemption)
+                            @Html.HiddenFor(m => m.HasBenefitProductionLicenseExemption)
+                            @Html.HiddenFor(m => m.HasBenefitGasExemption)
+                            @Html.HiddenFor(m => m.HasBenefitElectricalExemption)
+                            <button id="btnSave" class="btn btn-primary" type="submit"><i class="fa fa-save"></i> ذخیره اطلاعات</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+
+@section StyleSheet
+{
+    <link rel="stylesheet" href="~/Assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css" />
+    <link href="~/Assets/vendor/leaflet/leaflet.css" rel="stylesheet" />
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Assets/vendor/leaflet/leaflet.js"></script>
+    <script src="~/Assets/javascripts/OSMLocationPicker.js"></script>
+    <script src="~/Assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            @if (Model.Status != null)
+            {
+                switch (Model.Status.StatusType)
+                {
+                    case ModelEnums.StatusTypeE.Success:
+                                    @Html.Raw("ShowNotifyStatus('اطلاعات با موفقیت ذخیره شد', 'success','عملیات موفق','fa fa-check');");
+                        break;
+                    case ModelEnums.StatusTypeE.Error:
+                        @Html.Raw("ShowNotifyStatus('ذخیره اطلاعات با خطا مواجه شده است!', 'error','عملیات ناموفق','fa fa-times');")
+                        break;
+                    case ModelEnums.StatusTypeE.ValidationError:
+                        @Html.Raw("ShowNotifyStatus('اطلاعات وارد شده در فرم اشتباه است!', 'error','عملیات ناموفق','fa fa-times');")
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //#region مسکن فعلی
+
+            // وقتی فرم نمایش داده شد اولین ورودی را انتخاب کنید
+            $('div#page form').eq(0).find('.form-control').eq(0).focus();
+            $('div#page form').eq(0).find('.form-control').eq(0).select();
+
+            // وقتی که کاربر دکمه اینتر رو میزنه نباید صفحه ذخیره بشه
+            // برای زیبا تر شدن کار با وب سایت کلید اینتر عمل تب را انجام می دهد
+            $('div#page form .form-control').keydown(function (event) { //event==Keyevent
+                if (event.which == 13) {
+                    var inputs = $(this).closest('form').find(':visible.form-control');
+                    console.log('inputs.index(this): ' + inputs.index(this));
+                    console.log('(inputs.length - 1): ' + (inputs.length - 1));
+
+                    if (inputs.index(this) == (inputs.length - 1))
+                        $('div#page form button').eq(0).focus();
+                    else
+                        inputs.eq(inputs.index(this) + 1).focus();
+                    event.preventDefault(); //Disable standard Enterkey action
+                }
+            });
+
+
+
+            $('#btnSave').click(function(e) {
+                var selectedItem = $('input[type="radio"][name="RequestTypeBuildingId"]:checked').val();
+                if (selectedItem == 0) {
+                    var out = $('#HasRequestWaterExemption').is(':checked') ||
+                        $('#HasRequestElectricalExemption').is(":checked") ||
+                        $('#HasRequestGasExemption').is(":checked") ||
+                        $('#HasRequestProductionLicenseExemption').is(":checked");
+                    if (!out) {
+                        alert('شما گزینه فقط متقاضی دریافت معافیت انشعابات هستم را انتخاب کرده اید اما هیچ کدام از موارد معافیت را انتخاب نکرده اید.')
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+
+            $('#clientRequestFrm').on('submit', function(e) {
+                var selectedItem = $('input[type="radio"][name="RequestTypeBuildingId"]:checked').val();
+                if (selectedItem == 0) {
+
+                    var out = $('input[type="checkbox"][name="IsRequestWaterExemption"]:checked').length +
+                        $('input[type="checkbox"][name="IsRequestElectricalExemption"]:checked').length +
+                        $('input[type="checkbox"][name="IsRequestGasExemption"]:checked').length +
+                        $('input[type="checkbox"][name="IsRequestProductionLicenseExemption"]:checked').length;
+
+                    if (out == 0) {
+                        alert('شما گزینه فقط متقاضی دریافت معافیت انشعابات هستم را انتخاب کرده اید اما هیچ کدام از موارد معافیت را انتخاب نکرده اید.')
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+
+            //#endregion
+        });
+    </script>
+}

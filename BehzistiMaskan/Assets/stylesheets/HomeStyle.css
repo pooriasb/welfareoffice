@@ -1,0 +1,232 @@
+﻿@font-face {
+    font-family: Shabnam;
+    src: url('../fonts/shabnam.eot?');
+    src: url('../fonts/shabnam.eot?#iefix') format('embedded-opentype'), url('../fonts/shabnam.woff') format('woff'), url('../fonts/shabnam.ttf') format('truetype');
+    font-weight: normal;
+}
+
+body {
+    font-family: Shabnam;
+    margin: 0;
+    direction: rtl;
+    color: #777;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#main {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: black;
+}
+
+ul.style-select {
+    display: inline;
+}
+
+    ul.style-select li {
+        display: inline-block;
+        width: 50px;
+        height: 15px;
+        padding: 10px;
+        margin-right: 10px;
+        border: 1px solid white;
+        line-height: 15px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-family: 'Century Gothic';
+        font-size: 10px;
+    }
+
+        ul.style-select li:hover {
+            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: black;
+        }
+
+
+.app-show {
+    height: 100%;
+    width: 300px;
+    border: 1px solid #fff;
+    margin-right: 30px;
+    display: inline-block;
+    float: right;
+    background-color: black;
+    background-color: rgba(0,0,0, 0.15);
+}
+
+.app-show:hover {
+    background-color: #fff;
+    background-color: rgba(255,255,255, 0.35);
+    cursor: pointer;
+}
+
+.app-show .title {
+    line-height: 50px;
+    font-size: 30px;
+    padding: 10px;
+    direction: rtl;
+}
+
+.app-show .content {
+    height: 50px;
+    font-size: 15px;
+}
+
+
+.center {
+    position: fixed;
+    top: calc(100vh-50vh);
+    min-height: 200px;
+    height: 30vh;
+    width: 90%;
+}
+
+.app-container {
+    position: inherit;
+}
+
+
+.TopNav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 65px;
+    width: 100%;
+    min-width: 650px;
+    line-height: 65px;
+    text-align: center;
+    background: #f0880cc8;
+    box-shadow: 1px 1px 10px grey;
+    z-index: 1;
+}
+
+    .TopNav .Title {
+        font-size: 30px;
+        color: white;
+        margin: 0 10px;
+    }
+
+.FNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    white-space: nowrap;
+    width: 100%;
+    height: 50px;
+    margin-top: 30px;
+    background-color: #f2f2f2c0;
+    line-height: 50px;
+    color: black;
+}
+
+    .FNav .copyright {
+        float: right;
+        margin-right: 25px;
+        font-size: 0.9em;
+    }
+
+    .FNav .links {
+        float: left;
+        font-weight: bold;
+        margin-left: 25px;
+    }
+
+.TableContent {
+    width: 90%;
+    /*top: 50%;
+    transform: translateY(-50%);*/
+    margin: 0 auto;
+    position: absolute;
+    right: 0;
+    left: 0;
+    padding-top: 75px;
+    margin-bottom: 65px;
+}
+
+
+    .TableContent .panel-title {
+        height: 50px;
+        line-height: 50px;
+        padding: 0 30px;
+        border: 1px solid gray;
+        color: white;
+        font-size: 1.5em;
+    }
+
+    .TableContent .madadjooRegister .panel-title {
+        background-color: #5da400b0;
+    }
+
+    .TableContent .madadjooRegister button {
+        background-color: #5da400;
+        color: white;
+    }
+
+    .TableContent .madadjooLogin .panel-title {
+        background-color: #187fffb0;
+    }
+
+    .TableContent .madadjooLogin button {
+        background-color: #187fff;
+        color: white;
+    }
+
+    .TableContent .panel-body {
+        height: 300px;
+        background: #ffffffc0;
+        border: 1px solid gray;
+    }
+
+        .TableContent .panel-body input[type="text"] {
+            height: 45px;
+            border: 2px solid #ccc;
+        }
+
+        .TableContent .panel-body button {
+            height: 45px;
+        }
+
+        .TableContent .panel-body label {
+            line-height: 45px;
+            font-size: 1.2em;
+        }
+
+        .TableContent .panel-body .form-group {
+            margin: 10px;
+        }
+
+@media (max-height: 550px) {
+    .TableContent {
+        transform: unset !important;
+        top: 80px !important;
+        position: fixed;
+    }
+}
+
+@media (max-width: 680px) {
+    .TopNav .Title {
+        font-size: 1.3em !important;
+    }
+
+    .TopNav {
+        min-width: auto;
+    }
+
+    .FNav .copyright {
+        font-size: 0.7em;
+        margin: 0;
+    }
+
+    .FNav .links {
+        margin: 0;
+    }
+}

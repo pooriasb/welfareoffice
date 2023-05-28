@@ -1,0 +1,30 @@
+﻿<!-- ImageTemplate start -->
+<div id="ImageTemplate" class="form-group" data-field-id="%%DataFieldId%%"  data-name="form-field">
+    <label class="control-label col-md-2" data-name="templateTitle"></label>
+    <div class="col-md-4">
+        <div data-name="image-container" style="position: relative;min-width: 150px;max-width: 100%;min-height: 200px;max-height: 200px;">
+            <input type="file" name="file" id="imgSelect" accept="image/x-png,image/gif,image/jpeg" style="display: none" />
+            <img data-name="preview-image" style="position: absolute;right: 0;top: 0;min-width: 150px;max-height: 100%;min-height: 200px;max-width: 500px;border: 2px solid #999;" />
+            <img data-name="loading-image" src="/Assets/images/preloader.gif" style="display: none; margin: 0;position: absolute;top: 50%;left: 50%;opacity: 0.7"/>
+        </div>
+        <div data-name="image-controls" style="margin: 10px 5px;">
+            <button type="button" class="btn btn-default text-primary" data-name="select-image-btn">انتخاب تصویر</button>
+            <button type="button" class="btn btn-default text-danger" data-name="remove-image-btn" disabled="disabled">حذف</button>
+            <button type="button" class="btn btn-default text-success" data-name="upload-image-btn" disabled="disabled">بارگذاری</button>
+        </div>
+
+        <input type="hidden" value="%%ClientId%%" data-name="client-id" />
+        <input type="hidden" value="%%UniqueImageId%%" data-name="unique-image-id" />
+    </div>
+    <div class="col-md-3 mt-md" data-name="image-details">
+        <div><span>عرض: <span data-name="image-width"></span></span></div>
+        <div><span>ارتفاع: <span data-name="image-height"></span></span></div>
+        <div><span>سایز فایل: <span data-name="image-size"></span></span></div>
+        <div><span>وضعیت: <span data-name="image-status"></span></span></div>
+    </div>
+    <label data-name="helpText" class="col-md-3"></label>
+</div>
+<script>
+
+</script>
+<!-- ImageTemplate end -->

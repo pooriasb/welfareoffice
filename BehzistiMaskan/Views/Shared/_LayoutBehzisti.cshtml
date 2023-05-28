@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>سامانه سبا (بانک اطلاعات جامع مسکن مددجویان فارس)</title>
+    <meta name="keywords" content="Behzisti Maskan MIS" />
+    <meta name="description" content="Behzisti Maskan MIS">
+    <meta name="author" content="Ali Amanzadegan">
+
+    @Styles.Render("~/stylesheets/bootstrap")
+    <link href="~/Assets/stylesheets/HomeStyle.css" rel="stylesheet" />
+
+    @RenderSection("Stylesheets", false)
+</head>
+<body>
+    <main id="main">
+        <div class="TopNav">
+            <img src="~/Assets/images/madadjooHome/behzisti-logo-white-50px.png" alt="اداره بهزیستی استان فارس لوگو"/>
+            <b class="Title">سامانه سبا (سامانه بانک اطلاعات جامع مسکن مددجویان بهزیستی فارس)</b>
+        </div>
+        @RenderBody()
+
+        <div class="FNav">
+            <div class="copyright">تمامی حقوق مادی و معنوی این سامانه متعلق به طراح و اداره بهزیستی استان فارس می باشد. 1398 ©</div>
+            <div class="links">@Html.ActionLink("ورود کارشناس", "Login", "Account")</div>
+        </div>
+    </main>
+
+    @Scripts.Render("~/bundles/jquery");
+    @Scripts.Render("~/bundles/bootstrap");
+<script src="~/Assets/vendor/jquery.backstretch/jquery.backstretch.min.js"></script>
+
+    @RenderSection("Scripts", false)
+
+</body>
+</html>

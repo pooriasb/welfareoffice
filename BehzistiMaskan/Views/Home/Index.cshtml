@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>سامانه توانمند سازی بهزیستی استان فارس</title>
+
+    <link href="~/Assets/stylesheets/HomePage.css" rel="stylesheet" />
+</head>
+<body>
+
+    <main id="main" class="vanta-canvas">
+        <div class="top-left" style="z-index: 1;">
+            <div style="display: inline;">سایر پس زمینه ها</div>
+            <ul class="style-select">
+                <li onclick="activeVantaBirds();"><a>Birds</a></li>
+                <li onclick="activeVantaNet();"><a>Net</a></li>
+                <li onclick="activeVantaWaves();"><a>Waves</a></li>
+            </ul>
+        </div>
+        <div class="top-right" style="z-index: 1;">
+
+        </div>
+        <div class="center app-container">
+            <a href="@Url.Action("Index", "Maskan")">
+                <div class="app-show">
+                    <div class="title">سامانه سبا<span class="subtitle">(سامانه بانک اطلاعات جامع مسکن مددجویان بهزیستی فارس)</span></div>
+                </div>
+            </a>
+            <div class="app-show">
+                <div class="title">سامانه یونیت <span class="subtitle">( کمیسیون ماده 26 - مدیریت مراکز و موسسات)</span></div>
+            </div>
+            <div class="app-show">
+                <div class="title">سامانه مشارکت ها<span class="subtitle"> (در دست طراحی)</span></div>
+            </div>
+            <div class="app-show">
+                <div class="title">سامانه اشتغال <span class="subtitle"> (در دست طراحی)</span></div>
+            </div>
+        </div>
+    </main>
+
+    @Scripts.Render("~/bundles/vanta")
+
+<script src="~/Assets/javascripts/PageScripts/homepage.js"></script>
+</body>
+</html>

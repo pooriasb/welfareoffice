@@ -1,0 +1,174 @@
+﻿@using BehzistiMaskan.Core.Utility
+<!doctype html>
+<html class="fixed sidebar-left-collapsed" lang="fa">
+<head>
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+
+    <title>@ViewBag.Title - سامانه سبا (توانمند سازی بهزیستی)</title>
+    <meta name="keywords" content="Behzisti Fars - Maskan MIS" />
+    <meta name="description" content="سامانه مسکن مددجویان بهزیستی استان فارس">
+    <meta name="author" content="Ali Amanzadegan علی امان زادگان">
+    <!-- طراح و سازنده این سامانه علی امان زادگان می باشد. استفاده از تمام یا بخشی از این سامانه بدون اجازه سازنده غیر قانونی می باشد -->
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Vendor CSS -->
+    @Styles.Render("~/stylesheets/bootstrap")
+
+    <link rel="stylesheet" href="~/Assets/vendor/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/magnific-popup/magnific-popup.css" />
+
+    <!-- Specific Page Vendor CSS -->
+    <link rel="stylesheet" href="~/Assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="~/Assets/vendor/morris/morris.css" />
+    <link href="~/Assets/vendor/pnotify/pnotify.custom.css" rel="stylesheet" />
+
+
+    <!-- Head Libs -->
+    @Scripts.Render("~/bundles/modernizr")
+
+    @RenderSection("StyleSheet", false)
+
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/theme.css" />
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/skins/default.css" />
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="~/Assets/stylesheets/theme-custom.css">
+
+</head>
+<body class="loading-overlay-showing" data-loading-overlay>
+    <span class="loading-overlay dark">
+        <span class="loader white"></span>
+    </span>
+    <section class="body">
+
+        <!-- start: header -->
+        <header class="header">
+            <div class="logo-container">
+                <a href="@Url.Action("Login", "Account")" class="logo">
+                    <img src="~/Assets/images/behzisti-logo-with-text-orange-H50px.png" height="35" alt="Porto Admin" />
+                </a>
+                <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                    <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+                </div>
+            </div>
+
+            <!-- start: search & user box -->
+            <div class="header-right">
+                @using (Html.BeginForm("SearchClientSimple", "Client", FormMethod.Post, new { id = "frmSearchClientSimple", @class = "search" }))
+                {
+                    <div class="input-group input-search">
+                        <input type="text" class="form-control" name="searchWord" id="txtSearchWord" placeholder="جستجوی مددجو ...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                }
+
+                <span class="separator"></span>
+                @Html.Partial("_LoginPartial")
+
+            </div>
+            <!-- end: search & user box -->
+        </header>
+        <!-- end: header -->
+
+        <div class="inner-wrapper">
+            <!-- start: sidebar -->
+            <aside id="sidebar-left" class="sidebar-left">
+
+                <div class="sidebar-header">
+                    <div class="sidebar-title">
+                        منوهای اصلی
+                    </div>
+                    <div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+                        <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+                    </div>
+                </div>
+
+                <div class="nano">
+                    <div class="nano-content">
+                        <nav id="menu" class="nav-main" role="navigation">
+                            <ul class="nav nav-main">
+                                @if (User.IsInRole(RoleName.SazmanHamkar))
+                                {
+                                    @Html.Partial("_MenuPartialSazmanHamkar")
+                                }
+                                @*else if (User.IsInRole(RoleName.ModirKolOstan) || User.IsInRole(RoleName.MoavenOstan) || User.IsInRole(RoleName.MoavenMosharekat) || User.IsInRole(RoleName.ModirShahrestan))
+                                    {
+                                        @Html.Partial("_MenuPartialModir")
+                                    }*@
+                                else
+                                {
+                                    @Html.Partial("_MenuPartial")
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+
+            </aside>
+            <!-- end: sidebar -->
+
+            <section role="main" class="content-body">
+                @RenderBody()
+            </section>
+        </div>
+    </section>
+
+    <!-- Vendor -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script src="~/Assets/vendor/nanoscroller/nanoscroller.js"></script>
+    <script src="~/Assets/vendor/magnific-popup/magnific-popup.js"></script>
+
+    <!-- Specific Page Vendor -->
+    <script src="~/Assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+    <script src="~/Assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+    <script src="~/Assets/vendor/jquery-appear/jquery.appear.js"></script>
+    <script src="~/Assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <link href="/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet">
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+    <script src="~/Assets/vendor/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+    <script src="~/Assets/vendor/pnotify/pnotify.custom.js"></script>
+
+    <script>
+        var stack_topleft = { "dir1": "down", "dir2": "right", "push": "top" };
+        var stack_bottomleft = { "dir1": "right", "dir2": "up", "push": "top" };
+        var stack_bottomright = { "dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15 };
+        var stack_bar_top = { "dir1": "down", "dir2": "right", "push": "top", "spacing1": 0, "spacing2": 0 };
+        var stack_bar_bottom = { "dir1": "up", "dir2": "right", "spacing1": 0, "spacing2": 0 };
+
+        function ShowNotifyStatus(text, type, title, icon) {
+            var notice = new PNotify({
+                title: title,
+                text: text,
+                type: type,
+                icon: icon,
+                addclass: 'stack-bottomright',
+                stack: stack_bottomright
+            });
+        }
+    </script>
+
+    @RenderSection("Scripts", false)
+
+    <!-- Theme Base, Components and Settings -->
+    <script src="~/Assets/javascripts/theme.js"></script>
+
+    <!-- Theme Custom -->
+    <script src="~/Assets/javascripts/theme.custom.js"></script>
+
+    <!-- Theme Initialization Files -->
+    <script src="~/Assets/javascripts/theme.init.js"></script>
+</body>
+</html>
